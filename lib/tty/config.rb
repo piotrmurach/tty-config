@@ -150,9 +150,13 @@ module TTY
     #
     # @api public
     def read(file = find_file)
-      if file
-        @settings = unmarshal(file)
+      if file.nil?
+        raise LoadError, "No file found to read configuration from!"
+      elsif !::File.exist?(file)
+        raise LoadError, "Configuration file `#{file}` does not exist!"
       end
+
+      merge(unmarshal(file))
     end
 
     # Write current configuration to a file.

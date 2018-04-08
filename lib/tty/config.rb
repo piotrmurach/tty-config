@@ -33,7 +33,7 @@ module TTY
 
     # The name of the configuration file without extension
     # @api public
-    attr_reader :filename
+    attr_accessor :filename
 
     def initialize(settings = {})
       @location_paths = []
@@ -45,10 +45,6 @@ module TTY
       @key_delim = '.'
 
       yield(self) if block_given?
-    end
-
-    def filename=(config_name)
-      @filename = config_name
     end
 
     def append_path(path)

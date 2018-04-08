@@ -11,6 +11,12 @@ RSpec.describe TTY::Config, '#set_if_empty' do
     expect(config.fetch(:foo, :bar, :baz)).to eq(2)
   end
 
+  it "sets value for a nested key as string delimited by dot" do
+    config = TTY::Config.new
+    config.set_if_empty("foo.bar.baz", value: 1)
+    expect(config.fetch('foo', 'bar', 'baz')).to eq(1)
+  end
+
   it "doesn't override existing value" do
     config = TTY::Config.new
     config.set(:foo, value: 1)

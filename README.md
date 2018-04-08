@@ -1,4 +1,19 @@
-# TTY::Config
+# TTY::Config [![Gitter](https://badges.gitter.im/Join%20Chat.svg)][gitter]
+
+[![Gem Version](https://badge.fury.io/rb/tty-config.svg)][gem]
+[![Build Status](https://secure.travis-ci.org/piotrmurach/tty-config.svg?branch=master)][travis]
+[![Build status](https://ci.appveyor.com/api/projects/status/k4vub4koct329ggd?svg=true)][appveyor]
+[![Maintainability](https://api.codeclimate.com/v1/badges/1656060107c73ac42c2b/maintainability)][codeclimate]
+[![Coverage Status](https://coveralls.io/repos/github/piotrmurach/tty-config/badge.svg)][coverage]
+[![Inline docs](http://inch-ci.org/github/piotrmurach/tty-config.svg?branch=master)][inchpages]
+
+[gitter]: https://gitter.im/piotrmurach/tty
+[gem]: http://badge.fury.io/rb/tty-config
+[travis]: http://travis-ci.org/piotrmurach/tty-config
+[appveyor]: https://ci.appveyor.com/project/piotrmurach/tty-config
+[codeclimate]: https://codeclimate.com/github/piotrmurach/tty-config/maintainability
+[coverage]: https://coveralls.io/github/piotrmurach/tty-config
+[inchpages]: http://inch-ci.org/github/piotrmurach/tty-config
 
 > Define, read and write any Ruby app configurations with a penchant for terminal clients.
 
@@ -20,7 +35,15 @@ Or install it yourself as:
 
     $ gem install tty-config
 
-## Usage
+## Contents
+
+* [1. Usage](#1-usage)
+* [2. Interface](#2-interface)
+  * [2.1 set](#21-set)
+  * [2.2 set_if_empty](#22-set_if_empty)
+  * [2.3 fetch](#23-fetch)
+
+## 1. Usage
 
 Initialize the configuration and provide the name:
 
@@ -77,6 +100,14 @@ Finally, read in configuration back again:
 ```ruby
 config.read
 ```
+
+## 2. Interface
+
+### 2.1 set
+
+### 2.2 set_if_empty
+
+### 2.3 fetch
 
 ## Development
 

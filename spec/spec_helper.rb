@@ -24,7 +24,7 @@ module TestHelpers
 
     def dir_path(*args)
       path = File.join(gem_root, *args)
-      FileUtils.mkdir_p(path)
+      FileUtils.mkdir_p(path) unless ::File.exist?(path)
       File.realpath(path)
     end
 

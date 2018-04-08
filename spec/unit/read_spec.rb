@@ -1,4 +1,4 @@
-RSpec.describe TTY::Config, '#read', type: :cli do
+RSpec.describe TTY::Config, '#read' do
   it "reads from a specified file" do
     file = fixtures_path('investments.yml')
     config = TTY::Config.new
@@ -35,7 +35,7 @@ RSpec.describe TTY::Config, '#read', type: :cli do
     config = TTY::Config.new
     expect {
       config.read
-    }.to raise_error(TTY::Config::LoadError,
+    }.to raise_error(TTY::Config::ReadError,
                     "No file found to read configuration from!")
   end
 
@@ -45,7 +45,7 @@ RSpec.describe TTY::Config, '#read', type: :cli do
 
     expect {
       config.read(file)
-    }.to raise_error(TTY::Config::LoadError,
+    }.to raise_error(TTY::Config::ReadError,
                     "Configuration file `#{file}` does not exist!")
   end
 end

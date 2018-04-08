@@ -7,7 +7,9 @@ require_relative 'config/version'
 module TTY
   class Config
     # Error raised when key fails validation
-    LoadError = Class.new(StandardError)
+    ReadError = Class.new(StandardError)
+    # Error raised when issues writing configuration to a file
+    WriteError = Class.new(StandardError)
 
     def self.coerce(hash, &block)
       new(normalize_hash(hash), &block)
@@ -141,19 +143,19 @@ module TTY
     # Find and read a configuration file.
     #
     # If the file doesn't exist or if there is an error loading it
-    # the TTY::Config::LoadError will be raised.
+    # the TTY::Config::ReadError will be raised.
     #
     # @param [String] file
     #   the path to the configuration file to be read
     #
-    # @raise [TTY::Config::LoadError]
+    # @raise [TTY::Config::ReadError]
     #
     # @api public
     def read(file = find_file)
       if file.nil?
-        raise LoadError, "No file found to read configuration from!"
+        raise ReadError, "No file found to read configuration from!"
       elsif !::File.exist?(file)
-        raise LoadError, "Configuration file `#{file}` does not exist!"
+        raise ReadError, "Configuration file `#{file}` does not exist!"
       end
 
       merge(unmarshal(file))
@@ -166,10 +168,12 @@ module TTY
     #
     # @api public
     def write(file = find_file, force: false)
-      if file && !force
-        raise "File `#{file}` alraedy exists."
-      elsif file && !::File.writable?(file)
-        raise "Cannot write to #{file}."
+      if file && ::File.exist?(file)
+        if !force
+          raise WriteError, "File `#{file}` already exists."
+        elsif !::File.writable?(file)
+          raise WriteError, "Cannot write to #{file}."
+        end
       elsif file
         marshal(file, @settings)
       else
@@ -312,7 +316,7 @@ module TTY
           YAML.load(File.read(file))
         end
       else
-        raise "Config file format `#{ext}` not supported."
+        raise ReadError, "Config file format `#{ext}` not supported."
       end
     end
 
@@ -324,8 +328,8 @@ module TTY
         require 'yaml'
         File.write(file, YAML.dump(data))
       else
-        raise "Config file format `#{ext}` not supported."
+        raise WriteError, "Config file format `#{ext}` not supported."
       end
     end
-  end
-end
+  end # Config
+end # TTY

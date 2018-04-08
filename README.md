@@ -42,6 +42,12 @@ Or install it yourself as:
   * [2.1 set](#21-set)
   * [2.2 set_if_empty](#22-set_if_empty)
   * [2.3 fetch](#23-fetch)
+  * [2.4 merge](#24-merge)
+  * [2.5 append](#25-append)
+  * [2.6 remove](#26-remove)
+  * [2.7 delete](#27-delete)
+  * [2.8 read](#28-read)
+  * [2.9 write](#29-write)
 
 ## 1. Usage
 
@@ -81,14 +87,14 @@ config.write
 # settings:
 #   base: USD
 #   color: true
-# conins:
+# coins:
 #  - BTC
 #  - ETH
 #  - TRX
 #  - DASH
 ```
 
-and then to read and `investments.yml` file, you need to provide the locations to search in:
+and then to read an `investments.yml` file, you need to provide the locations to search in:
 
 ```ruby
 config.append_path Dir.pwd
@@ -105,9 +111,84 @@ config.read
 
 ### 2.1 set
 
+To set configuration setting use `set` method. It accepts any number of keys and value by either using `:value` keyword argument or passing a block:
+
+```ruby
+config.set('foo', value: 2)
+config.set('foo') { 2 }
+```
+
+The block version of specifying a value will mean that the value is evulated every time its being read.
+
+You can also specify deeply nested configuration settings by passing sequence of keys:
+
+```ruby
+config.set 'foo', 'bar', 'baz', value: 2
+```
+
+is equivalent to:
+
+```ruby
+config.set 'foo.bar.baz', value: 2
+```
+
 ### 2.2 set_if_empty
 
+To set a configuration setting only if it hasn't been set before use `set_if_empty`:
+
+```ruby
+config.set_if_empty 'foo', value: 2
+```
+
+Similar to `set` it allows you to specify arbitrary sequence of keys followed by a key value or block:
+
+```ruby
+config.set_if_empty 'foo', 'bar', 'baz', value: 2
+```
+
 ### 2.3 fetch
+
+To get a configuration setting use `fetch`, which can accept default value either with a `:value` keyword or a block that will be lazy evaluated:
+
+```ruby
+config.fetch('foo', default: 1)
+config.fetch('foo') { 2 }
+```
+
+Similar to `set` operation, `fetch` allows you to retrieve deeply nested values:
+
+```ruby
+config.fetch 'foo', 'bar', 'baz'
+```
+
+is equivalent to:
+
+```ruby
+config.fetch 'foo.bar.baz'
+```
+
+### 2.4 merge
+
+To merge in other configuration settings as hash use `merge`:
+
+```ruby
+config.set('a', 'b', value: 1)
+config.set('a', 'c', value: 2)
+
+config.merge({'a' => {'c' => 3, 'd' => 4}})
+
+config.fetch('a', 'c') # => 3
+```
+
+### 2.5 append
+
+### 2.6 remove
+
+### 2.7 delete
+
+### 2.8 read
+
+### 2.9 write
 
 ## Development
 

@@ -2,8 +2,8 @@
 
 [![Gem Version](https://badge.fury.io/rb/tty-config.svg)][gem]
 [![Build Status](https://secure.travis-ci.org/piotrmurach/tty-config.svg?branch=master)][travis]
-[![Build status](https://ci.appveyor.com/api/projects/status/k4vub4koct329ggd?svg=true)][appveyor]
-[![Maintainability](https://api.codeclimate.com/v1/badges/1656060107c73ac42c2b/maintainability)][codeclimate]
+[![Build status](https://ci.appveyor.com/api/projects/status/2383i0dn3hlw9cnn?svg=true)][appveyor]
+[![Maintainability](https://api.codeclimate.com/v1/badges/dfac05073e1549e9dbb6/maintainability)][codeclimate]
 [![Coverage Status](https://coveralls.io/repos/github/piotrmurach/tty-config/badge.svg)][coverage]
 [![Inline docs](http://inch-ci.org/github/piotrmurach/tty-config.svg?branch=master)][inchpages]
 

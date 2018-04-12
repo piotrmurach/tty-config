@@ -43,7 +43,7 @@ module TTY
       @validators = {}
       @filename = 'config'
       @ext_type = '.yml'
-      @extensions = ['.yaml', '.yml']
+      @extensions = ['.yaml', '.yml', '.json', '.toml']
       @key_delim = '.'
 
       yield(self) if block_given?
@@ -307,10 +307,10 @@ module TTY
     # @api private
     def unmarshal(file)
       ext = File.extname(file)
+      gem_name = nil
       case ext
       when '.yaml', '.yml'
         require 'yaml'
-
         if YAML.respond_to?(:safe_load)
           YAML.safe_load(File.read(file))
         else
@@ -318,16 +318,24 @@ module TTY
         end
       when '.json'
         require 'json'
-
         JSON.parse(File.read(file))
+      when '.toml'
+        gem_name = 'toml'
+        require 'toml'
+        TOML.load(::File.read(file))
       else
         raise ReadError, "Config file format `#{ext}` not supported."
       end
+    rescue LoadError
+      puts "Please install `#{gem_name}`"
+      raise ReadError, "Gem `#{gem_name}` is missing. Please install it " \
+                       "to read #{ext} configuration format."
     end
 
     # @api private
     def marshal(file, data)
       ext = ::File.extname(file)
+      gem_name = nil
       case ext
       when '.yaml', '.yml'
         require 'yaml'
@@ -335,9 +343,17 @@ module TTY
       when '.json'
         require 'json'
         ::File.write(file, JSON.pretty_generate(data))
+      when '.toml'
+        gem_name = 'toml'
+        require 'toml'
+        ::File.write(file, TOML::Generator.new(data).body)
       else
         raise WriteError, "Config file format `#{ext}` not supported."
       end
+    rescue LoadError
+      puts "Please install `#{gem_name}`"
+      raise ReadError, "Gem `#{gem_name}` is missing. Please install it " \
+                       "to read #{ext} configuration format."
     end
   end # Config
 end # TTY

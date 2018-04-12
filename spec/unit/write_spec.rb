@@ -89,6 +89,25 @@ coins:
 EOS
   end
 
+  it "writes toml format" do
+    config = TTY::Config.new
+    config.set('settings', 'base', value: 'USD')
+    config.set('settings', 'exchange', value: 'CCCAGG')
+    config.set('coins', value: ['BTC', 'TRX', 'DASH'])
+    file = tmp_path('config.toml')
+
+    config.write(file)
+
+    expect(::File.read(file)).to eq <<-EOS.chomp
+coins = ["BTC","TRX","DASH"]
+
+[settings]
+base = "USD"
+exchange = "CCCAGG"
+
+EOS
+  end
+
   it "cannot write unknown file format" do
     config = TTY::Config.new
     config.set('settings', 'base', value: 'USD')

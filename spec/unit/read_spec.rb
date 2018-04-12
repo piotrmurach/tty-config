@@ -38,6 +38,17 @@ RSpec.describe TTY::Config, '#read' do
     config.read(file)
 
     expect(config.fetch('settings', 'base')).to eq('USD')
+    expect(config.fetch('coins')).to eq(["BTC", "ETH", "TRX", "DASH"])
+  end
+
+  it "reads a toml format" do
+    file = fixtures_path('investments.toml')
+    config = TTY::Config.new
+
+    config.read(file)
+
+    expect(config.fetch('settings', 'base')).to eq('USD')
+    expect(config.fetch('coins')).to eq(["BTC", "ETH", "TRX", "DASH"])
   end
 
   it "fails to find a file to read" do

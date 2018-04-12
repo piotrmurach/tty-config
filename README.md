@@ -19,6 +19,12 @@
 
 **TTY::Config** provides app configuration component for [TTY](https://github.com/piotrmurach/tty) toolkit.
 
+## Features
+
+* Read & write configurations in YAML, JSON, TOML and other formats
+* Simple interface for setting and fetching values for deeply nested keys
+* Merging of configuration options from other hashes
+
 ## Installation
 
 Add this line to your application's Gemfile:

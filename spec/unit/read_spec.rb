@@ -31,6 +31,15 @@ RSpec.describe TTY::Config, '#read' do
     expect(config.fetch('settings', 'top')).to eq(50)
   end
 
+  it "reads a json format" do
+    file = fixtures_path('investments.json')
+    config = TTY::Config.new
+
+    config.read(file)
+
+    expect(config.fetch('settings', 'base')).to eq('USD')
+  end
+
   it "fails to find a file to read" do
     config = TTY::Config.new
     expect {

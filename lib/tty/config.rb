@@ -170,7 +170,8 @@ module TTY
     def write(file = find_file, force: false)
       if file && ::File.exist?(file)
         if !force
-          raise WriteError, "File `#{file}` already exists."
+          raise WriteError, "File `#{file}` already exists. " \
+                            "Use :force option to overwrite."
         elsif !::File.writable?(file)
           raise WriteError, "Cannot write to #{file}."
         end
@@ -315,6 +316,10 @@ module TTY
         else
           YAML.load(File.read(file))
         end
+      when '.json'
+        require 'json'
+
+        JSON.parse(File.read(file))
       else
         raise ReadError, "Config file format `#{ext}` not supported."
       end
@@ -326,7 +331,10 @@ module TTY
       case ext
       when '.yaml', '.yml'
         require 'yaml'
-        File.write(file, YAML.dump(data))
+        ::File.write(file, YAML.dump(data))
+      when '.json'
+        require 'json'
+        ::File.write(file, JSON.pretty_generate(data))
       else
         raise WriteError, "Config file format `#{ext}` not supported."
       end

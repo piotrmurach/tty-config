@@ -67,20 +67,20 @@ config.filename = 'investments'
 then configure values for different nested keys with `set` and `append`:
 
 ```ruby
-config.set('settings', 'base', value: 'USD')
-config.set('settings', 'color', value: true)
-config.set('coins', value: ['BTC'])
+config.set(:settings, :base, value: 'USD')
+config.set(:settings, :color, value: true)
+config.set(:coins, value: ['BTC'])
 
-config.append('ETH', 'TRX', 'DASH', to: 'coins')
+config.append('ETH', 'TRX', 'DASH', to: :coins)
 ```
 
 get any value by using `fetch`:
 
 ```ruby
-config.fetch('settings', 'base')
+config.fetch(:settings, :base)
 # => 'USD'
 
-config.fetch('coins')
+config.fetch(:coins)
 # => ['BTC', 'ETH', 'TRX', 'DASH']
 ```
 
@@ -120,22 +120,22 @@ config.read
 To set configuration setting use `set` method. It accepts any number of keys and value by either using `:value` keyword argument or passing a block:
 
 ```ruby
-config.set('foo', value: 2)
-config.set('foo') { 2 }
+config.set(:base, value: 'USD')
+config.set(:base) { 'USD' }
 ```
 
-The block version of specifying a value will mean that the value is evulated every time its being read.
+The block version of specifying a value will mean that the value is evaluated every time its being read.
 
 You can also specify deeply nested configuration settings by passing sequence of keys:
 
 ```ruby
-config.set 'foo', 'bar', 'baz', value: 2
+config.set :settings, :base, value: 'USD'
 ```
 
 is equivalent to:
 
 ```ruby
-config.set 'foo.bar.baz', value: 2
+config.set 'settings.base', value: 'USD'
 ```
 
 ### 2.2 set_if_empty
@@ -143,34 +143,43 @@ config.set 'foo.bar.baz', value: 2
 To set a configuration setting only if it hasn't been set before use `set_if_empty`:
 
 ```ruby
-config.set_if_empty 'foo', value: 2
+config.set_if_empty :base, value: 'USD'
 ```
 
 Similar to `set` it allows you to specify arbitrary sequence of keys followed by a key value or block:
 
 ```ruby
-config.set_if_empty 'foo', 'bar', 'baz', value: 2
+config.set_if_empty :settings, :base, value: 'USD'
 ```
 
 ### 2.3 fetch
 
-To get a configuration setting use `fetch`, which can accept default value either with a `:value` keyword or a block that will be lazy evaluated:
+To get a configuration setting use `fetch`, which can accept default value either with a `:default` keyword or a block that will be lazy evaluated:
 
 ```ruby
-config.fetch('foo', default: 1)
-config.fetch('foo') { 2 }
+config.fetch(:base, default: 'USD')
+config.fetch(:base) { 'USD' }
 ```
 
 Similar to `set` operation, `fetch` allows you to retrieve deeply nested values:
 
 ```ruby
-config.fetch 'foo', 'bar', 'baz'
+config.fetch(:settings, :base) # => USD
 ```
 
 is equivalent to:
 
 ```ruby
-config.fetch 'foo.bar.baz'
+config.fetch('settings.base')
+```
+
+`fetch` has indifferent access so you can mix string and symbol keys, all the following examples retrieve the value:
+
+```ruby
+config.fetch(:settings, :base)
+config.fetch('settings', 'base')
+config.fetch(:settings', 'base')
+config.fetch('settings', :base)
 ```
 
 ### 2.4 merge
@@ -178,15 +187,35 @@ config.fetch 'foo.bar.baz'
 To merge in other configuration settings as hash use `merge`:
 
 ```ruby
-config.set('a', 'b', value: 1)
-config.set('a', 'c', value: 2)
+config.set(:a, :b, value: 1)
+config.set(:a, :c, value: 2)
 
-config.merge({'a' => {'c' => 3, 'd' => 4}})
+config.merge({:a => {:c => 3, d: => 4}})
 
-config.fetch('a', 'c') # => 3
+config.fetch(:a, :c) # => 3
 ```
 
 ### 2.5 append
+
+To append arbitrary number of values to a value under a given key use `append`:
+
+```ruby
+config.set(:coins) { ["BTC"] }
+
+config.append("ETH", "TRX", to: :coins)
+# =>
+# {coins: ["BTC", "ETH", "TRX"]}
+```
+
+You can also append values to deeply nested keys:
+
+```ruby
+config.set(:settings, :bases, value: ["USD"])
+
+config.append("EUR", "GBP", to: [:settings, :bases])
+# =>
+# {settings: {bases: ["USD", "EUR", "GBP"]}}
+```
 
 ### 2.6 remove
 

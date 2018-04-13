@@ -159,7 +159,7 @@ module TTY
         raise ReadError, "Configuration file `#{file}` does not exist!"
       end
 
-      merge(unmarshal(file))
+      merge(self.class.normalize_hash(unmarshal(file)))
     end
 
     # Write current configuration to a file.

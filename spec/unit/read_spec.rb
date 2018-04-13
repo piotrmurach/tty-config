@@ -5,7 +5,7 @@ RSpec.describe TTY::Config, '#read' do
 
     config.read(file)
 
-    expect(config.fetch('settings', 'base')).to eq('USD')
+    expect(config.fetch(:settings, :base)).to eq('USD')
   end
 
   it "searched for a file to read from" do
@@ -15,20 +15,20 @@ RSpec.describe TTY::Config, '#read' do
 
     config.read
 
-    expect(config.fetch('settings', 'base')).to eq('USD')
+    expect(config.fetch(:settings, :base)).to eq('USD')
   end
 
   it "reads from a specified file and merges with defaults" do
     file = fixtures_path('investments.yml')
     config = TTY::Config.new
-    config.set('settings', 'base', value: 'EUR')
-    config.set('settings', 'top', value: 50)
+    config.set(:settings, :base, value: 'EUR')
+    config.set(:settings, :top, value: 50)
 
     config.read(file)
 
-    expect(config.fetch('settings', 'base')).to eq('USD')
-    expect(config.fetch('settings', 'exchange')).to eq('CCCAGG')
-    expect(config.fetch('settings', 'top')).to eq(50)
+    expect(config.fetch(:settings, :base)).to eq('USD')
+    expect(config.fetch(:settings, :exchange)).to eq('CCCAGG')
+    expect(config.fetch(:settings, :top)).to eq(50)
   end
 
   it "reads a json format" do
@@ -37,8 +37,8 @@ RSpec.describe TTY::Config, '#read' do
 
     config.read(file)
 
-    expect(config.fetch('settings', 'base')).to eq('USD')
-    expect(config.fetch('coins')).to eq(["BTC", "ETH", "TRX", "DASH"])
+    expect(config.fetch(:settings, :base)).to eq('USD')
+    expect(config.fetch(:coins)).to eq(["BTC", "ETH", "TRX", "DASH"])
   end
 
   it "reads a toml format" do
@@ -47,8 +47,8 @@ RSpec.describe TTY::Config, '#read' do
 
     config.read(file)
 
-    expect(config.fetch('settings', 'base')).to eq('USD')
-    expect(config.fetch('coins')).to eq(["BTC", "ETH", "TRX", "DASH"])
+    expect(config.fetch(:settings, :base)).to eq('USD')
+    expect(config.fetch(:coins)).to eq(["BTC", "ETH", "TRX", "DASH"])
   end
 
   it "fails to find a file to read" do

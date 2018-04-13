@@ -15,12 +15,13 @@ module TTY
       new(normalize_hash(hash), &block)
     end
 
-    # Convert string keys to symbols
+    # Convert string keys via method
     #
     # @api private
-    def self.normalize_hash(hash)
+    def self.normalize_hash(hash, method = :to_sym)
       hash.reduce({}) do |acc, (key, val)|
-        acc[key.to_sym] = val.is_a?(::Hash) ? normalize_hash(val) : val
+        value = val.is_a?(::Hash) ? normalize_hash(val, method) : val
+        acc[key.public_send(method)] = value
         acc
       end
     end

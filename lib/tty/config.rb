@@ -340,7 +340,7 @@ module TTY
       case ext
       when '.yaml', '.yml'
         require 'yaml'
-        ::File.write(file, YAML.dump(data))
+        ::File.write(file, YAML.dump(self.class.normalize_hash(data, :to_s)))
       when '.json'
         require 'json'
         ::File.write(file, JSON.pretty_generate(data))

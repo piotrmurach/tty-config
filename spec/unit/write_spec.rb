@@ -1,9 +1,9 @@
 RSpec.describe TTY::Config, '#write', type: :cli do
   it "writes configuration to a specified file" do
     config = TTY::Config.new
-    config.set('settings', 'base', value: 'USD')
-    config.set('settings', 'exchange', value: 'CCCAGG')
-    config.set('coins', value: ['BTC', 'TRX', 'DASH'])
+    config.set(:settings, :base, value: 'USD')
+    config.set(:settings, :exchange, value: 'CCCAGG')
+    config.set(:coins, value: ['BTC', 'TRX', 'DASH'])
     file = tmp_path('config.yml')
 
     config.write(file)
@@ -67,9 +67,9 @@ coins:
 
   it "writes json format" do
     config = TTY::Config.new
-    config.set('settings', 'base', value: 'USD')
-    config.set('settings', 'exchange', value: 'CCCAGG')
-    config.set('coins', value: ['BTC', 'TRX', 'DASH'])
+    config.set(:settings, :base, value: 'USD')
+    config.set(:settings, :exchange, value: 'CCCAGG')
+    config.set(:coins, value: ['BTC', 'TRX', 'DASH'])
     file = tmp_path('config.json')
 
     config.write(file)
@@ -91,9 +91,9 @@ EOS
 
   it "writes toml format" do
     config = TTY::Config.new
-    config.set('settings', 'base', value: 'USD')
-    config.set('settings', 'exchange', value: 'CCCAGG')
-    config.set('coins', value: ['BTC', 'TRX', 'DASH'])
+    config.set(:settings, :base, value: 'USD')
+    config.set(:settings, :exchange, value: 'CCCAGG')
+    config.set(:coins, value: ['BTC', 'TRX', 'DASH'])
     file = tmp_path('config.toml')
 
     config.write(file)
@@ -110,7 +110,7 @@ EOS
 
   it "cannot write unknown file format" do
     config = TTY::Config.new
-    config.set('settings', 'base', value: 'USD')
+    config.set(:settings, :base, value: 'USD')
     file = tmp_path('config.txt')
 
     expect {

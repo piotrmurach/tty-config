@@ -241,10 +241,14 @@ module TTY
 
     def convert_to_keys(keys)
       first_key = keys[0]
-      first_key.to_s.include?(key_delim) ? first_key.split(key_delim) : keys
+      if first_key.to_s.include?(key_delim)
+        first_key.split(key_delim)
+      else
+        keys
+      end
     end
 
-    # Fetch value under deeply nested keys
+    # Fetch value under deeply nested keys with indiffernt key access
     #
     # @param [Hash] settings
     #
@@ -253,7 +257,7 @@ module TTY
     # @api private
     def deep_fetch(settings, *keys)
       key, *rest = keys
-      value = settings[key]
+      value = settings[key] || settings[key.to_sym]
       if value.nil? || rest.empty?
         value
       else

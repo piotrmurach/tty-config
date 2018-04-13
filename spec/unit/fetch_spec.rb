@@ -35,4 +35,11 @@ RSpec.describe TTY::Config do
     config.set('foo', 'bar', 'baz') { 2 }
     expect(config.fetch("foo.bar.baz")).to eq(2)
   end
+
+  it "fetches key with indifferent access" do
+    config = TTY::Config.new
+    config.set(:foo, :bar, :baz, value: 2)
+
+    expect(config.fetch('foo', :bar, 'baz')).to eq(2)
+  end
 end

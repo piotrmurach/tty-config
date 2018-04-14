@@ -38,22 +38,32 @@ module TTY
     # @api public
     attr_accessor :filename
 
+    # The name of the configuration file extension
+    # @api public
+    attr_accessor :extname
+
     def initialize(settings = {})
       @location_paths = []
       @settings = settings
       @validators = {}
       @filename = 'config'
-      @ext_type = '.yml'
+      @extname = '.yml'
       @extensions = ['.yaml', '.yml', '.json', '.toml']
       @key_delim = '.'
 
       yield(self) if block_given?
     end
 
+    # Add path to locations to search in
+    #
+    # @api public
     def append_path(path)
       @location_paths << path
     end
 
+    # Insert location path at the begining
+    #
+    # @api public
     def prepend_path(path)
       @location_paths.unshift(path)
     end
@@ -176,11 +186,11 @@ module TTY
         elsif !::File.writable?(file)
           raise WriteError, "Cannot write to #{file}."
         end
-      elsif file
-        marshal(file, @settings)
-      else
-        marshal("#{filename}#{@ext_type}", @settings)
+      elsif file.nil?
+        dir = @location_paths.empty? ? Dir.pwd : @location_paths.first
+        file = ::File.join(dir, "#{filename}#{extname}")
       end
+      marshal(file, @settings)
     end
 
     # Current configuration

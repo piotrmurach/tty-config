@@ -108,6 +108,28 @@ exchange = "CCCAGG"
 EOS
   end
 
+  it "allows to change default file extension" do
+    config = TTY::Config.new
+    config.filename = 'investments'
+    config.extname = '.toml'
+    config.set(:settings, :base, value: 'USD')
+    config.set(:settings, :exchange, value: 'CCCAGG')
+    config.set(:coins, value: ['BTC', 'TRX', 'DASH'])
+
+    config.write
+
+    file = dir_path('investments.toml')
+    expect(::File.read(file)).to eq <<-EOS.chomp
+coins = ["BTC","TRX","DASH"]
+
+[settings]
+base = "USD"
+exchange = "CCCAGG"
+
+EOS
+    FileUtils.rm_rf(file)
+  end
+
   it "cannot write unknown file format" do
     config = TTY::Config.new
     config.set(:settings, :base, value: 'USD')

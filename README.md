@@ -53,12 +53,13 @@ Or install it yourself as:
   * [2.6 append](#26-append)
   * [2.7 remove](#27-remove)
   * [2.8 delete](#28-delete)
-  * [2.9 filename=](#29-filename=)
-  * [2.10 extname=](#210-extname=)
+  * [2.9 filename=](#29-filename)
+  * [2.10 extname=](#210-extname)
   * [2.11 append_path](#211-append_path)
   * [2.12 prepend_path](#212-prepend_path)
   * [2.13 read](#213-read)
   * [2.14 write](#214-write)
+  * [2.15 persisted?](#215-persisted)
 
 ## 1. Usage
 
@@ -368,6 +369,14 @@ To create configuration file regardless whether it exists or not, use `:force` f
 ```ruby
 config.write(force: true)                        # overwrite any found config file
 config.write('./investments.toml', force: true)  # overwrite specific config file
+```
+
+### 2.15 persisted?
+
+To check if a configuration file exists within the configured search paths use `persisted?` method:
+
+```ruby
+config.persisted? # => true
 ```
 
 ## Development

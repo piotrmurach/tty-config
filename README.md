@@ -49,15 +49,16 @@ Or install it yourself as:
   * [2.2 set_if_empty](#22-set_if_empty)
   * [2.3 fetch](#23-fetch)
   * [2.4 merge](#24-merge)
-  * [2.5 append](#25-append)
-  * [2.6 remove](#26-remove)
-  * [2.7 delete](#27-delete)
-  * [2.8 filename=](#28-filename=)
-  * [2.9 extname=](#29-extname=)
-  * [2.10 append_path](#210-append_path)
-  * [2.11 prepend_path](#211-prepend_path)
-  * [2.12 read](#212-read)
-  * [2.13 write](#213-write)
+  * [2.5 coerce](#25-coerce)
+  * [2.6 append](#26-append)
+  * [2.7 remove](#27-remove)
+  * [2.8 delete](#28-delete)
+  * [2.9 filename=](#29-filename=)
+  * [2.10 extname=](#210-extname=)
+  * [2.11 append_path](#211-append_path)
+  * [2.12 prepend_path](#212-prepend_path)
+  * [2.13 read](#213-read)
+  * [2.14 write](#214-write)
 
 ## 1. Usage
 
@@ -199,7 +200,19 @@ config.merge({:a => {:c => 3, d: => 4}})
 config.fetch(:a, :c) # => 3
 ```
 
-### 2.5 append
+### 2.5 coerce
+
+You can initialize configuration based on a hash, with all the keys converted to symbols:
+
+```ruby
+hash = {"settings" => {"base" => "USD", "exchange" => "CCCAGG"}}
+config = TTY::Config.coerce(hash)
+config.to_h
+# =>
+# {settings: {base: "USD", exchange: "CCCAGG"}}
+```
+
+### 2.6 append
 
 To append arbitrary number of values to a value under a given key use `append`:
 
@@ -221,7 +234,7 @@ config.append("EUR", "GBP", to: [:settings, :bases])
 # {settings: {bases: ["USD", "EUR", "GBP"]}}
 ```
 
-### 2.6 remove
+### 2.7 remove
 
 Use `remove` to remove a set of values from a key.
 
@@ -243,7 +256,7 @@ config.remove("TRX", "DASH", from: [:holdings, :coins])
 # ["BTC", "ETH"]
 ```
 
-### 2.7 delete
+### 2.8 delete
 
 To completely delete a value and corresponding key use `delete`:
 
@@ -263,7 +276,7 @@ config.delete(:settings, :base)
 # "USD"
 ```
 
-### 2.8 filename=
+### 2.9 filename=
 
 By default, **TTY::Config** searches for `config` named configuration file. To change this use `filename=` method without the extension name:
 
@@ -273,7 +286,7 @@ config.filename = 'investments'
 
 Then any supported extensions will be search for such as `.yml`, `.json` and `.toml`.
 
-### 2.9 extname=
+### 2.10 extname=
 
 By default '.yml' extension is used to write configuration out to a file but you can change that with `extname=`:
 
@@ -281,7 +294,7 @@ By default '.yml' extension is used to write configuration out to a file but you
 config.extname = '.toml'
 ```
 
-### 2.10 append_path
+### 2.11 append_path
 
 You need to tell the **TTY::Config** where to search for configuration files. To search multiple paths for a configuration file use `append_path` or `prepend_path` methods.
 
@@ -295,7 +308,7 @@ config.append_path(Dir.pwd)   # look in current working directory
 
 None of these paths are required, but you should provide at least one path if you wish to read configuration file.
 
-### 2.11 prepend_path
+### 2.12 prepend_path
 
 The `prepend_path` allows you to add configuration search paths that should be searched first.
 
@@ -304,7 +317,7 @@ config.append_path(Dir.pwd)   # look in current working directory second
 config.prepend_path(Dir.home) # look in user's home directory first
 ```
 
-### 2.12 read
+### 2.13 read
 
 There are two ways for reading configuration files and both use the `read` method.
 
@@ -327,7 +340,7 @@ However, you can also specify directly the file to read without setting up any s
 config.read('./investments.toml')
 ```
 
-### 2.13 write
+### 2.14 write
 
 By default **TTY::Config**, persists configuration file in the current working directory with a `config.yml` name. However, you can change that by specifying the filename and extension type:
 

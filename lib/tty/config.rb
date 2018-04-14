@@ -165,6 +165,15 @@ module TTY
       deep_delete(*keys, @settings)
     end
 
+    # Check if configuration file exists
+    #
+    # @return [Boolean]
+    #
+    # @api public
+    def persisted?
+      !find_file.nil?
+    end
+
     # Find and read a configuration file.
     #
     # If the file doesn't exist or if there is an error loading it

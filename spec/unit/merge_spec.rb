@@ -4,7 +4,7 @@ RSpec.describe TTY::Config, '#merge' do
     config.set(:a, :b, value: 1)
     config.set(:a, :c, value: 2)
 
-    config.merge({a: {c: 3, d: 4}})
+    config.merge({'a' => {'c' => 3, 'd' => 4}})
 
     expect(config.fetch(:a, :b)).to eq(1)
     expect(config.fetch(:a, :c)).to eq(3)

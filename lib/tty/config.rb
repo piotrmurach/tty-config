@@ -102,7 +102,7 @@ module TTY
     #
     # @api public
     def set_if_empty(*keys, value: nil, &block)
-      return unless deep_find(@settings, keys.last).nil?
+      return unless deep_find(@settings, keys.last.to_s).nil?
       block ? set(*keys, &block) : set(*keys, value: value)
     end
 
@@ -192,7 +192,7 @@ module TTY
         raise ReadError, "Configuration file `#{file}` does not exist!"
       end
 
-      merge(self.class.normalize_hash(unmarshal(file)))
+      merge(unmarshal(file))
     end
 
     # Write current configuration to a file.
@@ -219,13 +219,13 @@ module TTY
       marshal(file, @settings)
     end
 
-
     # Current configuration
     #
     # @api public
     def to_hash
       @settings.dup
     end
+    alias to_h to_hash
 
     private
 
@@ -281,7 +281,7 @@ module TTY
       if first_key.to_s.include?(key_delim)
         first_key.split(key_delim)
       else
-        keys
+        keys.map(&:to_s)
       end
     end
 
@@ -294,7 +294,7 @@ module TTY
     # @api private
     def deep_fetch(settings, *keys)
       key, *rest = keys
-      value = settings[key] || settings[key.to_sym]
+      value = settings.fetch(key.to_s, settings[key.to_sym])
       if value.nil? || rest.empty?
         value
       else

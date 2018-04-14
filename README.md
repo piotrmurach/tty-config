@@ -52,8 +52,10 @@ Or install it yourself as:
   * [2.5 append](#25-append)
   * [2.6 remove](#26-remove)
   * [2.7 delete](#27-delete)
-  * [2.8 read](#28-read)
-  * [2.9 write](#29-write)
+  * [2.8 filename=](#28-filename=)
+  * [2.9 append_path/prepend_path](#29-append_pathprepend_path)
+  * [2.10 read](#210-read)
+  * [2.11 write](#211-write)
 
 ## 1. Usage
 
@@ -219,11 +221,66 @@ config.append("EUR", "GBP", to: [:settings, :bases])
 
 ### 2.6 remove
 
+Use `remove` to remove a set of values from a key.
+
+```ruby
+config.set(:coins, value: ["BTC", "TRX", "ETH", "DASH"])
+
+config.remove("TRX", "DASH", from: :coins)
+# =>
+# ["BTC", "ETH"]
+```
+
+If the key is nested the `:from` accepts an array:
+
+```ruby
+config.set(:holdings, :coins, value: ["BTC", "TRX", "ETH", "DASH"])
+
+config.remove("TRX", "DASH", from: [:holdings, :coins])
+# =>
+# ["BTC", "ETH"]
+```
+
 ### 2.7 delete
 
-### 2.8 read
+To completely delete a value and corresponding key use `delete`:
 
-### 2.9 write
+```ruby
+config.set(:base, "USD")
+config.delete(:base)
+# =>
+# "USD"
+```
+
+You can also delete deeply nested keys and their values:
+
+```ruby
+config.set(:settings, :base, "USD")
+config.delete(:settings, :base)
+# =>
+# "USD"
+```
+
+### 2.8 filename
+
+### 2.9 append_path/prepend_path
+
+You need to tell the **TTY::Config** where to search for configuration files. To search multiple paths for a configuration file use `append_path` or `prepend_path` methods.
+
+For example, if you want to search through `/etc` directory first, then user home directory and then current directory do:
+
+```ruby
+config.append_path("/etc/")   # look in /etc directory
+config.append_path(Dir.home)  # look in user's home directory
+config.append_path(Dir.pwd)   # look in current working directory
+```
+
+None of these paths are required, but you should provide at least one path if you wish to read configuration file.
+
+### 2.10 read
+
+
+### 2.11 write
 
 ## Development
 

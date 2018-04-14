@@ -53,9 +53,10 @@ Or install it yourself as:
   * [2.6 remove](#26-remove)
   * [2.7 delete](#27-delete)
   * [2.8 filename=](#28-filename=)
-  * [2.9 append_path/prepend_path](#29-append_pathprepend_path)
-  * [2.10 read](#210-read)
-  * [2.11 write](#211-write)
+  * [2.9 append_path](#29-append_path)
+  * [2.10 prepend_path](#210-prepend_path)
+  * [2.11 read](#211-read)
+  * [2.12 write](#212-write)
 
 ## 1. Usage
 
@@ -261,9 +262,17 @@ config.delete(:settings, :base)
 # "USD"
 ```
 
-### 2.8 filename
+### 2.8 filename=
 
-### 2.9 append_path/prepend_path
+By default, **TTY::Config** searches for `config` named configuration file. To change this use `filename=` method without the extension name:
+
+```ruby
+config.filename = 'investments'
+```
+
+Then any supported extensions will be search for such as `.yml`, `.json` and `.toml`.
+
+### 2.9 append_path
 
 You need to tell the **TTY::Config** where to search for configuration files. To search multiple paths for a configuration file use `append_path` or `prepend_path` methods.
 
@@ -277,10 +286,67 @@ config.append_path(Dir.pwd)   # look in current working directory
 
 None of these paths are required, but you should provide at least one path if you wish to read configuration file.
 
-### 2.10 read
+### 2.10 prepend_path
 
+The `prepend_path` allows you to add configuration search paths that should be searched first.
 
-### 2.11 write
+```ruby
+config.append_path(Dir.pwd)   # look in current working directory second
+config.prepend_path(Dir.home) # look in user's home directory first
+```
+
+### 2.11 read
+
+There are two ways for reading configuration files and both use the `read` method.
+
+First one, searches through provided locations to find configuration file and read it. Therefore, you need to specify at least one search path that contains the configuration file.
+
+```ruby
+config.append_path(Dir.pwd)       # look in current working directory
+config.filename = 'investments'   # file to search for
+```
+
+Find and read the configuration file:
+
+```ruby
+config.read
+```
+
+However, you can also specify directly the file to read without setting up any search paths or filenames:
+
+```ruby
+config.read('./investments.toml')
+```
+
+### 2.12 write
+
+By default **TTY::Config**, persists configuration file in the current working directory with a `config.yml` name. However, you can change that by specifying the filename and extension type:
+
+```ruby
+config.filename = 'investments'
+config.extname = '.toml'
+```
+
+To write current configuration to a file, you can either specified direct location path and filename:
+
+```ruby
+config.write('./investments.toml')
+```
+
+Or, specify location paths to be searched for already existing configuration to overwrite:
+
+```ruby
+config.append_path(Dir.pwd)  # search current working directory
+
+config.write
+```
+
+To create configuration file regardless whether it exists or not, use `:force` flag:
+
+```ruby
+config.write(force: true)                        # overwrite any found config file
+config.write('./investments.toml', force: true)  # overwrite specific config file
+```
 
 ## Development
 

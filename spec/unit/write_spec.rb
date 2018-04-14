@@ -74,6 +74,7 @@ coins:
 
     config.write(file)
 
+    expect(config.extname).to eq('.json')
     expect(::File.read(file)).to eq <<-EOS.chomp
 {
   "settings": {
@@ -89,15 +90,17 @@ coins:
 EOS
   end
 
-  it "writes toml format" do
+  it "writes toml format and assigns default filename and extension" do
     config = TTY::Config.new
     config.set(:settings, :base, value: 'USD')
     config.set(:settings, :exchange, value: 'CCCAGG')
     config.set(:coins, value: ['BTC', 'TRX', 'DASH'])
-    file = tmp_path('config.toml')
+    file = tmp_path('investments.toml')
 
     config.write(file)
 
+    expect(config.filename).to eq('investments')
+    expect(config.extname).to eq('.toml')
     expect(::File.read(file)).to eq <<-EOS.chomp
 coins = ["BTC","TRX","DASH"]
 
@@ -137,7 +140,7 @@ EOS
 
     expect {
       config.write(file)
-    }.to raise_error(TTY::Config::WriteError,
-                    "Config file format `.txt` not supported.")
+    }.to raise_error(TTY::Config::UnsupportedExtError,
+                    "Config file format `.txt` is not supported.")
   end
 end

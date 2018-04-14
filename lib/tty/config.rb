@@ -10,6 +10,8 @@ module TTY
     ReadError = Class.new(StandardError)
     # Error raised when issues writing configuration to a file
     WriteError = Class.new(StandardError)
+    # Erorrr raised when setting unknown file extension
+    UnsupportedExtError = Class.new(StandardError)
 
     def self.coerce(hash, &block)
       new(normalize_hash(hash), &block)
@@ -40,7 +42,7 @@ module TTY
 
     # The name of the configuration file extension
     # @api public
-    attr_accessor :extname
+    attr_reader :extname
 
     def initialize(settings = {})
       @location_paths = []
@@ -52,6 +54,18 @@ module TTY
       @key_delim = '.'
 
       yield(self) if block_given?
+    end
+
+    # Set extension name
+    #
+    # @raise [TTY::Config::UnsupportedExtError]
+    #
+    # api public
+    def extname=(name)
+      unless @extensions.include?(name)
+        raise UnsupportedExtError, "Config file format `#{name}` is not supported."
+      end
+      @extname = name
     end
 
     # Add path to locations to search in
@@ -186,12 +200,16 @@ module TTY
         elsif !::File.writable?(file)
           raise WriteError, "Cannot write to #{file}."
         end
-      elsif file.nil?
-        dir = @location_paths.empty? ? Dir.pwd : @location_paths.first
-        file = ::File.join(dir, "#{filename}#{extname}")
       end
+
+      if file.nil?
+        dir = @location_paths.empty? ? Dir.pwd : @location_paths.first
+        file = ::File.join(dir, "#{filename}#{@extname}")
+      end
+
       marshal(file, @settings)
     end
+
 
     # Current configuration
     #
@@ -321,8 +339,11 @@ module TTY
 
     # @api private
     def unmarshal(file)
-      ext = File.extname(file)
+      ext = ::File.extname(file)
+      self.extname = ext
+      self.filename = ::File.basename(file, ext)
       gem_name = nil
+
       case ext
       when '.yaml', '.yml'
         require 'yaml'
@@ -339,7 +360,7 @@ module TTY
         require 'toml'
         TOML.load(::File.read(file))
       else
-        raise ReadError, "Config file format `#{ext}` not supported."
+        raise ReadError, "Config file format `#{ext}` is not supported."
       end
     rescue LoadError
       puts "Please install `#{gem_name}`"
@@ -350,7 +371,10 @@ module TTY
     # @api private
     def marshal(file, data)
       ext = ::File.extname(file)
+      self.extname = ext
+      self.filename = ::File.basename(file, ext)
       gem_name = nil
+
       case ext
       when '.yaml', '.yml'
         require 'yaml'
@@ -363,7 +387,7 @@ module TTY
         require 'toml'
         ::File.write(file, TOML::Generator.new(data).body)
       else
-        raise WriteError, "Config file format `#{ext}` not supported."
+        raise WriteError, "Config file format `#{ext}` is not supported."
       end
     rescue LoadError
       puts "Please install `#{gem_name}`"

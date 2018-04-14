@@ -37,6 +37,8 @@ RSpec.describe TTY::Config, '#read' do
 
     config.read(file)
 
+    expect(config.filename).to eq('investments')
+    expect(config.extname).to eq('.json')
     expect(config.fetch(:settings, :base)).to eq('USD')
     expect(config.fetch(:coins)).to eq(["BTC", "ETH", "TRX", "DASH"])
   end
@@ -47,6 +49,8 @@ RSpec.describe TTY::Config, '#read' do
 
     config.read(file)
 
+    expect(config.filename).to eq('investments')
+    expect(config.extname).to eq('.toml')
     expect(config.fetch(:settings, :base)).to eq('USD')
     expect(config.fetch(:coins)).to eq(["BTC", "ETH", "TRX", "DASH"])
   end

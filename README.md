@@ -21,7 +21,7 @@
 
 ## Features
 
-* Read & write configurations in YAML, JSON, TOML and other formats
+* Read & write configurations in YAML, JSON, TOML formats
 * Simple interface for setting and fetching values for deeply nested keys
 * Merging of configuration options from other hashes
 
@@ -53,10 +53,11 @@ Or install it yourself as:
   * [2.6 remove](#26-remove)
   * [2.7 delete](#27-delete)
   * [2.8 filename=](#28-filename=)
-  * [2.9 append_path](#29-append_path)
-  * [2.10 prepend_path](#210-prepend_path)
-  * [2.11 read](#211-read)
-  * [2.12 write](#212-write)
+  * [2.9 extname=](#29-extname=)
+  * [2.10 append_path](#210-append_path)
+  * [2.11 prepend_path](#211-prepend_path)
+  * [2.12 read](#212-read)
+  * [2.13 write](#213-write)
 
 ## 1. Usage
 
@@ -272,7 +273,15 @@ config.filename = 'investments'
 
 Then any supported extensions will be search for such as `.yml`, `.json` and `.toml`.
 
-### 2.9 append_path
+### 2.9 extname=
+
+By default '.yml' extension is used to write configuration out to a file but you can change that with `extname=`:
+
+```ruby
+config.extname = '.toml'
+```
+
+### 2.10 append_path
 
 You need to tell the **TTY::Config** where to search for configuration files. To search multiple paths for a configuration file use `append_path` or `prepend_path` methods.
 
@@ -286,7 +295,7 @@ config.append_path(Dir.pwd)   # look in current working directory
 
 None of these paths are required, but you should provide at least one path if you wish to read configuration file.
 
-### 2.10 prepend_path
+### 2.11 prepend_path
 
 The `prepend_path` allows you to add configuration search paths that should be searched first.
 
@@ -295,7 +304,7 @@ config.append_path(Dir.pwd)   # look in current working directory second
 config.prepend_path(Dir.home) # look in user's home directory first
 ```
 
-### 2.11 read
+### 2.12 read
 
 There are two ways for reading configuration files and both use the `read` method.
 
@@ -318,7 +327,7 @@ However, you can also specify directly the file to read without setting up any s
 config.read('./investments.toml')
 ```
 
-### 2.12 write
+### 2.13 write
 
 By default **TTY::Config**, persists configuration file in the current working directory with a `config.yml` name. However, you can change that by specifying the filename and extension type:
 

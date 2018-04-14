@@ -144,6 +144,8 @@ is equivalent to:
 config.set 'settings.base', value: 'USD'
 ```
 
+Internally all configuration settings are stored as string keys for ease of working with configuration files and command line application's inputs.
+
 ### 2.2 set_if_empty
 
 To set a configuration setting only if it hasn't been set before use `set_if_empty`:
@@ -196,10 +198,13 @@ To merge in other configuration settings as hash use `merge`:
 config.set(:a, :b, value: 1)
 config.set(:a, :c, value: 2)
 
-config.merge({:a => {:c => 3, d: => 4}})
+config.merge({'a' => {'c' => 3, 'd' => 4}})
 
 config.fetch(:a, :c) # => 3
+config.fetch(:a, :d) # => 4
 ```
+
+Internally all configuration settings are stored as string keys for ease of working with file values and command line applications inputs.
 
 ### 2.5 coerce
 

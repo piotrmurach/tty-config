@@ -165,6 +165,16 @@ module TTY
       deep_delete(*keys, @settings)
     end
 
+    # @api private
+    def find_file
+      @location_paths.each do |location_path|
+        path = search_in_path(location_path)
+        return path if path
+      end
+      nil
+    end
+    alias source_file find_file
+
     # Check if configuration file exists
     #
     # @return [Boolean]
@@ -324,15 +334,6 @@ module TTY
       elsif !value.nil?
         settings.delete(key)
       end
-    end
-
-    # @api private
-    def find_file
-      @location_paths.each do |location_path|
-        path = search_in_path(location_path)
-        return path if path
-      end
-      nil
     end
 
     # @api private

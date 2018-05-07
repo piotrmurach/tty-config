@@ -292,8 +292,11 @@ module TTY
     end
 
     def assert_either_value_or_block(value, block)
-      return if value.nil? || block.nil?
-      raise ArgumentError, "Can't set both value and block"
+      if value.nil? && block.nil?
+        raise ArgumentError, "Need to set either value or block"
+      elsif !(value.nil? || block.nil?)
+        raise ArgumentError, "Can't set both value and block"
+      end
     end
 
     # Set value under deeply nested keys

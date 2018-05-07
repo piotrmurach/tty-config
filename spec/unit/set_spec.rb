@@ -52,4 +52,11 @@ RSpec.describe TTY::Config, '#set' do
       config.set(:foo, value: :bar) { :baz }
     }.to raise_error(ArgumentError, "Can't set both value and block")
   end
+
+  it "raises an exception when no value or block provided" do
+    config = TTY::Config.new
+    expect {
+      config.set(:foo, :bar, 2)
+    }.to raise_error(ArgumentError, "Need to set either value or block")
+  end
 end

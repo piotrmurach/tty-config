@@ -1,6 +1,6 @@
 # Change log
 
-## [v0.2.0] - 2018-05-xx
+## [v0.2.0] - 2018-05-07
 
 ### Added
 * Add ability to validate values for arbitrarily nested keys
@@ -12,4 +12,5 @@
 
 * Initial implementation and release
 
-[v0.1.0]: https://github.com/piotrmurach/tty-markdown/compare/v0.1.0
+[v0.2.0]: https://github.com/piotrmurach/tty-config/compare/v0.1.0...v0.2.0
+[v0.1.0]: https://github.com/piotrmurach/tty-config/compare/v0.1.0

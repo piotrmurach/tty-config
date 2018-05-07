@@ -12,6 +12,8 @@ module TTY
     WriteError = Class.new(StandardError)
     # Erorrr raised when setting unknown file extension
     UnsupportedExtError = Class.new(StandardError)
+    # Error raised when validation assertion fails
+    ValidationError = Class.new(StandardError)
 
     def self.coerce(hash, &block)
       new(normalize_hash(hash), &block)
@@ -43,6 +45,10 @@ module TTY
     # The name of the configuration file extension
     # @api public
     attr_reader :extname
+
+    # The validations for this configuration
+    # @api public
+    attr_reader :validators
 
     def initialize(settings = {})
       @location_paths = []
@@ -88,10 +94,21 @@ module TTY
     # @api public
     def set(*keys, value: nil, &block)
       assert_either_value_or_block(value, block)
+
       keys = convert_to_keys(keys)
+      key = flatten_keys(keys)
+      value_to_eval = block || value
+
+      if validators.key?(key)
+        if callable_without_params?(value_to_eval)
+          value_to_eval = delay_validation(key, value_to_eval)
+        else
+          assert_valid(key, value)
+        end
+      end
 
       deepest_setting = deep_set(@settings, *keys[0...-1])
-      deepest_setting[keys.last] = block || value
+      deepest_setting[keys.last] = value_to_eval
       deepest_setting[keys.last]
     end
 
@@ -163,6 +180,36 @@ module TTY
     def delete(*keys)
       keys = convert_to_keys(keys)
       deep_delete(*keys, @settings)
+    end
+
+    # Register validation for a nested key
+    #
+    # @api public
+    def validate(*keys, &validator)
+      key = flatten_keys(keys)
+      values = validators[key] || []
+      values << validator
+      validators[key] = values
+    end
+
+    # Check if key passes all registered validations
+    #
+    # @api private
+    def assert_valid(key, value)
+      validators[key].each do |validator|
+        validator.call(key, value)
+      end
+    end
+
+    # Delay key validation
+    #
+    # @api private
+    def delay_validation(key, callback)
+      -> do
+        val = callback.()
+        assert_valid(key, val)
+        val
+      end
     end
 
     # @api private
@@ -292,6 +339,15 @@ module TTY
         first_key.split(key_delim)
       else
         keys.map(&:to_s)
+      end
+    end
+
+    def flatten_keys(keys)
+      first_key = keys[0]
+      if first_key.to_s.include?(key_delim)
+        first_key
+      else
+        keys.join(key_delim)
       end
     end
 

@@ -44,6 +44,7 @@ Or install it yourself as:
 ## Contents
 
 * [1. Usage](#1-usage)
+  * [1.1 app](#11-app)
 * [2. Interface](#2-interface)
   * [2.1 set](#21-set)
   * [2.2 set_if_empty](#22-set_if_empty)
@@ -118,6 +119,28 @@ Finally, read in configuration back again:
 
 ```ruby
 config.read
+```
+
+### 1.1 app
+
+An example of an application configuration:
+
+```ruby
+class App
+  attr_reader :config
+
+  def initialize
+    @config = TTY::Config.new
+    @config.filename = 'investments'
+    @config.extname = '.toml'
+    @config.append_path Dir.pwd
+    @config.append_path Dir.home
+  end
+
+  def self.config
+    @config ||= self.class.new.config
+  end
+end
 ```
 
 ## 2. Interface

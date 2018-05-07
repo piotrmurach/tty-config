@@ -53,13 +53,14 @@ Or install it yourself as:
   * [2.6 append](#26-append)
   * [2.7 remove](#27-remove)
   * [2.8 delete](#28-delete)
-  * [2.9 filename=](#29-filename)
-  * [2.10 extname=](#210-extname)
-  * [2.11 append_path](#211-append_path)
-  * [2.12 prepend_path](#212-prepend_path)
-  * [2.13 read](#213-read)
-  * [2.14 write](#214-write)
-  * [2.15 persisted?](#215-persisted)
+  * [2.9 validate](#29-validate)
+  * [2.10 filename=](#210-filename)
+  * [2.11 extname=](#211-extname)
+  * [2.12 append_path](#212-append_path)
+  * [2.13 prepend_path](#213-prepend_path)
+  * [2.14 read](#214-read)
+  * [2.15 write](#215-write)
+  * [2.16 persisted?](#216-persisted)
 
 ## 1. Usage
 
@@ -282,7 +283,36 @@ config.delete(:settings, :base)
 # "USD"
 ```
 
-### 2.9 filename=
+### 2.9 validate
+
+To ensure consistency of the data, you can validate values being set at arbitrarily deep keys using `validate` method, that takes an arbitrarily nested key as its argument and a validation block.
+
+```ruby
+config.validate(:settings, :base) do |key, value|
+  if value.length != 3
+    raise TTY::Config::ValidationError, "Currency code needs to be 3 chars long."
+  end
+end
+```
+
+You can assign multiple validations for a given key and each of them will be run in the order they were registered when checking a value.
+
+When setting value all the validaitons will be run:
+
+```ruby
+config.set(:settings, :base, value: 'PL')
+# raises TTY::Config::ValidationError, 'Currency code needs to be 3 chars long.'
+```
+
+If the value s provided as a proc or a block then the validation will be delayed until the value is actually read:
+
+```ruby
+config.set(:settings, :base) { 'PL' }
+config.fetch(:settings, :base)
+# raises TTY::Config::ValidationError, 'Currency code needs to be 3 chars long.'
+```
+
+### 2.10 filename=
 
 By default, **TTY::Config** searches for `config` named configuration file. To change this use `filename=` method without the extension name:
 
@@ -292,7 +322,7 @@ config.filename = 'investments'
 
 Then any supported extensions will be search for such as `.yml`, `.json` and `.toml`.
 
-### 2.10 extname=
+### 2.11 extname=
 
 By default '.yml' extension is used to write configuration out to a file but you can change that with `extname=`:
 
@@ -300,7 +330,7 @@ By default '.yml' extension is used to write configuration out to a file but you
 config.extname = '.toml'
 ```
 
-### 2.11 append_path
+### 2.12 append_path
 
 You need to tell the **TTY::Config** where to search for configuration files. To search multiple paths for a configuration file use `append_path` or `prepend_path` methods.
 
@@ -314,7 +344,7 @@ config.append_path(Dir.pwd)   # look in current working directory
 
 None of these paths are required, but you should provide at least one path if you wish to read configuration file.
 
-### 2.12 prepend_path
+### 2.13 prepend_path
 
 The `prepend_path` allows you to add configuration search paths that should be searched first.
 
@@ -323,7 +353,7 @@ config.append_path(Dir.pwd)   # look in current working directory second
 config.prepend_path(Dir.home) # look in user's home directory first
 ```
 
-### 2.13 read
+### 2.14 read
 
 There are two ways for reading configuration files and both use the `read` method.
 
@@ -346,7 +376,7 @@ However, you can also specify directly the file to read without setting up any s
 config.read('./investments.toml')
 ```
 
-### 2.14 write
+### 2.15 write
 
 By default **TTY::Config**, persists configuration file in the current working directory with a `config.yml` name. However, you can change that by specifying the filename and extension type:
 
@@ -376,7 +406,7 @@ config.write(force: true)                        # overwrite any found config fi
 config.write('./investments.toml', force: true)  # overwrite specific config file
 ```
 
-### 2.15 persisted?
+### 2.16 persisted?
 
 To check if a configuration file exists within the configured search paths use `persisted?` method:
 

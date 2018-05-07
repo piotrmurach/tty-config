@@ -19,7 +19,7 @@ require "tty/config"
 module TestHelpers
   module Paths
     def gem_root
-      File.expand_path("#{File.dirname(__FILE__)}/..")
+      File.expand_path(File.join(File.dirname(__FILE__), ".."))
     end
 
     def dir_path(*args)

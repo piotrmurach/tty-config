@@ -28,6 +28,7 @@
 * Read & write configurations in YAML, JSON, TOML formats
 * Simple interface for setting and fetching values for deeply nested keys
 * Merging of configuration options from other hashes
+* Reading values from environment variables
 
 ## Installation
 
@@ -240,7 +241,7 @@ config.fetch(:settings, :base)
 # => USD
 ```
 
-You can also prefix your environment variables. See [env_prefix](#210-env_prefix)
+You can also prefix your environment variables. See [env_prefix](#211-env_prefix)
 
 It's important to recognise that `set_env` doesn't record the value for the environment variables. They are read each time from the `ENV` when `fetch` is called.
 

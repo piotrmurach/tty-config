@@ -50,14 +50,20 @@ module TTY
     # @api public
     attr_reader :validators
 
+    # The prefix used for searching ENV variables
+    # @api public
+    attr_accessor :env_prefix
+
     def initialize(settings = {})
-      @location_paths = []
       @settings = settings
+      @location_paths = []
       @validators = {}
       @filename = 'config'
       @extname = '.yml'
       @extensions = ['.yaml', '.yml', '.json', '.toml']
       @key_delim = '.'
+      @envs = {}
+      @env_prefix = ''
 
       yield(self) if block_given?
     end
@@ -123,6 +129,27 @@ module TTY
       block ? set(*keys, &block) : set(*keys, value: value)
     end
 
+    # Bind a key to ENV variable
+    #
+    # @param [String] key
+    #   the key to bind to in ENV variables
+    #
+    # @api public
+    def set_env(key)
+      env_key = to_env_key(key)
+      @envs[key.to_s.downcase] = env_key
+    end
+
+    # Convert config key to standard ENV var name
+    #
+    # @param [String] key
+    #
+    # @api private
+    def to_env_key(key)
+      env_key = key.to_s.upcase
+      @env_prefix == '' ? env_key : @env_prefix.to_s.upcase + "_" + env_key
+    end
+
     # Fetch value under a composite key
     #
     # @param [Array[String|Symbol]] keys
@@ -132,8 +159,16 @@ module TTY
     # @api public
     def fetch(*keys, default: nil, &block)
       keys = convert_to_keys(keys)
+      env_key = @envs[keys[0].to_s]
+      # first try settings
       value = deep_fetch(@settings, *keys)
+      # then try ENV var
+      if value.nil? && env_key
+        value = ENV[env_key]
+      end
+      # then try default
       value = block || default if value.nil?
+
       while callable_without_params?(value)
         value = value.call
       end

@@ -33,4 +33,46 @@ RSpec.describe TTY::Config, '#set_env' do
     expect(config.fetch(:host)).to eq('localhost')
     expect(config.fetch(:port)).to eq('7727')
   end
+
+  it "allows to set env vars for deeply nested keys" do
+    allow(ENV).to receive(:[]).with('HOST').and_return('localhost')
+
+    config = TTY::Config.new
+    config.set_env(:foo, :bar) { "HOST" }
+
+    expect(config.fetch(:foo, :bar)).to eq('localhost')
+  end
+
+  it "allows to set env vars with prefix for deeply nested keys" do
+    allow(ENV).to receive(:[]).with('MYTOOL_HOST').and_return('localhost')
+
+    config = TTY::Config.new
+    config.env_prefix = 'mytool'
+    config.set_env(:foo, :bar) { "HOST" }
+
+    expect(config.fetch(:foo, :bar)).to eq('localhost')
+  end
+
+  it "allows to set env vars for deeply nested keys as string" do
+    allow(ENV).to receive(:[]).with('HOST').and_return('localhost')
+
+    config = TTY::Config.new
+    config.set_env('foo.bar') { "HOST" }
+
+    expect(config.fetch(:foo, :bar)).to eq('localhost')
+  end
+
+  it "fails if env var is not specified for deeply nested keys as string" do
+    config = TTY::Config.new
+    expect {
+      config.set_env('foo.bar')
+    }.to raise_error(ArgumentError, 'Need to set env var in block')
+  end
+
+  it "fails if env var is not specified for deeply nested keys" do
+    config = TTY::Config.new
+    expect {
+      config.set_env(:foo, :bar)
+    }.to raise_error(ArgumentError, 'Need to set env var in block')
+  end
 end

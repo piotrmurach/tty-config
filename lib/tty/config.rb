@@ -146,12 +146,19 @@ module TTY
 
     # Bind a key to ENV variable
     #
-    # @param [String] key
-    #   the key to bind to in ENV variables
+    # @example
+    #   set_env(:host)
+    #   set_env(:foo, :bar) { 'HOST' }
+    #
+    # @param [Array[String]] keys
+    #   the keys to bind to ENV variables
     #
     # @api public
-    def set_env(key)
-      env_key = to_env_key(key)
+    def set_env(*keys, &block)
+      assert_keys_with_block(convert_to_keys(keys), block)
+      key = flatten_keys(keys)
+      env_key = block.nil? ? key : block.()
+      env_key = to_env_key(env_key)
       @envs[key.to_s.downcase] = env_key
     end
 
@@ -174,7 +181,7 @@ module TTY
     # @api public
     def fetch(*keys, default: nil, &block)
       keys = convert_to_keys(keys)
-      env_key = env_autoload? ? to_env_key(keys[0]) : @envs[keys[0].to_s]
+      env_key = env_autoload? ? to_env_key(keys[0]) : @envs[flatten_keys(keys)]
       # first try settings
       value = deep_fetch(@settings, *keys)
       # then try ENV var
@@ -339,6 +346,12 @@ module TTY
     def callable_without_params?(object)
       object.respond_to?(:call) &&
         (!object.respond_to?(:arity) || object.arity.zero?)
+    end
+
+    def assert_keys_with_block(keys, block)
+      if keys.size > 1 && block.nil?
+        raise ArgumentError, "Need to set env var in block"
+      end
     end
 
     def assert_either_value_or_block(value, block)

@@ -1,3 +1,7 @@
+<div align="center">
+  <a href="https://piotrmurach.github.io/tty" target="_blank"><img width="130" src="https://cdn.rawgit.com/piotrmurach/tty/master/images/tty.png" alt="tty logo" /></a>
+</div>
+
 # TTY::Config [![Gitter](https://badges.gitter.im/Join%20Chat.svg)][gitter]
 
 [![Gem Version](https://badge.fury.io/rb/tty-config.svg)][gem]
@@ -48,20 +52,22 @@ Or install it yourself as:
 * [2. Interface](#2-interface)
   * [2.1 set](#21-set)
   * [2.2 set_if_empty](#22-set_if_empty)
-  * [2.3 fetch](#23-fetch)
-  * [2.4 merge](#24-merge)
-  * [2.5 coerce](#25-coerce)
-  * [2.6 append](#26-append)
-  * [2.7 remove](#27-remove)
-  * [2.8 delete](#28-delete)
-  * [2.9 validate](#29-validate)
-  * [2.10 filename=](#210-filename)
-  * [2.11 extname=](#211-extname)
-  * [2.12 append_path](#212-append_path)
-  * [2.13 prepend_path](#213-prepend_path)
-  * [2.14 read](#214-read)
-  * [2.15 write](#215-write)
-  * [2.16 persisted?](#216-persisted)
+  * [2.3 set_env](#23-set_env)
+  * [2.4 fetch](#24-fetch)
+  * [2.5 merge](#25-merge)
+  * [2.6 coerce](#26-coerce)
+  * [2.7 append](#27-append)
+  * [2.8 remove](#28-remove)
+  * [2.9 delete](#29-delete)
+  * [2.10 validate](#210-validate)
+  * [2.11 env_prefix=](#211-env_prefix)
+  * [2.12 filename=](#211-filename)
+  * [2.13 extname=](#213-extname)
+  * [2.14 append_path](#214-append_path)
+  * [2.15 prepend_path](#215-prepend_path)
+  * [2.16 read](#216-read)
+  * [2.17 write](#217-write)
+  * [2.18 persisted?](#218-persisted)
 
 ## 1. Usage
 
@@ -184,7 +190,61 @@ Similar to `set` it allows you to specify arbitrary sequence of keys followed by
 config.set_if_empty :settings, :base, value: 'USD'
 ```
 
-### 2.3 fetch
+### 2.3 set_env
+
+To read configuration options from environment variables use `set_env`. At minimum it requires a single argument which will match the name of `ENV` variable. The name of this parameter is case insensitive.
+
+Given the following environment variables:
+
+```ruby
+ENV['HOST'] = '192.168.1.17'
+ENV['PORT'] = '7727'
+```
+
+You can make the config aware of the above env variables:
+
+```ruby
+config.set_env(:host)
+config.set_env(:port)
+```
+
+Then you can retrieve values like any other configuration option:
+
+```ruby
+config.fetch(:host)
+# => '192.168.1.17'
+config.fetch(:port)
+# => '7727'
+```
+
+If you want the configuration key name to be different from `ENV` variable name use a block:
+
+```ruby
+config.set_env(:host) { 'HOSTNAME' }
+config.set_env(:host) { :hostname }
+```
+
+You can also configure settings for deeply nested keys:
+
+```ruby
+config.set_env(:settings, :base) { 'CURRENCY' }
+config.set_env(:settings, :base) { :currency }
+config.set_env('settings.base') { 'CURRENCY'}
+config.set_env('settings.base') { :currency}
+```
+
+And asssuming `ENV['CURRENCY']=USD`:
+
+```ruby
+config.fetch(:settings, :base)
+# => USD
+```
+
+You can also prefix your environment variables. See [env_prefix](#210-env_prefix)
+
+It's important to recognise that `set_env` doesn't record the value for the environment variables. They are read each time from the `ENV` when `fetch` is called.
+
+### 2.4 fetch
 
 To get a configuration setting use `fetch`, which can accept default value either with a `:default` keyword or a block that will be lazy evaluated:
 
@@ -214,7 +274,7 @@ config.fetch(:settings', 'base')
 config.fetch('settings', :base)
 ```
 
-### 2.4 merge
+### 2.5 merge
 
 To merge in other configuration settings as hash use `merge`:
 
@@ -230,7 +290,7 @@ config.fetch(:a, :d) # => 4
 
 Internally all configuration settings are stored as string keys for ease of working with file values and command line applications inputs.
 
-### 2.5 coerce
+### 2.6 coerce
 
 You can initialize configuration based on a hash, with all the keys converted to symbols:
 
@@ -242,7 +302,7 @@ config.to_h
 # {settings: {base: "USD", exchange: "CCCAGG"}}
 ```
 
-### 2.6 append
+### 2.7 append
 
 To append arbitrary number of values to a value under a given key use `append`:
 
@@ -264,7 +324,7 @@ config.append("EUR", "GBP", to: [:settings, :bases])
 # {settings: {bases: ["USD", "EUR", "GBP"]}}
 ```
 
-### 2.7 remove
+### 2.8 remove
 
 Use `remove` to remove a set of values from a key.
 
@@ -286,7 +346,7 @@ config.remove("TRX", "DASH", from: [:holdings, :coins])
 # ["BTC", "ETH"]
 ```
 
-### 2.8 delete
+### 2.9 delete
 
 To completely delete a value and corresponding key use `delete`:
 
@@ -306,7 +366,7 @@ config.delete(:settings, :base)
 # "USD"
 ```
 
-### 2.9 validate
+### 2.10 validate
 
 To ensure consistency of the data, you can validate values being set at arbitrarily deep keys using `validate` method, that takes an arbitrarily nested key as its argument and a validation block.
 
@@ -335,7 +395,38 @@ config.fetch(:settings, :base)
 # raises TTY::Config::ValidationError, 'Currency code needs to be 3 chars long.'
 ```
 
-### 2.10 filename=
+### 2.11 env_prefix
+
+Given the following variables:
+
+```ruby
+ENV['MYTOOL_HOST'] = '192.168.1.17'
+ENV['MYTOOL_PORT'] = ' 7727'
+```
+
+You can inform configuration about common prefix using `env_prefix`:
+
+```ruby
+config.env_prefix = 'mytool'
+```
+
+Then set configuration key name to environment variable name:
+
+```ruby
+config.set_env(:host)
+config.set_env(:port)
+```
+
+And finally retrieve the value:
+
+```ruby
+config.fetch(:host) 
+#=> '192.168.1.17'
+config.fetch(:port)
+# => '7727'
+```
+
+### 2.12 filename=
 
 By default, **TTY::Config** searches for `config` named configuration file. To change this use `filename=` method without the extension name:
 
@@ -345,7 +436,7 @@ config.filename = 'investments'
 
 Then any supported extensions will be search for such as `.yml`, `.json` and `.toml`.
 
-### 2.11 extname=
+### 2.13 extname=
 
 By default '.yml' extension is used to write configuration out to a file but you can change that with `extname=`:
 
@@ -353,7 +444,7 @@ By default '.yml' extension is used to write configuration out to a file but you
 config.extname = '.toml'
 ```
 
-### 2.12 append_path
+### 2.14 append_path
 
 You need to tell the **TTY::Config** where to search for configuration files. To search multiple paths for a configuration file use `append_path` or `prepend_path` methods.
 
@@ -367,7 +458,7 @@ config.append_path(Dir.pwd)   # look in current working directory
 
 None of these paths are required, but you should provide at least one path if you wish to read configuration file.
 
-### 2.13 prepend_path
+### 2.15 prepend_path
 
 The `prepend_path` allows you to add configuration search paths that should be searched first.
 
@@ -376,7 +467,7 @@ config.append_path(Dir.pwd)   # look in current working directory second
 config.prepend_path(Dir.home) # look in user's home directory first
 ```
 
-### 2.14 read
+### 2.16 read
 
 There are two ways for reading configuration files and both use the `read` method.
 
@@ -399,7 +490,7 @@ However, you can also specify directly the file to read without setting up any s
 config.read('./investments.toml')
 ```
 
-### 2.15 write
+### 2.17 write
 
 By default **TTY::Config**, persists configuration file in the current working directory with a `config.yml` name. However, you can change that by specifying the filename and extension type:
 
@@ -429,7 +520,7 @@ config.write(force: true)                        # overwrite any found config fi
 config.write('./investments.toml', force: true)  # overwrite specific config file
 ```
 
-### 2.16 persisted?
+### 2.18 persisted?
 
 To check if a configuration file exists within the configured search paths use `persisted?` method:
 

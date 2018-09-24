@@ -64,6 +64,7 @@ module TTY
       @key_delim = '.'
       @envs = {}
       @env_prefix = ''
+      @env_autoload = false
 
       yield(self) if block_given?
     end
@@ -92,6 +93,20 @@ module TTY
     # @api public
     def prepend_path(path)
       @location_paths.unshift(path)
+    end
+
+    # Check if env variables are auto loaded
+    #
+    # @api public
+    def env_autoload?
+      @env_autoload == true
+    end
+
+    # Auto load env variables
+    #
+    # @api public
+    def env_autoload
+      @env_autoload = true
     end
 
     # Set a value for a composite key and overrides any existing keys.
@@ -159,7 +174,7 @@ module TTY
     # @api public
     def fetch(*keys, default: nil, &block)
       keys = convert_to_keys(keys)
-      env_key = @envs[keys[0].to_s]
+      env_key = env_autoload? ? to_env_key(keys[0]) : @envs[keys[0].to_s]
       # first try settings
       value = deep_fetch(@settings, *keys)
       # then try ENV var

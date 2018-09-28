@@ -523,22 +523,26 @@ module TTY
       ext = ::File.extname(file)
       self.extname = ext
       self.filename = ::File.basename(file, ext)
-      gem_name = nil
 
       case ext
       when *EXTENSIONS[:yaml]
-        require 'yaml'
+        load_write_dep('yaml', ext)
         ::File.write(file, YAML.dump(self.class.normalize_hash(data, :to_s)))
       when *EXTENSIONS[:json]
-        require 'json'
+        load_write_dep('json', ext)
         ::File.write(file, JSON.pretty_generate(data))
       when *EXTENSIONS[:toml]
-        gem_name = 'toml'
-        require 'toml'
+        load_write_dep('toml', ext)
         ::File.write(file, TOML::Generator.new(data).body)
       else
         raise WriteError, "Config file format `#{ext}` is not supported."
       end
+    end
+
+    # Try loading write depedency
+    # @api private
+    def load_write_dep(gem_name, ext)
+      require gem_name
     rescue LoadError
       puts "Please install `#{gem_name}`"
       raise ReadError, "Gem `#{gem_name}` is missing. Please install it " \

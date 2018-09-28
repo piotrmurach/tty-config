@@ -30,6 +30,15 @@ module TTY
       end
     end
 
+    # Storage for suppported format & extensions pairs
+    # @api public
+    EXTENSIONS = {
+      yaml: %w(.yaml .yml),
+      json: %w(.json),
+      toml: %w(.toml),
+      ini: %w(.ini .cnf .conf .cfg .cf)
+    }
+
     # A collection of config paths
     # @api public
     attr_reader :location_paths
@@ -60,7 +69,7 @@ module TTY
       @validators = {}
       @filename = 'config'
       @extname = '.yml'
-      @extensions = ['.yaml', '.yml', '.json', '.toml']
+      @extensions = EXTENSIONS.values.reduce([]) { |acc, v| acc.concat(v); acc }
       @key_delim = '.'
       @envs = {}
       @env_prefix = ''
@@ -477,17 +486,17 @@ module TTY
       gem_name = nil
 
       case ext
-      when '.yaml', '.yml'
+      when *EXTENSIONS[:yaml]
         require 'yaml'
         if YAML.respond_to?(:safe_load)
           YAML.safe_load(File.read(file))
         else
           YAML.load(File.read(file))
         end
-      when '.json'
+      when *EXTENSIONS[:json]
         require 'json'
         JSON.parse(File.read(file))
-      when '.toml'
+      when *EXTENSIONS[:toml]
         gem_name = 'toml'
         require 'toml'
         TOML.load(::File.read(file))
@@ -508,13 +517,13 @@ module TTY
       gem_name = nil
 
       case ext
-      when '.yaml', '.yml'
+      when *EXTENSIONS[:yaml]
         require 'yaml'
         ::File.write(file, YAML.dump(self.class.normalize_hash(data, :to_s)))
-      when '.json'
+      when *EXTENSIONS[:json]
         require 'json'
         ::File.write(file, JSON.pretty_generate(data))
-      when '.toml'
+      when *EXTENSIONS[:toml]
         gem_name = 'toml'
         require 'toml'
         ::File.write(file, TOML::Generator.new(data).body)

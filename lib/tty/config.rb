@@ -500,6 +500,11 @@ module TTY
         gem_name = 'toml'
         require 'toml'
         TOML.load(::File.read(file))
+      when *EXTENSIONS[:ini]
+        require 'inifile'
+        ini = IniFile.load(file).to_h
+        global = ini.delete('global')
+        ini.merge!(global)
       else
         raise ReadError, "Config file format `#{ext}` is not supported."
       end

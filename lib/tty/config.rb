@@ -483,31 +483,35 @@ module TTY
       ext = ::File.extname(file)
       self.extname = ext
       self.filename = ::File.basename(file, ext)
-      gem_name = nil
 
       case ext
       when *EXTENSIONS[:yaml]
-        require 'yaml'
+        load_read_dep('yaml', ext)
         if YAML.respond_to?(:safe_load)
           YAML.safe_load(File.read(file))
         else
           YAML.load(File.read(file))
         end
       when *EXTENSIONS[:json]
-        require 'json'
+        load_read_dep('json', ext)
         JSON.parse(File.read(file))
       when *EXTENSIONS[:toml]
-        gem_name = 'toml'
-        require 'toml'
+        load_read_dep('toml', ext)
         TOML.load(::File.read(file))
       when *EXTENSIONS[:ini]
-        require 'inifile'
+        load_read_dep('inifile', ext)
         ini = IniFile.load(file).to_h
         global = ini.delete('global')
         ini.merge!(global)
       else
         raise ReadError, "Config file format `#{ext}` is not supported."
       end
+    end
+
+    # Try loading read dependency
+    # @api private
+    def load_read_dep(gem_name, ext)
+      require gem_name
     rescue LoadError
       puts "Please install `#{gem_name}`"
       raise ReadError, "Gem `#{gem_name}` is missing. Please install it " \

@@ -133,6 +133,27 @@ EOS
     FileUtils.rm_rf(file)
   end
 
+  it "writes ini format and assigns default filename and extension" do
+    config = TTY::Config.new
+    config.set(:settings, :base, value: 'USD')
+    config.set(:settings, :exchange, value: 'CCCAGG')
+    config.set(:coins, value: "BTC,TRX,DASH")
+    file = tmp_path('investments.ini')
+
+    config.write(file)
+
+    expect(config.filename).to eq('investments')
+    expect(config.extname).to eq('.ini')
+    expect(::File.read(file)).to eq <<-EOS.chomp
+coins = BTC,TRX,DASH
+
+[settings]
+base = USD
+exchange = CCCAGG
+
+EOS
+  end
+
   it "cannot write unknown file format" do
     config = TTY::Config.new
     config.set(:settings, :base, value: 'USD')

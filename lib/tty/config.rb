@@ -584,6 +584,8 @@ module TTY
       when *EXTENSIONS[:toml]
         load_write_dep('toml', ext)
         ::File.write(file, TOML::Generator.new(data).body)
+      when *EXTENSIONS[:ini]
+        ::File.write(file, Config.generate(data))
       else
         raise WriteError, "Config file format `#{ext}` is not supported."
       end

@@ -183,4 +183,15 @@ EOS
     }.to raise_error(TTY::Config::UnsupportedExtError,
                     "Config file format `.txt` is not supported.")
   end
+
+  it "fails to load dependency for writing file format" do
+    config = TTY::Config.new
+    file = tmp_path('investments.yml')
+    allow(config).to receive(:require).with('yaml').and_raise(LoadError)
+    stub_const("YAML", double(dump: 'ok'))
+
+    expect {
+      config.write(file)
+    }.to raise_error(TTY::Config::WriteError, "Gem `yaml` is missing. Please install it to read .yml configuration format.")
+  end
 end

@@ -96,4 +96,14 @@ RSpec.describe TTY::Config, '#read' do
     }.to raise_error(TTY::Config::ReadError,
                     "Configuration file `#{file}` does not exist!")
   end
+
+  it "fails to load dependency for reading file format" do
+    config = TTY::Config.new
+    file = fixtures_path('investments.yml')
+    allow(config).to receive(:require).with('yaml').and_raise(LoadError)
+
+    expect {
+      config.read(file)
+    }.to raise_error(TTY::Config::ReadError, "Gem `yaml` is missing. Please install it to read .yml configuration format.")
+  end
 end

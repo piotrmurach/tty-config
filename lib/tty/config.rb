@@ -534,12 +534,12 @@ module TTY
 
     # @api private
     def unmarshal(file, format: :auto)
-      ext = ::File.extname(file)
-      parser = (format == :auto ? ext : ".#{format}")
-      self.extname = ext
-      self.filename = ::File.basename(file, ext)
+      file_ext = ::File.extname(file)
+      ext = (format == :auto ? file_ext : ".#{format}")
+      self.extname  = file_ext
+      self.filename = ::File.basename(file, file_ext)
 
-      case parser
+      case ext
       when *EXTENSIONS[:yaml]
         load_read_dep('yaml', ext)
         if YAML.respond_to?(:safe_load)
@@ -559,18 +559,17 @@ module TTY
         global = ini.delete('global')
         ini.merge!(global)
       else
-        raise ReadError, "Config file format `#{parser}` is not supported."
+        raise ReadError, "Config file format `#{ext}` is not supported."
       end
     end
 
     # Try loading read dependency
     # @api private
-    def load_read_dep(gem_name, ext)
+    def load_read_dep(gem_name, format)
       require gem_name
     rescue LoadError
-      puts "Please install `#{gem_name}`"
       raise ReadError, "Gem `#{gem_name}` is missing. Please install it " \
-                       "to read #{ext} configuration format."
+                       "to read #{format} configuration format."
     end
 
     # Marshal data hash into a configuration file content
@@ -579,12 +578,12 @@ module TTY
     #
     # @api private
     def marshal(file, data, format: :auto)
-      ext = ::File.extname(file)
-      self.extname = ext
-      self.filename = ::File.basename(file, ext)
-      parser = (format == :auto ? ext : ".#{format}")
+      file_ext = ::File.extname(file)
+      ext = (format == :auto ? file_ext : ".#{format}")
+      self.extname  = file_ext
+      self.filename = ::File.basename(file, file_ext)
 
-      case parser
+      case ext
       when *EXTENSIONS[:yaml]
         load_write_dep('yaml', ext)
         YAML.dump(self.class.normalize_hash(data, :to_s))
@@ -597,18 +596,17 @@ module TTY
       when *EXTENSIONS[:ini]
         Config.generate(data)
       else
-        raise WriteError, "Config file format `#{parser}` is not supported."
+        raise WriteError, "Config file format `#{ext}` is not supported."
       end
     end
 
     # Try loading write depedency
     # @api private
-    def load_write_dep(gem_name, ext)
+    def load_write_dep(gem_name, format)
       require gem_name
     rescue LoadError
-      puts "Please install `#{gem_name}`"
-      raise ReadError, "Gem `#{gem_name}` is missing. Please install it " \
-                       "to read #{ext} configuration format."
+      raise WriteError, "Gem `#{gem_name}` is missing. Please install it " \
+                       "to read #{format} configuration format."
     end
   end # Config
 end # TTY

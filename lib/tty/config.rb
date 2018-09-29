@@ -377,7 +377,7 @@ module TTY
     #   the path to a file
     #
     # @api public
-    def write(file = find_file, force: false)
+    def write(file = find_file, force: false, format: :auto)
       if file && ::File.exist?(file)
         if !force
           raise WriteError, "File `#{file}` already exists. " \
@@ -392,7 +392,7 @@ module TTY
         file = ::File.join(dir, "#{filename}#{@extname}")
       end
 
-      content = marshal(file, @settings)
+      content = marshal(file, @settings, format: format)
       ::File.write(file, content)
     end
 
@@ -578,12 +578,13 @@ module TTY
     # @return [String]
     #
     # @api private
-    def marshal(file, data)
+    def marshal(file, data, format: :auto)
       ext = ::File.extname(file)
       self.extname = ext
       self.filename = ::File.basename(file, ext)
+      parser = (format == :auto ? ext : ".#{format}")
 
-      case ext
+      case parser
       when *EXTENSIONS[:yaml]
         load_write_dep('yaml', ext)
         YAML.dump(self.class.normalize_hash(data, :to_s))
@@ -596,7 +597,7 @@ module TTY
       when *EXTENSIONS[:ini]
         Config.generate(data)
       else
-        raise WriteError, "Config file format `#{ext}` is not supported."
+        raise WriteError, "Config file format `#{parser}` is not supported."
       end
     end
 

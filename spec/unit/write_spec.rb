@@ -101,13 +101,12 @@ EOS
 
     expect(config.filename).to eq('investments')
     expect(config.extname).to eq('.toml')
-    expect(::File.read(file)).to eq <<-EOS.chomp
+    expect(::File.read(file)).to eq <<-EOS
 coins = ["BTC","TRX","DASH"]
 
 [settings]
 base = "USD"
 exchange = "CCCAGG"
-
 EOS
   end
 
@@ -122,13 +121,12 @@ EOS
     config.write
 
     file = dir_path('investments.toml')
-    expect(::File.read(file)).to eq <<-EOS.chomp
+    expect(::File.read(file)).to eq <<-EOS
 coins = ["BTC","TRX","DASH"]
 
 [settings]
 base = "USD"
 exchange = "CCCAGG"
-
 EOS
     FileUtils.rm_rf(file)
   end
@@ -144,13 +142,34 @@ EOS
 
     expect(config.filename).to eq('investments')
     expect(config.extname).to eq('.ini')
-    expect(::File.read(file)).to eq <<-EOS.chomp
+    expect(::File.read(file)).to eq <<-EOS
 coins = BTC,TRX,DASH
 
 [settings]
 base = USD
 exchange = CCCAGG
+EOS
+  end
 
+  it "writes custom format with custom file extension" do
+    config = TTY::Config.new
+    config.set(:settings, :base, value: 'USD')
+    config.set(:settings, :exchange, value: 'CCCAGG')
+    config.set(:coins, value: ['BTC', 'TRX', 'DASH'])
+    file = tmp_path('investments.conf')
+
+    config.write(file, format: :yaml)
+    expect(config.filename).to eq('investments')
+    expect(config.extname).to eq('.conf')
+    expect(::File.read(file)).to eq <<-EOS
+---
+settings:
+  base: USD
+  exchange: CCCAGG
+coins:
+- BTC
+- TRX
+- DASH
 EOS
   end
 

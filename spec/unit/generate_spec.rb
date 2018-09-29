@@ -37,4 +37,34 @@ value = 1
 array = 1,2,3
     EOS
   end
+
+  it "generate config content with custom separator" do
+    conf = {
+      'str'   => 'hello',
+      'array' => [1,2,3],
+      'deep_array' =>  [
+        {foo: 1},
+        {bar: 2}
+      ],
+      'section' => {
+        'value' => 1,
+        'array' => [1,2,3]
+      }
+    }
+
+    content = TTY::Config.generate(conf, separator: ':')
+
+    expect(content).to eq <<-EOS
+array : 1,2,3
+str : hello
+
+[deep_array]
+foo : 1
+bar : 2
+
+[section]
+value : 1
+array : 1,2,3
+    EOS
+  end
 end

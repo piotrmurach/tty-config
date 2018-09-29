@@ -38,19 +38,20 @@ module TTY
     #   the file content
     #
     # @api public
-    def self.generate(data)
-      content = []
-      values = {}
+    def self.generate(data, separator: '=')
+      content  = []
+      values   = {}
       sections = {}
 
       data.keys.sort.each do |key|
         val = data[key]
-        if val.kind_of?(NilClass)
+        if val.is_a?(NilClass)
           next
-        elsif val.kind_of?(Hash) || (val.kind_of?(Array) && val.first.kind_of?(Hash))
+        elsif val.is_a?(Hash) ||
+              (val.is_a?(Array) && val.first.is_a?(Hash))
           sections[key] = val
-        elsif val.kind_of?(Array)
-          values[key] = val.join(",")
+        elsif val.is_a?(Array)
+          values[key] = val.join(',')
         else
           values[key] = val
         end
@@ -58,23 +59,23 @@ module TTY
 
       # values
       values.each do |key, val|
-        content << "#{key} = #{val}"
+        content << "#{key} #{separator} #{val}"
       end
       content << "" unless values.empty?
 
       # sections
       sections.each do |section, object|
-        unless object.empty? # only add section if values present
-          content << "[#{section}]"
-          if object.kind_of?(Array)
-            object = object.reduce({}, :merge!)
-          end
-          object.each { |key, val|
-            val = val.join(',') if val.kind_of?(Array)
-            content << "#{key} = #{val}" if val
-          }
-          content << ""
+        next if object.empty? # only add section if values present
+
+        content << "[#{section}]"
+        if object.is_a?(Array)
+          object = object.reduce({}, :merge!)
         end
+        object.each { |key, val|
+          val = val.join(',') if val.is_a?(Array)
+          content << "#{key} #{separator} #{val}" if val
+        }
+        content << ""
       end
       content.join("\n")
     end

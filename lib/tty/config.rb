@@ -30,6 +30,55 @@ module TTY
       end
     end
 
+    # Generate file content based on the data hash
+    #
+    # @param [Hash] data
+    #
+    # @return [String]
+    #   the file content
+    #
+    # @api public
+    def self.generate(data)
+      content = []
+      values = {}
+      sections = {}
+
+      data.keys.sort.each do |key|
+        val = data[key]
+        if val.kind_of?(NilClass)
+          next
+        elsif val.kind_of?(Hash) || (val.kind_of?(Array) && val.first.kind_of?(Hash))
+          sections[key] = val
+        elsif val.kind_of?(Array)
+          values[key] = val.join(",")
+        else
+          values[key] = val
+        end
+      end
+
+      # values
+      values.each do |key, val|
+        content << "#{key} = #{val}"
+      end
+      content << "" unless values.empty?
+
+      # sections
+      sections.each do |section, object|
+        unless object.empty? # only add section if values present
+          content << "[#{section}]"
+          if object.kind_of?(Array)
+            object = object.reduce({}, :merge!)
+          end
+          object.each { |key, val|
+            val = val.join(',') if val.kind_of?(Array)
+            content << "#{key} = #{val}" if val
+          }
+          content << ""
+        end
+      end
+      content.join("\n")
+    end
+
     # Storage for suppported format & extensions pairs
     # @api public
     EXTENSIONS = {

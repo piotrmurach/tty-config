@@ -86,8 +86,8 @@ module TTY
       yaml: %w(.yaml .yml),
       json: %w(.json),
       toml: %w(.toml),
-      ini: %w(.ini .cnf .conf .cfg .cf)
-    }
+      ini:  %w(.ini .cnf .conf .cfg .cf)
+    }.freeze
 
     # A collection of config paths
     # @api public
@@ -134,7 +134,7 @@ module TTY
     #
     # api public
     def extname=(name)
-      unless @extensions.include?(name)
+      unless name.to_s.empty? || @extensions.include?(name)
         raise UnsupportedExtError, "Config file format `#{name}` is not supported."
       end
       @extname = name
@@ -355,17 +355,20 @@ module TTY
     # @param [String] file
     #   the path to the configuration file to be read
     #
+    # @param [String] format
+    #   the format to read configuration in
+    #
     # @raise [TTY::Config::ReadError]
     #
     # @api public
-    def read(file = find_file)
+    def read(file = find_file, format: :auto)
       if file.nil?
         raise ReadError, "No file found to read configuration from!"
       elsif !::File.exist?(file)
         raise ReadError, "Configuration file `#{file}` does not exist!"
       end
 
-      merge(unmarshal(file))
+      merge(unmarshal(file, format: format))
     end
 
     # Write current configuration to a file.
@@ -530,12 +533,13 @@ module TTY
     end
 
     # @api private
-    def unmarshal(file)
+    def unmarshal(file, format: :auto)
       ext = ::File.extname(file)
+      parser = (format == :auto ? ext : ".#{format}")
       self.extname = ext
       self.filename = ::File.basename(file, ext)
 
-      case ext
+      case parser
       when *EXTENSIONS[:yaml]
         load_read_dep('yaml', ext)
         if YAML.respond_to?(:safe_load)
@@ -555,7 +559,7 @@ module TTY
         global = ini.delete('global')
         ini.merge!(global)
       else
-        raise ReadError, "Config file format `#{ext}` is not supported."
+        raise ReadError, "Config file format `#{parser}` is not supported."
       end
     end
 

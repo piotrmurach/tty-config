@@ -67,6 +67,18 @@ RSpec.describe TTY::Config, '#read' do
     expect(config.fetch(:coins).split(',')).to eq(["BTC", "ETH", "TRX", "DASH"])
   end
 
+  it "reads custom format" do
+    file = fixtures_path('.env')
+    config = TTY::Config.new
+
+    config.read(file, format: :ini)
+
+    expect(config.filename).to eq('.env')
+    expect(config.extname).to eq('')
+    expect(config.fetch(:settings, :base)).to eq('USD')
+    expect(config.fetch(:coins).split(',')).to eq(["BTC", "ETH", "TRX", "DASH"])
+  end
+
   it "fails to find a file to read" do
     config = TTY::Config.new
     expect {

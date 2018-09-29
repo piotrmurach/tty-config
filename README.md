@@ -473,6 +473,13 @@ config.prepend_path(Dir.home) # look in user's home directory first
 
 There are two ways for reading configuration files and both use the `read` method. One attempts to guess extension and format of your data, the other allows you to request specific extension and format.
 
+Currently the supported file formats are:
+
+* `yaml` for `.yaml`, `.yml` extensions
+* `json` for `.json` extension
+* `toml` for `.toml` extension
+* `ini`  for `.ini`, `.cnf`, `.conf`, `.cfg`, `.cf extensions`
+
 Calling `read` without any arguments searches through provided locations to find configuration file and reads it. Therefore, you need to specify at least one search path that contains the configuration file together with actual filename. When filename is specifed then all known extensions will be tried.
 
 For example, to find file called investments in the current directory do:
@@ -494,7 +501,9 @@ You can also specify directly the file to read without setting up any search pat
 config.read('./investments.toml')
 ```
 
-In cases where you wish to specify a custom file extension, you will need to also specify the file format to use. For example, if have a file formatted using `YAML` notation with extension called `.config` do:
+In cases where you wish to specify a custom file extension, you will need to also specify the file format to use.
+
+For example, if you have a configuration file formatted using `YAML` notation with extension called `.config`, to read it do:
 
 ```ruby
 config.read('investments.config', format: :yaml)

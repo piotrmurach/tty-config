@@ -124,6 +124,7 @@ module TTY
       @envs = {}
       @env_prefix = ''
       @env_autoload = false
+      @aliases = {}
 
       yield(self) if block_given?
     end
@@ -239,6 +240,10 @@ module TTY
     #
     # @api public
     def fetch(*keys, default: nil, &block)
+      # check alias
+      real_key = @aliases[flatten_keys(keys)]
+      keys = real_key.split(key_delim) if real_key
+
       keys = convert_to_keys(keys)
       env_key = env_autoload? ? to_env_key(keys[0]) : @envs[flatten_keys(keys)]
       # first try settings
@@ -296,6 +301,32 @@ module TTY
     def delete(*keys)
       keys = convert_to_keys(keys)
       deep_delete(*keys, @settings)
+    end
+
+    # Define an alias to a nested key
+    #
+    # @example
+    #   alias_setting(:foo, to: :bar)
+    #
+    # @param [Array[String]] keys
+    #   the alias key
+    #
+    # @api public
+    def alias_setting(*keys, to: nil)
+      flat_setting = flatten_keys(keys)
+      alias_keys = Array(to)
+      alias_key = flatten_keys(alias_keys)
+
+      if alias_key == flat_setting
+        raise ArgumentError, "Alias matches setting key"
+      end
+
+      if fetch(alias_key)
+        raise ArgumentError, "Setting already exists with an alias " \
+                             "'#{alias_keys.map(&:inspect).join(', ')}'"
+      end
+
+      @aliases[alias_key] = flat_setting
     end
 
     # Register validation for a nested key

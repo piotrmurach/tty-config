@@ -389,7 +389,8 @@ module TTY
         file = ::File.join(dir, "#{filename}#{@extname}")
       end
 
-      marshal(file, @settings)
+      content = marshal(file, @settings)
+      ::File.write(file, content)
     end
 
     # Current configuration
@@ -568,6 +569,10 @@ module TTY
                        "to read #{ext} configuration format."
     end
 
+    # Marshal data hash into a configuration file content
+    #
+    # @return [String]
+    #
     # @api private
     def marshal(file, data)
       ext = ::File.extname(file)
@@ -577,15 +582,15 @@ module TTY
       case ext
       when *EXTENSIONS[:yaml]
         load_write_dep('yaml', ext)
-        ::File.write(file, YAML.dump(self.class.normalize_hash(data, :to_s)))
+        YAML.dump(self.class.normalize_hash(data, :to_s))
       when *EXTENSIONS[:json]
         load_write_dep('json', ext)
-        ::File.write(file, JSON.pretty_generate(data))
+        JSON.pretty_generate(data)
       when *EXTENSIONS[:toml]
         load_write_dep('toml', ext)
-        ::File.write(file, TOML::Generator.new(data).body)
+        TOML::Generator.new(data).body
       when *EXTENSIONS[:ini]
-        ::File.write(file, Config.generate(data))
+        Config.generate(data)
       else
         raise WriteError, "Config file format `#{ext}` is not supported."
       end

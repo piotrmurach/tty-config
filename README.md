@@ -25,9 +25,10 @@
 
 ## Features
 
-* Read & write configurations in YAML, JSON, TOML formats
-* Simple interface for setting and fetching values for deeply nested keys
-* Merging of configuration options from other hashes
+* Read & write configurations in YAML, JSON, TOML, INI formats
+* Simple interface for adding and reading settings for deeply nested keys
+* Indifferent access for reading settings
+* Merging of configuration settings from other hashes
 * Reading values from environment variables
 
 ## Installation
@@ -470,9 +471,11 @@ config.prepend_path(Dir.home) # look in user's home directory first
 
 ### 2.16 read
 
-There are two ways for reading configuration files and both use the `read` method.
+There are two ways for reading configuration files and both use the `read` method. One attempts to guess extension and format of your data, the other allows you to request specific extension and format.
 
-First one, searches through provided locations to find configuration file and read it. Therefore, you need to specify at least one search path that contains the configuration file.
+Calling `read` without any arguments searches through provided locations to find configuration file and reads it. Therefore, you need to specify at least one search path that contains the configuration file together with actual filename. When filename is specifed then all known extensions will be tried.
+
+For example, to find file called investments in the current directory do:
 
 ```ruby
 config.append_path(Dir.pwd)       # look in current working directory
@@ -485,10 +488,16 @@ Find and read the configuration file:
 config.read
 ```
 
-However, you can also specify directly the file to read without setting up any search paths or filenames:
+You can also specify directly the file to read without setting up any search paths or filenames. If you specify a configuration with a known file extension, an appropriate format will be guessed, in this instance `TOML`:
 
 ```ruby
 config.read('./investments.toml')
+```
+
+In cases where you wish to specify a custom file extension, you will need to also specify the file format to use. For example, if have a file formatted using `YAML` notation with extension called `.config` do:
+
+```ruby
+config.read('investments.config', format: :yaml)
 ```
 
 ### 2.17 write

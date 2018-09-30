@@ -61,16 +61,17 @@ Or install it yourself as:
   * [2.7 append](#27-append)
   * [2.8 remove](#28-remove)
   * [2.9 delete](#29-delete)
-  * [2.10 validate](#210-validate)
-  * [2.11 env_prefix=](#211-env_prefix=)
-  * [2.12 filename=](#212-filename=)
-  * [2.13 extname=](#213-extname=)
-  * [2.14 append_path](#214-append_path)
-  * [2.15 prepend_path](#215-prepend_path)
-  * [2.16 read](#216-read)
-  * [2.17 write](#217-write)
-  * [2.18 persisted?](#218-persisted)
-  * [2.19 autoload_env](#219-autoload_env)
+  * [2.10 alias_setting](#210-alias_setting)
+  * [2.11 validate](#211-validate)
+  * [2.12 env_prefix=](#212-env_prefix)
+  * [2.13 filename=](#213-filename)
+  * [2.14 extname=](#214-extname)
+  * [2.15 append_path](#215-append_path)
+  * [2.16 prepend_path](#216-prepend_path)
+  * [2.17 read](#217-read)
+  * [2.18 write](#218-write)
+  * [2.19 persisted?](#219-persisted)
+  * [2.20 autoload_env](#220-autoload_env)
 
 ## 1. Usage
 
@@ -243,7 +244,7 @@ config.fetch(:settings, :base)
 # => USD
 ```
 
-You can also prefix your environment variables. See [env_prefix=](#211-env_prefix=)
+You can also prefix your environment variables. See [env_prefix=](#211-env_prefix)
 
 It's important to recognise that `set_env` doesn't record the value for the environment variables. They are read each time from the `ENV` when `fetch` is called.
 
@@ -354,7 +355,7 @@ config.remove("TRX", "DASH", from: [:holdings, :coins])
 To completely delete a value and corresponding key use `delete`:
 
 ```ruby
-config.set(:base, "USD")
+config.set(:base, value: "USD")
 config.delete(:base)
 # =>
 # "USD"
@@ -363,13 +364,58 @@ config.delete(:base)
 You can also delete deeply nested keys and their values:
 
 ```ruby
-config.set(:settings, :base, "USD")
+config.set(:settings, :base, value: "USD")
 config.delete(:settings, :base)
 # =>
 # "USD"
 ```
 
-### 2.10 validate
+### 2.10 alias_setting
+
+In order to alias a configuration setting to another name use `alias_setting`.
+
+For example, given an already existing setting:
+
+```ruby
+config.set(:base, value: 'baz')
+```
+
+You can alias it to another name:
+
+```ruby
+config.alias_setting(:base, to: :currency)
+```
+
+And then access like any other configuration setting:
+
+```ruby
+config.fetch(:currency)
+# => 'USD'
+```
+
+Deep nested configuration options are also supported:
+
+```ruby
+config.set(:settings, :base, value: 'USD')
+```
+
+And then can be aliased like so:
+
+```ruby
+config.alias_setting(:settings, :base, to: [:settings, :currency])
+config.alias_setting('settings.base', to [:settings, :currency])
+```
+
+You can then access the deep nested settings:
+
+```ruby
+config.fetch(:settings, :currency)
+# => 'USD'
+config.fetch('settings.currency')
+# => 'USD'
+```
+
+### 2.11 validate
 
 To ensure consistency of the data, you can validate values being set at arbitrarily deep keys using `validate` method, that takes an arbitrarily nested key as its argument and a validation block.
 
@@ -398,7 +444,7 @@ config.fetch(:settings, :base)
 # raises TTY::Config::ValidationError, 'Currency code needs to be 3 chars long.'
 ```
 
-### 2.11 env_prefix=
+### 2.12 env_prefix=
 
 Given the following variables:
 
@@ -429,7 +475,7 @@ config.fetch(:port)
 # => '7727'
 ```
 
-### 2.12 filename=
+### 2.13 filename=
 
 By default, **TTY::Config** searches for `config` named configuration file. To change this use `filename=` method without the extension name:
 
@@ -439,7 +485,7 @@ config.filename = 'investments'
 
 Then any supported extensions will be search for such as `.yml`, `.json` and `.toml`.
 
-### 2.13 extname=
+### 2.14 extname=
 
 By default '.yml' extension is used to write configuration out to a file but you can change that with `extname=`:
 
@@ -447,7 +493,7 @@ By default '.yml' extension is used to write configuration out to a file but you
 config.extname = '.toml'
 ```
 
-### 2.14 append_path
+### 2.15 append_path
 
 You need to tell the **TTY::Config** where to search for configuration files. To search multiple paths for a configuration file use `append_path` or `prepend_path` methods.
 
@@ -461,7 +507,7 @@ config.append_path(Dir.pwd)   # look in current working directory
 
 None of these paths are required, but you should provide at least one path if you wish to read configuration file.
 
-### 2.15 prepend_path
+### 2.16 prepend_path
 
 The `prepend_path` allows you to add configuration search paths that should be searched first.
 
@@ -470,7 +516,7 @@ config.append_path(Dir.pwd)   # look in current working directory second
 config.prepend_path(Dir.home) # look in user's home directory first
 ```
 
-### 2.16 read
+### 2.17 read
 
 There are two ways for reading configuration files and both use the `read` method. One attempts to guess extension and format of your data, the other allows you to request specific extension and format.
 
@@ -510,7 +556,7 @@ For example, if you have a configuration file formatted using `YAML` notation wi
 config.read('investments.config', format: :yaml)
 ```
 
-### 2.17 write
+### 2.18 write
 
 By default **TTY::Config**, persists configuration file in the current working directory with a `config.yml` name. However, you can change that by specifying the filename and extension type:
 
@@ -540,7 +586,7 @@ config.write(force: true)                        # overwrite any found config fi
 config.write('./investments.toml', force: true)  # overwrite specific config file
 ```
 
-### 2.18 persisted?
+### 2.19 persisted?
 
 To check if a configuration file exists within the configured search paths use `persisted?` method:
 
@@ -548,9 +594,9 @@ To check if a configuration file exists within the configured search paths use `
 config.persisted? # => true
 ```
 
-### 2.19 autoload_env
+### 2.20 autoload_env
 
-The `autload_env` allows you to automatically read environment variables. In most cases you would combine it with [env_prefix=](#211-env_prefix=) to only read a subset of variables. When using `autload_env`, anytime the `fetch` is called a corresponding enviornment variable will be checked.
+The `autload_env` allows you to automatically read environment variables. In most cases you would combine it with [env_prefix=](#211-env_prefix) to only read a subset of variables. When using `autload_env`, anytime the `fetch` is called a corresponding enviornment variable will be checked.
 
 For example, given an evironment variable `MYTOOL_HOST` set to `localhost`:
 

@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-RSpec.describe TTY::Config, '#env_autoload' do
+RSpec.describe TTY::Config, '#autoload_env' do
   it "autoloads env variables" do
     allow(ENV).to receive(:[]).with('HOST').and_return('localhost')
     config = TTY::Config.new
     expect(config.fetch(:host)).to eq(nil)
 
-    config.env_autoload
+    config.autoload_env
 
     expect(config.fetch(:host)).to eq('localhost')
   end
@@ -18,7 +18,7 @@ RSpec.describe TTY::Config, '#env_autoload' do
 
     expect(config.fetch(:host)).to eq(nil)
 
-    config.env_autoload
+    config.autoload_env
 
     expect(config.fetch(:host)).to eq('localhost')
   end
@@ -26,7 +26,7 @@ RSpec.describe TTY::Config, '#env_autoload' do
   it "prioritises set over env vars" do
     allow(ENV).to receive(:[]).with('HOST').and_return('localhost')
     config = TTY::Config.new
-    config.env_autoload
+    config.autoload_env
 
     config.set(:host, value: 'myhost')
 
@@ -37,7 +37,7 @@ RSpec.describe TTY::Config, '#env_autoload' do
     allow(ENV).to receive(:[]).with('PORT').and_return('7727')
     config = TTY::Config.new
 
-    config.env_autoload
+    config.autoload_env
 
     expect(config.fetch(:port, default: '3000')).to eq('7727')
   end
@@ -46,7 +46,7 @@ RSpec.describe TTY::Config, '#env_autoload' do
     allow(ENV).to receive(:[]).with('PORT').and_return('7727')
     config = TTY::Config.new
 
-    config.env_autoload
+    config.autoload_env
 
     expect(config.fetch(:port) {'3000' }).to eq('7727')
   end
@@ -55,7 +55,7 @@ RSpec.describe TTY::Config, '#env_autoload' do
     allow(ENV).to receive(:[]).with('PORT').and_return('7727')
     config = TTY::Config.new(port: '3000')
 
-    config.env_autoload
+    config.autoload_env
 
     expect(config.fetch(:port)).to eq('3000')
   end

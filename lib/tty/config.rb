@@ -123,7 +123,7 @@ module TTY
       @key_delim = '.'
       @envs = {}
       @env_prefix = ''
-      @env_autoload = false
+      @autoload_env = false
       @aliases = {}
 
       yield(self) if block_given?
@@ -158,15 +158,15 @@ module TTY
     # Check if env variables are auto loaded
     #
     # @api public
-    def env_autoload?
-      @env_autoload == true
+    def autoload_env?
+      @autoload_env == true
     end
 
     # Auto load env variables
     #
     # @api public
-    def env_autoload
-      @env_autoload = true
+    def autoload_env
+      @autoload_env = true
     end
 
     # Set a value for a composite key and overrides any existing keys.
@@ -245,7 +245,7 @@ module TTY
       keys = real_key.split(key_delim) if real_key
 
       keys = convert_to_keys(keys)
-      env_key = env_autoload? ? to_env_key(keys[0]) : @envs[flatten_keys(keys)]
+      env_key = autoload_env? ? to_env_key(keys[0]) : @envs[flatten_keys(keys)]
       # first try settings
       value = deep_fetch(@settings, *keys)
       # then try ENV var

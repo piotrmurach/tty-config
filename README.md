@@ -72,6 +72,8 @@ Or install it yourself as:
   * [2.18 write](#218-write)
   * [2.19 persisted?](#219-persisted)
   * [2.20 autoload_env](#220-autoload_env)
+* [3. Examples](#3-examples)
+  * [3.1 Working with env vars](#31-working-with-env-vars)
 
 ## 1. Usage
 
@@ -244,7 +246,7 @@ config.fetch(:settings, :base)
 # => USD
 ```
 
-You can also prefix your environment variables. See [env_prefix=](#211-env_prefix)
+You can also prefix your environment variables. See [env_prefix=](#212-env_prefix)
 
 It's important to recognise that `set_env` doesn't record the value for the environment variables. They are read each time from the `ENV` when `fetch` is called.
 
@@ -596,7 +598,7 @@ config.persisted? # => true
 
 ### 2.20 autoload_env
 
-The `autload_env` allows you to automatically read environment variables. In most cases you would combine it with [env_prefix=](#211-env_prefix) to only read a subset of variables. When using `autload_env`, anytime the `fetch` is called a corresponding enviornment variable will be checked.
+The `autload_env` allows you to automatically read environment variables. In most cases you would combine it with [env_prefix=](#212-env_prefix) to only read a subset of variables. When using `autload_env`, anytime the `fetch` is called a corresponding enviornment variable will be checked.
 
 For example, given an evironment variable `MYTOOL_HOST` set to `localhost`:
 
@@ -616,6 +618,41 @@ You can retrieve value with:
 ```ruby
 config.fetch(:host)
 # => 'localhost'
+```
+
+## 3. Examples
+
+### 3.1 Working with env vars
+
+*TTY::Config* fully supports working with environment variables. For example, there are couple of environment variables that your configuration is interested in, which normally would be set in terminal but for the sake of this example we assign them:
+
+```ruby
+ENV['MYTOOL_HOST'] = '192.168.1.17'
+ENV['MYTOOL_PORT'] = '7727'
+```
+
+Then in order to make your configuration aware of the above, you would use [env_prefix=](#212-env_prefix) and [set_env](#23-set_env):
+
+```ruby
+config.env_prefix = 'mytool'
+config.set_env(:host)
+config.set_env(:port)
+```
+
+or automatically load all prefixed environment variables with [autoload_env](#220-autoload-env):
+
+```ruby
+config.env_prefix = 'mytool'
+config.autoload_env
+```
+
+And then retrieve values with [fetch](#24-fetch):
+
+```ruby
+config.fetch(:host)
+#=> '192.168.1.17'
+config.fetch(:port)
+# => '7727'
 ```
 
 ## Development

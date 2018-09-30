@@ -62,14 +62,15 @@ Or install it yourself as:
   * [2.8 remove](#28-remove)
   * [2.9 delete](#29-delete)
   * [2.10 validate](#210-validate)
-  * [2.11 env_prefix=](#211-env_prefix)
-  * [2.12 filename=](#211-filename)
-  * [2.13 extname=](#213-extname)
+  * [2.11 env_prefix=](#211-env_prefix=)
+  * [2.12 filename=](#212-filename=)
+  * [2.13 extname=](#213-extname=)
   * [2.14 append_path](#214-append_path)
   * [2.15 prepend_path](#215-prepend_path)
   * [2.16 read](#216-read)
   * [2.17 write](#217-write)
   * [2.18 persisted?](#218-persisted)
+  * [2.19 autoload_env](#219-autoload_env)
 
 ## 1. Usage
 
@@ -242,7 +243,7 @@ config.fetch(:settings, :base)
 # => USD
 ```
 
-You can also prefix your environment variables. See [env_prefix](#211-env_prefix)
+You can also prefix your environment variables. See [env_prefix=](#211-env_prefix=)
 
 It's important to recognise that `set_env` doesn't record the value for the environment variables. They are read each time from the `ENV` when `fetch` is called.
 
@@ -397,7 +398,7 @@ config.fetch(:settings, :base)
 # raises TTY::Config::ValidationError, 'Currency code needs to be 3 chars long.'
 ```
 
-### 2.11 env_prefix
+### 2.11 env_prefix=
 
 Given the following variables:
 
@@ -545,6 +546,30 @@ To check if a configuration file exists within the configured search paths use `
 
 ```ruby
 config.persisted? # => true
+```
+
+### 2.19 autoload_env
+
+The `autload_env` allows you to automatically read environment variables. In most cases you would combine it with [env_prefix=](#211-env_prefix=) to only read a subset of variables. When using `autload_env`, anytime the `fetch` is called a corresponding enviornment variable will be checked.
+
+For example, given an evironment variable `MYTOOL_HOST` set to `localhost`:
+
+```ruby
+ENV['MYTOOL_HOST']=localhost
+```
+
+And loading environment variables with a prefix of `MYTOOL`:
+
+```ruby
+config.env_prefix = 'mytool'
+config.autoload_env
+```
+
+You can retrieve value with:
+
+```ruby
+config.fetch(:host)
+# => 'localhost'
 ```
 
 ## Development

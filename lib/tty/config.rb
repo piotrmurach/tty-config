@@ -119,7 +119,7 @@ module TTY
       @validators = {}
       @filename = 'config'
       @extname = '.yml'
-      @extensions = EXTENSIONS.values.reduce([]) { |acc, v| acc.concat(v); acc }
+      @extensions = EXTENSIONS.values.flatten
       @key_delim = '.'
       @envs = {}
       @env_prefix = ''

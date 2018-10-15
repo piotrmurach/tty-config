@@ -12,5 +12,6 @@ RSpec.describe TTY::Config, '#persisted?', type: :cli do
     config.write(tmp_path('investments.yml'))
 
     expect(config.persisted?).to eq(true)
+    expect(config.written?).to eq(true)
   end
 end

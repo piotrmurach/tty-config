@@ -377,6 +377,7 @@ module TTY
     def persisted?
       !find_file.nil?
     end
+    alias written? persisted?
 
     # Find and read a configuration file.
     #

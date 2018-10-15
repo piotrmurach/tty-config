@@ -54,7 +54,7 @@ Or install it yourself as:
 * [2. Interface](#2-interface)
   * [2.1 set](#21-set)
   * [2.2 set_if_empty](#22-set_if_empty)
-  * [2.3 set_env](#23-set_env)
+  * [2.3 set_from_env](#23-set_from_env)
   * [2.4 fetch](#24-fetch)
   * [2.5 merge](#25-merge)
   * [2.6 coerce](#26-coerce)
@@ -196,9 +196,9 @@ Similar to `set` it allows you to specify arbitrary sequence of keys followed by
 config.set_if_empty :settings, :base, value: 'USD'
 ```
 
-### 2.3 set_env
+### 2.3 set_from_env
 
-To read configuration options from environment variables use `set_env`. At minimum it requires a single argument which will match the name of `ENV` variable. The name of this parameter is case insensitive.
+To read configuration options from environment variables use `set_from_env`. At minimum it requires a single argument which will match the name of `ENV` variable. The name of this parameter is case insensitive.
 
 Given the following environment variables:
 
@@ -210,8 +210,8 @@ ENV['PORT'] = '7727'
 You can make the config aware of the above env variables:
 
 ```ruby
-config.set_env(:host)
-config.set_env(:port)
+config.set_from_env(:host)
+config.set_from_env(:port)
 ```
 
 Then you can retrieve values like any other configuration option:
@@ -226,17 +226,17 @@ config.fetch(:port)
 If you want the configuration key name to be different from `ENV` variable name use a block:
 
 ```ruby
-config.set_env(:host) { 'HOSTNAME' }
-config.set_env(:host) { :hostname }
+config.set_from_env(:host) { 'HOSTNAME' }
+config.set_from_env(:host) { :hostname }
 ```
 
 You can also configure settings for deeply nested keys:
 
 ```ruby
-config.set_env(:settings, :base) { 'CURRENCY' }
-config.set_env(:settings, :base) { :currency }
-config.set_env('settings.base') { 'CURRENCY'}
-config.set_env('settings.base') { :currency}
+config.set_from_env(:settings, :base) { 'CURRENCY' }
+config.set_from_env(:settings, :base) { :currency }
+config.set_from_env('settings.base') { 'CURRENCY'}
+config.set_from_env('settings.base') { :currency}
 ```
 
 And asssuming `ENV['CURRENCY']=USD`:
@@ -248,7 +248,7 @@ config.fetch(:settings, :base)
 
 You can also prefix your environment variables. See [env_prefix=](#212-env_prefix)
 
-It's important to recognise that `set_env` doesn't record the value for the environment variables. They are read each time from the `ENV` when `fetch` is called.
+It's important to recognise that `set_from_env` doesn't record the value for the environment variables. They are read each time from the `ENV` when `fetch` is called.
 
 ### 2.4 fetch
 
@@ -464,8 +464,8 @@ config.env_prefix = 'mytool'
 Then set configuration key name to environment variable name:
 
 ```ruby
-config.set_env(:host)
-config.set_env(:port)
+config.set_from_env(:host)
+config.set_from_env(:port)
 ```
 
 And finally retrieve the value:
@@ -631,12 +631,12 @@ ENV['MYTOOL_HOST'] = '192.168.1.17'
 ENV['MYTOOL_PORT'] = '7727'
 ```
 
-Then in order to make your configuration aware of the above, you would use [env_prefix=](#212-env_prefix) and [set_env](#23-set_env):
+Then in order to make your configuration aware of the above, you would use [env_prefix=](#212-env_prefix) and [set_from_env](#23-set_from_env):
 
 ```ruby
 config.env_prefix = 'mytool'
-config.set_env(:host)
-config.set_env(:port)
+config.set_from_env(:host)
+config.set_from_env(:port)
 ```
 
 or automatically load all prefixed environment variables with [autoload_env](#220-autoload-env):

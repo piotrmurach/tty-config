@@ -207,14 +207,14 @@ module TTY
     # Bind a key to ENV variable
     #
     # @example
-    #   set_env(:host)
-    #   set_env(:foo, :bar) { 'HOST' }
+    #   set_from_env(:host)
+    #   set_from_env(:foo, :bar) { 'HOST' }
     #
     # @param [Array[String]] keys
     #   the keys to bind to ENV variables
     #
     # @api public
-    def set_env(*keys, &block)
+    def set_from_env(*keys, &block)
       assert_keys_with_block(convert_to_keys(keys), block)
       key = flatten_keys(keys)
       env_key = block.nil? ? key : block.()

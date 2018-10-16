@@ -61,7 +61,7 @@ module TTY
       values.each do |key, val|
         content << "#{key} #{separator} #{val}"
       end
-      content << "" unless values.empty?
+      content << '' unless values.empty?
 
       # sections
       sections.each do |section, object|
@@ -71,11 +71,11 @@ module TTY
         if object.is_a?(Array)
           object = object.reduce({}, :merge!)
         end
-        object.each { |key, val|
+        object.each do |key, val|
           val = val.join(',') if val.is_a?(Array)
           content << "#{key} #{separator} #{val}" if val
-        }
-        content << ""
+        end
+        content << ''
       end
       content.join("\n")
     end
@@ -232,7 +232,7 @@ module TTY
     # @api private
     def to_env_key(key)
       env_key = key.to_s.upcase
-      @env_prefix == '' ? env_key : @env_prefix.to_s.upcase + "_" + env_key
+      @env_prefix == '' ? env_key : "#{@env_prefix.to_s.upcase}_#{env_key}"
     end
 
     # Fetch value under a composite key
@@ -321,11 +321,11 @@ module TTY
       alias_key = flatten_keys(alias_keys)
 
       if alias_key == flat_setting
-        raise ArgumentError, "Alias matches setting key"
+        raise ArgumentError, 'Alias matches setting key'
       end
 
       if fetch(alias_key)
-        raise ArgumentError, "Setting already exists with an alias " \
+        raise ArgumentError, 'Setting already exists with an alias ' \
                              "'#{alias_keys.map(&:inspect).join(', ')}'"
       end
 
@@ -385,7 +385,7 @@ module TTY
     # @api public
     def read(file = find_file, format: :auto)
       if file.nil?
-        raise ReadError, "No file found to read configuration from!"
+        raise ReadError, 'No file found to read configuration from!'
       elsif !::File.exist?(file)
         raise ReadError, "Configuration file `#{file}` does not exist!"
       end
@@ -403,7 +403,7 @@ module TTY
       if file && ::File.exist?(file)
         if !force
           raise WriteError, "File `#{file}` already exists. " \
-                            "Use :force option to overwrite."
+                            'Use :force option to overwrite.'
         elsif !::File.writable?(file)
           raise WriteError, "Cannot write to #{file}."
         end
@@ -433,7 +433,7 @@ module TTY
     # @api private
     def assert_either_value_or_block(value, block)
       if value.nil? && block.nil?
-        raise ArgumentError, "Need to set either value or block"
+        raise ArgumentError, 'Need to set either value or block'
       elsif !(value.nil? || block.nil?)
         raise ArgumentError, "Can't set both value and block"
       end
@@ -478,7 +478,7 @@ module TTY
 
     def assert_keys_with_block(keys, block)
       if keys.size > 1 && block.nil?
-        raise ArgumentError, "Need to set env var in block"
+        raise ArgumentError, 'Need to set env var in block'
       end
     end
 

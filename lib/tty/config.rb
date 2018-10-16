@@ -116,7 +116,7 @@ module TTY
     # Create a configuration instance
     #
     # @api public
-    def initialize(settings = {})
+    def initialize(**settings)
       @settings = settings
       @location_paths = []
       @validators = {}

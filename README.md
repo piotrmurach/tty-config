@@ -70,7 +70,7 @@ Or install it yourself as:
   * [2.16 prepend_path](#216-prepend_path)
   * [2.17 read](#217-read)
   * [2.18 write](#218-write)
-  * [2.19 persisted?](#219-persisted)
+  * [2.19 exist?](#219-exist)
   * [2.20 autoload_env](#220-autoload_env)
 * [3. Examples](#3-examples)
   * [3.1 Working with env vars](#31-working-with-env-vars)
@@ -588,12 +588,12 @@ config.write(force: true)                        # overwrite any found config fi
 config.write('./investments.toml', force: true)  # overwrite specific config file
 ```
 
-### 2.19 persisted?
+### 2.19 exist?
 
-To check if a configuration file exists within the configured search paths use `persisted?` method:
+To check if a configuration file exists within the configured search paths use `exist?` method:
 
 ```ruby
-config.persisted? # => true
+config.exist? # => true
 ```
 
 ### 2.20 autoload_env

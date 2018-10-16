@@ -122,7 +122,7 @@ module TTY
       @validators = {}
       @filename = 'config'
       @extname = '.yml'
-      @extensions = EXTENSIONS.values.flatten
+      @extensions = EXTENSIONS.values.flatten << ''
       @key_delim = '.'
       @envs = {}
       @env_prefix = ''
@@ -138,7 +138,7 @@ module TTY
     #
     # api public
     def extname=(name)
-      unless name.to_s.empty? || @extensions.include?(name)
+      unless @extensions.include?(name)
         raise UnsupportedExtError, "Config file format `#{name}` is not supported."
       end
       @extname = name
@@ -364,10 +364,10 @@ module TTY
     # @return [Boolean]
     #
     # @api public
-    def persisted?
+    def exist?
       !find_file.nil?
     end
-    alias written? persisted?
+    alias persisted? exist?
 
     # Find and read a configuration file.
     #

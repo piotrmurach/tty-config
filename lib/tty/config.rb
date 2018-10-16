@@ -113,6 +113,9 @@ module TTY
     # @api public
     attr_accessor :env_prefix
 
+    # Create a configuration instance
+    #
+    # @api public
     def initialize(settings = {})
       @settings = settings
       @location_paths = []
@@ -329,7 +332,12 @@ module TTY
       @aliases[alias_key] = flat_setting
     end
 
-    # Register validation for a nested key
+    # Register a validation rule for a nested key
+    #
+    # @param [Array[String]] keys
+    #   a deep nested keys
+    # @param [Proc] validator
+    #   the logic to use to validate given nested key
     #
     # @api public
     def validate(*keys, &validator)
@@ -339,26 +347,8 @@ module TTY
       validators[key] = values
     end
 
-    # Check if key passes all registered validations
+    # Find configuration file matching filename and extension
     #
-    # @api private
-    def assert_valid(key, value)
-      validators[key].each do |validator|
-        validator.call(key, value)
-      end
-    end
-
-    # Delay key validation
-    #
-    # @api private
-    def delay_validation(key, callback)
-      -> do
-        val = callback.()
-        assert_valid(key, val)
-        val
-      end
-    end
-
     # @api private
     def find_file
       @location_paths.each do |location_path|
@@ -438,22 +428,57 @@ module TTY
 
     private
 
-    def callable_without_params?(object)
-      object.respond_to?(:call) &&
-        (!object.respond_to?(:arity) || object.arity.zero?)
-    end
-
-    def assert_keys_with_block(keys, block)
-      if keys.size > 1 && block.nil?
-        raise ArgumentError, "Need to set env var in block"
-      end
-    end
-
+    # Ensure that value is set either through parameter or block
+    #
+    # @api private
     def assert_either_value_or_block(value, block)
       if value.nil? && block.nil?
         raise ArgumentError, "Need to set either value or block"
       elsif !(value.nil? || block.nil?)
         raise ArgumentError, "Can't set both value and block"
+      end
+    end
+
+    # Check if object is a proc with no arguments
+    #
+    # @return [Boolean]
+    #
+    # @api private
+    def callable_without_params?(object)
+      object.respond_to?(:call) &&
+        (!object.respond_to?(:arity) || object.arity.zero?)
+    end
+
+    # Wrap callback in a proc object that includes validation
+    # that will be performed at point when a new proc is invoked.
+    #
+    # @param [String] key
+    # @param [Proc] callback
+    #
+    # @api private
+    def delay_validation(key, callback)
+      -> do
+        val = callback.()
+        assert_valid(key, val)
+        val
+      end
+    end
+
+    # Check if key passes all registered validations for a key
+    #
+    # @param [String] key
+    # @param [Object] value
+    #
+    # @api private
+    def assert_valid(key, value)
+      validators[key].each do |validator|
+        validator.call(key, value)
+      end
+    end
+
+    def assert_keys_with_block(keys, block)
+      if keys.size > 1 && block.nil?
+        raise ArgumentError, "Need to set env var in block"
       end
     end
 

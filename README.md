@@ -74,6 +74,7 @@ Or install it yourself as:
   * [2.20 autoload_env](#220-autoload_env)
 * [3. Examples](#3-examples)
   * [3.1 Working with env vars](#31-working-with-env-vars)
+  * [3.2 Working with optparse](#32-working-with-optparse)
 
 ## 1. Usage
 
@@ -653,6 +654,81 @@ config.fetch(:host)
 #=> '192.168.1.17'
 config.fetch(:port)
 # => '7727'
+```
+
+### 3.2 Working with optparse
+
+This is an example of combining `tty-config` with `optparse` stdlib.
+
+Let's assume you want to create a command line tool that among many options accepts `--host|-h` and `--port|-p` flags. In addition, these flags will take precedence over the options specified in the configuration file.
+
+First, you need to parse the flags and store results away in options hash:
+
+```ruby
+require 'optparse'
+
+options = {}
+
+option_parser = OptionParser.new do |opts|
+  opts.on("-h", "--host HOSTNAME_OR_IP", "Hostname or IP Adress") do |h|
+    options[:host] = h
+  end
+  opts.on("-p", "--port PORT", "Port of application", Integer) do |p|
+    options[:port] = p
+  end
+  opts.on("-c", "--config FILE",
+         "Read config values from file (defaults: ./config.yml, ~/.config.yml") do |c|
+    options[:config_file_path] = c
+  end
+  ...
+end
+
+option_parser.parse!
+```
+
+Then, you craete a configuration instance:
+
+```ruby
+config = TTY::Config.new
+```
+
+And setup config filename:
+
+```ruby
+config_filename = options[:config_file_path] || 'config.yml'
+```
+
+As well as add configuration file locations to search in:
+
+```ruby
+config.append_path Dir.pwd
+config.append_path Dir.home
+```
+
+Once config is initialized, you can read the configuration from a config file:
+
+```ruby
+begin
+  config.read(config_filename)  # by default the 'config.yml' is read
+rescue TTY::Config::ReadError => read_error
+  STDERR.puts "\nNo configuration file found:"
+  STDERR.puts read_error
+end
+```
+
+Then merge options passed as arguments with those stored in a configuration file:
+
+```ruby
+config.merge(options)
+```
+
+Provide optional validation to ensure both host and port are configured:
+
+```ruby
+if !config.fetch(:host) || !config.fetch(:port)
+  STDERR.puts "Host and port have to be specified (call with --help for help)."
+  exit 1
+end
 ```
 
 ## Development

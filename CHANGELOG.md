@@ -3,17 +3,18 @@
 ## [v0.3.0] - 2018-10-xx
 
 ### Added
-* Add #set_env for binding keys to environment variables
+* Add #set_from_env for binding keys to environment variables
 * Add #env_prefix for setting environment variables prefix
 * Add #autoload_env for loading all environment variables
 * Add #generate for generating file content from the settings
-* Add ability to read & write INI file types
 * Add #alias_setting for aliasing settings
+* Add ability to read & write INI file types
 
 ### Changed
 * Change #fetch to read environment variables before defaults
 * Change #fetch to handle aliased settings
 * Change to remove stdout output when dependency cannot be loaded
+* Change to allow for config files without any extension
 
 ## [v0.2.0] - 2018-05-07
 

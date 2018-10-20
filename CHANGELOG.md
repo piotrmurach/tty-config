@@ -1,6 +1,6 @@
 # Change log
 
-## [v0.3.0] - 2018-10-xx
+## [v0.3.0] - 2018-10-20
 
 ### Added
 * Add #set_from_env for binding keys to environment variables

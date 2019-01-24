@@ -600,13 +600,13 @@ module TTY
       when *EXTENSIONS[:yaml]
         load_read_dep('yaml', ext)
         if YAML.respond_to?(:safe_load)
-          YAML.safe_load(File.read(file))
+          YAML.safe_load(::File.read(file))
         else
-          YAML.load(File.read(file))
+          YAML.load(::File.read(file))
         end
       when *EXTENSIONS[:json]
         load_read_dep('json', ext)
-        JSON.parse(File.read(file))
+        JSON.parse(::File.read(file))
       when *EXTENSIONS[:toml]
         load_read_dep('toml', ext)
         TOML.load(::File.read(file))

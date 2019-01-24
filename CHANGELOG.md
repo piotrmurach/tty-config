@@ -1,5 +1,10 @@
 # Change log
 
+## [v0.3.1] - 2019-01-24
+
+### Fixed
+* Fix references to File class constant by Taylor Thurlow (@taylorthurlow)
+
 ## [v0.3.0] - 2018-10-20
 
 ### Added

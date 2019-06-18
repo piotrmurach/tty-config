@@ -270,6 +270,8 @@ module TTY
     #
     # @api public
     def merge(other_settings)
+      return unless other_settings.respond_to?(:to_hash)
+
       @settings = deep_merge(@settings, other_settings)
     end
 

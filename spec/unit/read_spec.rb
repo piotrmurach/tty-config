@@ -1,4 +1,13 @@
 RSpec.describe TTY::Config, '#read' do
+  it "read from an empty file" do
+    file = fixtures_path('empty.yml')
+    config = TTY::Config.new
+
+    config.read(file)
+
+    expect(config.to_hash).to eq({})
+  end
+
   it "reads from a specified file" do
     file = fixtures_path('investments.yml')
     config = TTY::Config.new

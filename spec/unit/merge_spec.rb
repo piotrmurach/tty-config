@@ -10,4 +10,13 @@ RSpec.describe TTY::Config, '#merge' do
     expect(config.fetch(:a, :c)).to eq(3)
     expect(config.fetch(:a, :d)).to eq(4)
   end
+
+  it "only merges hash like objects" do
+    config = TTY::Config.new
+    config.set(:a, :b, value: 1)
+
+    config.merge(Object.new)
+
+    expect(config.to_hash).to match({"a" => {"b" => 1}})
+  end
 end

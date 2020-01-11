@@ -1,5 +1,18 @@
 # Change log
 
+## [v0.4.0] - 2020-01-xx
+
+### Added
+* Add DependencyLoader for a generic interface for loading marshalling dependencies
+* Add Marshallers#Abstract as a generic interface for building marshalling plugins
+* Add MarshallerRegistry for storing all marshallers
+* Add Marshallers to allow configuration of marshallers via #register & #unregister
+
+### Changed
+* Change #initialize to accept hash as settings
+* Change #marshal & #unmarshal to use marshalling plugins
+* Change gemspec to add gemspec and remove test artefacts
+
 ## [v0.3.2] - 2019-06-18
 
 ### Changed
@@ -41,6 +54,7 @@
 
 * Initial implementation and release
 
+[v0.4.0]: https://github.com/piotrmurach/tty-config/compare/v0.3.2...v0.4.0
 [v0.3.2]: https://github.com/piotrmurach/tty-config/compare/v0.3.1...v0.3.2
 [v0.3.1]: https://github.com/piotrmurach/tty-config/compare/v0.3.0...v0.3.1
 [v0.3.0]: https://github.com/piotrmurach/tty-config/compare/v0.2.0...v0.3.0

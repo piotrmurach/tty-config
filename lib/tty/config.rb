@@ -2,8 +2,12 @@
 
 require "pathname"
 
-require_relative "config/dependency_loader"
 require_relative "config/version"
+
+require_relative "config/marshallers/ini_marshaller"
+require_relative "config/marshallers/json_marshaller"
+require_relative "config/marshallers/yaml_marshaller"
+require_relative "config/marshallers/toml_marshaller"
 
 module TTY
   class Config
@@ -603,35 +607,16 @@ module TTY
 
       case ext
       when *EXTENSIONS[:yaml]
-        load_read_dep('yaml', ext)
-        if YAML.respond_to?(:safe_load)
-          YAML.safe_load(::File.read(file))
-        else
-          YAML.load(::File.read(file))
-        end
+        Marshallers::YAMLMarshaller.new.unmarshal(file)
       when *EXTENSIONS[:json]
-        load_read_dep('json', ext)
-        JSON.parse(::File.read(file))
+        Marshallers::YAMLMarshaller.new.unmarshal(file)
       when *EXTENSIONS[:toml]
-        load_read_dep('toml', ext)
-        TOML.load(::File.read(file))
+        Marshallers::TOMLMarshaller.new.unmarshal(file)
       when *EXTENSIONS[:ini]
-        load_read_dep('inifile', ext)
-        ini = IniFile.load(file).to_h
-        global = ini.delete('global')
-        ini.merge!(global)
+        Marshallers::INIMarshaller.new.unmarshal(file)
       else
         raise ReadError, "Config file format `#{ext}` is not supported."
       end
-    end
-
-    # Try loading read dependency
-    # @api private
-    def load_read_dep(gem_name, format)
-      require gem_name
-    rescue LoadError
-      raise ReadError, "Gem `#{gem_name}` is missing. Please install it " \
-                       "to read #{format} configuration format."
     end
 
     # Marshal data hash into a configuration file content
@@ -647,28 +632,16 @@ module TTY
 
       case ext
       when *EXTENSIONS[:yaml]
-        load_write_dep('yaml', ext)
-        YAML.dump(self.class.normalize_hash(data, :to_s))
+        Marshallers::YAMLMarshaller.new.marshal(data)
       when *EXTENSIONS[:json]
-        load_write_dep('json', ext)
-        JSON.pretty_generate(data)
+        Marshallers::JSONMarshaller.new.marshal(data)
       when *EXTENSIONS[:toml]
-        load_write_dep('toml', ext)
-        TOML::Generator.new(data).body
+        Marshallers::TOMLMarshaller.new.marshal(data)
       when *EXTENSIONS[:ini]
-        Config.generate(data)
+        Marshallers::INIMarshaller.new.marshal(data)
       else
         raise WriteError, "Config file format `#{ext}` is not supported."
       end
-    end
-
-    # Try loading write depedency
-    # @api private
-    def load_write_dep(gem_name, format)
-      require gem_name
-    rescue LoadError
-      raise WriteError, "Gem `#{gem_name}` is missing. Please install it " \
-                       "to read #{format} configuration format."
     end
   end # Config
 end # TTY

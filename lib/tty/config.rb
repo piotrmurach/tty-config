@@ -598,6 +598,21 @@ module TTY
       nil
     end
 
+    MARSHALLERS = [
+      Marshallers::YAMLMarshaller,
+      Marshallers::JSONMarshaller,
+      Marshallers::TOMLMarshaller,
+      Marshallers::INIMarshaller
+    ]
+
+    def create_marshaller(ext)
+      marshaller = MARSHALLERS.find { |marsh| marsh.ext.include?(ext) }
+
+      return nil if marshaller.nil?
+
+      marshaller.new
+    end
+
     # @api private
     def unmarshal(file, format: :auto)
       file_ext = ::File.extname(file)
@@ -605,15 +620,8 @@ module TTY
       self.extname  = file_ext
       self.filename = ::File.basename(file, file_ext)
 
-      case ext
-      when *EXTENSIONS[:yaml]
-        Marshallers::YAMLMarshaller.new.unmarshal(file)
-      when *EXTENSIONS[:json]
-        Marshallers::YAMLMarshaller.new.unmarshal(file)
-      when *EXTENSIONS[:toml]
-        Marshallers::TOMLMarshaller.new.unmarshal(file)
-      when *EXTENSIONS[:ini]
-        Marshallers::INIMarshaller.new.unmarshal(file)
+      if marshaller = create_marshaller(ext)
+        marshaller.unmarshal(file)
       else
         raise ReadError, "Config file format `#{ext}` is not supported."
       end
@@ -630,15 +638,8 @@ module TTY
       self.extname  = file_ext
       self.filename = ::File.basename(file, file_ext)
 
-      case ext
-      when *EXTENSIONS[:yaml]
-        Marshallers::YAMLMarshaller.new.marshal(data)
-      when *EXTENSIONS[:json]
-        Marshallers::JSONMarshaller.new.marshal(data)
-      when *EXTENSIONS[:toml]
-        Marshallers::TOMLMarshaller.new.marshal(data)
-      when *EXTENSIONS[:ini]
-        Marshallers::INIMarshaller.new.marshal(data)
+      if marshaller = create_marshaller(ext)
+        marshaller.marshal(data)
       else
         raise WriteError, "Config file format `#{ext}` is not supported."
       end

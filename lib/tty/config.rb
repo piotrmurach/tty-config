@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
-require 'pathname'
+require "pathname"
 
-require_relative 'config/version'
+require_relative "config/dependency_loader"
+require_relative "config/version"
 
 module TTY
   class Config
+    # Error raised when failed to load a dependency
+    DependencyLoadError = Class.new(StandardError)
     # Error raised when key fails validation
     ReadError = Class.new(StandardError)
     # Error raised when issues writing configuration to a file

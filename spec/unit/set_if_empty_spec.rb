@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe TTY::Config, '#set_if_empty' do
   it "sets value for empty" do
     config = TTY::Config.new

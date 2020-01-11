@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe TTY::Config, '#merge' do
   it "merges nested hash" do
     config = TTY::Config.new

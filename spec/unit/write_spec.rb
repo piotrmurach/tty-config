@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe TTY::Config, '#write', type: :cli do
   it "writes configuration to a specified file" do
     config = TTY::Config.new

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe TTY::Config, '#read' do
   it "read from an empty file" do
     file = fixtures_path('empty.yml')

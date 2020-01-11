@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe TTY::Config do
   it "fetches default if no value" do
     config = TTY::Config.new

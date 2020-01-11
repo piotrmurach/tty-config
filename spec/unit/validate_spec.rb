@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+#
 RSpec.describe TTY::Config, '#validate' do
   let(:validation) {
     -> (key, value) do

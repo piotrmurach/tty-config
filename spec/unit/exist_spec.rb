@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe TTY::Config, '#exist?', type: :cli do
   it "checks if configuration file exists" do
     config = TTY::Config.new

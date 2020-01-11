@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe TTY::Config, '#set' do
   it "sets value" do
     config = TTY::Config.new

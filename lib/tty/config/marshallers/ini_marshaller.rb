@@ -9,6 +9,8 @@ module TTY
 
         dependency "inifile"
 
+        extension ".ini", ".cnf", ".conf", ".cfg", ".cf"
+
         def marshal(data, options = {})
           TTY::Config.generate(data)
         end

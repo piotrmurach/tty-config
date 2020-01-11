@@ -9,6 +9,8 @@ module TTY
 
         dependency "yaml"
 
+        extension ".yaml", ".yml"
+
         def marshal(data, options = {})
           YAML.dump(TTY::Config.normalize_hash(data, :to_s))
         end

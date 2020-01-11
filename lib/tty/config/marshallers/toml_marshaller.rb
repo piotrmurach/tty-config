@@ -9,6 +9,8 @@ module TTY
 
         dependency "toml"
 
+        extension ".toml"
+
         def marshal(data, options = {})
           TOML::Generator.new(data).body
         end

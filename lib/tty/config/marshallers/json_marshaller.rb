@@ -9,6 +9,8 @@ module TTY
 
         dependency "json"
 
+        extension ".json"
+
         def marshal(data, options = {})
           JSON.pretty_generate(data)
         end

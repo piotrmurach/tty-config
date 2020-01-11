@@ -9,6 +9,20 @@ module TTY
         # Help marshallers to declare their gem dependency
         extend DependencyLoader
 
+        class << self
+          def ext
+            @ext ||= []
+          end
+
+          def extension(*extensions)
+            if extensions[0].is_a?(Array)
+              @ext = extensions[0]
+            else
+              @ext = extensions
+            end
+          end
+        end
+
         # Marshal data a given format
         def marshal(_data, _options = {})
           raise NotImplementedError

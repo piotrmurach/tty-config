@@ -4,6 +4,7 @@ require "pathname"
 
 require_relative "config/version"
 
+require_relative "config/marshaller_registry"
 require_relative "config/marshallers/ini_marshaller"
 require_relative "config/marshallers/json_marshaller"
 require_relative "config/marshallers/yaml_marshaller"

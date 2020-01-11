@@ -4,7 +4,7 @@ require "pathname"
 
 require_relative "config/version"
 
-require_relative "config/marshaller_registry"
+require_relative "config/marshallers"
 require_relative "config/marshallers/ini_marshaller"
 require_relative "config/marshallers/json_marshaller"
 require_relative "config/marshallers/yaml_marshaller"
@@ -12,6 +12,8 @@ require_relative "config/marshallers/toml_marshaller"
 
 module TTY
   class Config
+    include Marshallers
+
     # Error raised when failed to load a dependency
     DependencyLoadError = Class.new(StandardError)
     # Error raised when key fails validation
@@ -136,6 +138,11 @@ module TTY
       @env_prefix = ''
       @autoload_env = false
       @aliases = {}
+
+      register :yaml, Marshallers::YAMLMarshaller
+      register :json, Marshallers::JSONMarshaller
+      register :toml, Marshallers::TOMLMarshaller
+      register :ini, Marshallers::INIMarshaller
 
       yield(self) if block_given?
     end
@@ -599,15 +606,13 @@ module TTY
       nil
     end
 
-    MARSHALLERS = [
-      Marshallers::YAMLMarshaller,
-      Marshallers::JSONMarshaller,
-      Marshallers::TOMLMarshaller,
-      Marshallers::INIMarshaller
-    ]
-
+    # Crate a marshaller instance based on the extension name
+    #
+    # @return [nil, Marshaller]
+    #
+    # @api private
     def create_marshaller(ext)
-      marshaller = MARSHALLERS.find { |marsh| marsh.ext.include?(ext) }
+      marshaller = marshallers.find { |marsh| marsh.ext.include?(ext) }
 
       return nil if marshaller.nil?
 

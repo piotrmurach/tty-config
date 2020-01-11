@@ -11,14 +11,22 @@ Gem::Specification.new do |spec|
   spec.description   = %q{Define, read and write any Ruby app configurations with a penchant for terminal clients.}
   spec.homepage      = "https://piotrmurach.github.io/tty"
   spec.license       = "MIT"
-  spec.files         = Dir['{lib,spec}/**/*.rb']
-  spec.files        += Dir['{bin,tasks}/*', 'tty-config.gemspec']
-  spec.files        += Dir['README.md', 'CHANGELOG.md', 'LICENSE.txt', 'Rakefile']
+  if spec.respond_to?(:metadata=)
+    spec.metadata = {
+      "allowed_push_host" => "https://rubygems.org",
+      "bug_tracker_uri"   => "https://github.com/piotrmurach/tty-config/issues",
+      "changelog_uri"     => "https://github.com/piotrmurach/tty-config/blob/master/CHANGELOG.md",
+      "documentation_uri" => "https://www.rubydoc.info/gems/tty-config",
+      "homepage_uri"      => spec.homepage,
+      "source_code_uri"   => "https://github.com/piotrmurach/tty-config"
+    }
+  end
+  spec.files         = Dir["lib/**/*.rb", "tty-config.gemspec"]
+  spec.files        += Dir["README.md", "CHANGELOG.md", "LICENSE.txt"]
   spec.bindir        = "exe"
-  spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
+  spec.executables   = []
   spec.require_paths = ["lib"]
-
-  spec.required_ruby_version = '>= 2.0.0'
+  spec.required_ruby_version = ">= 2.0.0"
 
   spec.add_development_dependency "bundler", ">= 1.5"
   spec.add_development_dependency "rake"

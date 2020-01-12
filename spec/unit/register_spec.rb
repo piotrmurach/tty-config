@@ -2,7 +2,7 @@
 
 RSpec.describe TTY::Config, "#register" do
   it "registers a custom marshaller" do
-    Marshaller = Class.new(TTY::Config::Marshallers::Abstract) do
+    stub_const("Marshaller", Class.new(TTY::Config::Marshallers::Abstract) do
       dependency "yaml"
 
       extension ".yml"
@@ -10,7 +10,7 @@ RSpec.describe TTY::Config, "#register" do
       def marshal(data); end
 
       def unmarshal(file); end
-    end
+    end)
 
     config = TTY::Config.new
     expect(config.registered?(:custom)).to eq(false)
@@ -30,4 +30,5 @@ RSpec.describe TTY::Config, "#register" do
 
     expect(config.marshallers).to eq([Marshaller])
   end
+
 end

@@ -14,7 +14,7 @@ RSpec.describe TTY::Config, "#extensions" do
   end
 
   it "includes newly registered extensions" do
-    Marshaller = Class.new(TTY::Config::Marshallers::Abstract) do
+    stub_const("Marshaller", Class.new(TTY::Config::Marshallers::Abstract) do
       dependency "mydep"
 
       extension ".ext"
@@ -22,7 +22,7 @@ RSpec.describe TTY::Config, "#extensions" do
       def marshal(data); end
 
       def unmarshal(file); end
-    end
+    end)
 
     config = TTY::Config.new
 

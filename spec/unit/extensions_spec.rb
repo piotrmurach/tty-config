@@ -9,6 +9,7 @@ RSpec.describe TTY::Config, "#extensions" do
       ".json",
       ".toml",
       ".ini", ".cnf", ".conf", ".cfg", ".cf",
+      ".hcl",
       ""])
   end
 
@@ -32,6 +33,7 @@ RSpec.describe TTY::Config, "#extensions" do
       ".json",
       ".toml",
       ".ini", ".cnf", ".conf", ".cfg", ".cf",
+      ".hcl",
       ".ext",
       ""])
   end

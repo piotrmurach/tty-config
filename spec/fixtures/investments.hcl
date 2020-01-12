@@ -1,0 +1,7 @@
+coins = ["BTC", "ETH", "TRX", "DASH"]
+
+settings {
+  base = "USD"
+  color = true
+  exchange = "CCCAGG"
+}

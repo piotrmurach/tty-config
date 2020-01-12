@@ -22,9 +22,12 @@ RSpec.describe TTY::Config, "#register" do
       TTY::Config::Marshallers::JSONMarshaller,
       TTY::Config::Marshallers::TOMLMarshaller,
       TTY::Config::Marshallers::INIMarshaller,
+      TTY::Config::Marshallers::HCLMarshaller,
       Marshaller])
 
     config.unregister :json
-    config.unregister :yaml, :toml, :ini
+    config.unregister :yaml, :toml, :ini, :hcl
+
+    expect(config.marshallers).to eq([Marshaller])
   end
 end

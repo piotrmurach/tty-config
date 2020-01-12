@@ -153,6 +153,28 @@ exchange = CCCAGG
 EOS
   end
 
+  it "writes hcl format and assigns default filename and extension" do
+    config = TTY::Config.new
+    config.set(:settings, :base, value: 'USD')
+    config.set(:settings, :color, value: true)
+    config.set(:settings, :exchange, value: 'CCCAGG')
+    config.set(:coins, value: %w[BTC TRX DASH])
+    file = tmp_path('investments.hcl')
+
+    config.write(file)
+
+    expect(config.filename).to eq('investments')
+    expect(config.extname).to eq('.hcl')
+    expect(::File.read(file)).to eq <<-EOS.chomp
+settings {
+  base = "USD"
+  color = true
+  exchange = "CCCAGG"
+}
+coins = ["BTC", "TRX", "DASH"]
+EOS
+  end
+
   it "writes custom format with custom file extension" do
     config = TTY::Config.new
     config.set(:settings, :base, value: 'USD')

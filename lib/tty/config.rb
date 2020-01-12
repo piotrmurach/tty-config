@@ -9,6 +9,7 @@ require_relative "config/marshallers/ini_marshaller"
 require_relative "config/marshallers/json_marshaller"
 require_relative "config/marshallers/yaml_marshaller"
 require_relative "config/marshallers/toml_marshaller"
+require_relative "config/marshallers/hcl_marshaller"
 
 module TTY
   class Config
@@ -133,6 +134,7 @@ module TTY
       register :json, Marshallers::JSONMarshaller
       register :toml, Marshallers::TOMLMarshaller
       register :ini, Marshallers::INIMarshaller
+      register :hcl, Marshallers::HCLMarshaller
 
       yield(self) if block_given?
     end

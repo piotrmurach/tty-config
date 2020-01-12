@@ -5,12 +5,18 @@ require_relative "marshaller_registry"
 module TTY
   class Config
     module Marshallers
+      NO_EXT = ""
+
       def marshaller_registry
         @marshaller_registry ||= MarshallerRegistry.new
       end
 
       def marshallers
         marshaller_registry.objects
+      end
+
+      def extensions
+        marshaller_registry.exts << NO_EXT
       end
 
       def registered?(name_or_object)

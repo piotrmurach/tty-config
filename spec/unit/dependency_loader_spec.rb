@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "tty/config/dependency_loader"
+
 RSpec.describe TTY::Config::DependencyLoader do
   it "loads a dependency" do
     stub_const("Marshaller", Class.new do

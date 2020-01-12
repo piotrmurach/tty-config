@@ -90,15 +90,6 @@ module TTY
       content.join("\n")
     end
 
-    # Storage for suppported format & extensions pairs
-    # @api public
-    EXTENSIONS = {
-      yaml: %w(.yaml .yml),
-      json: %w(.json),
-      toml: %w(.toml),
-      ini:  %w(.ini .cnf .conf .cfg .cf)
-    }.freeze
-
     # A collection of config paths
     # @api public
     attr_reader :location_paths
@@ -132,7 +123,6 @@ module TTY
       @validators = {}
       @filename = 'config'
       @extname = '.yml'
-      @extensions = EXTENSIONS.values.flatten << ''
       @key_delim = '.'
       @envs = {}
       @env_prefix = ''
@@ -153,7 +143,7 @@ module TTY
     #
     # api public
     def extname=(name)
-      unless @extensions.include?(name)
+      unless extensions.include?(name)
         raise UnsupportedExtError, "Config file format `#{name}` is not supported."
       end
       @extname = name
@@ -598,7 +588,7 @@ module TTY
     # @api private
     def search_in_path(path)
       path = Pathname.new(path)
-      @extensions.each do |ext|
+      extensions.each do |ext|
         if ::File.exist?(path.join("#{filename}#{ext}").to_s)
           return path.join("#{filename}#{ext}").to_s
         end

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "abstract"
+require_relative "../generator"
 
 module TTY
   class Config
@@ -12,7 +13,7 @@ module TTY
         extension ".ini", ".cnf", ".conf", ".cfg", ".cf"
 
         def marshal(data, options = {})
-          TTY::Config.generate(data)
+          TTY::Config::Generator.generate(data)
         end
 
         def unmarshal(file, options = {})

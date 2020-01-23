@@ -31,4 +31,26 @@ RSpec.describe TTY::Config, "#register" do
     expect(config.marshallers).to eq([Marshaller])
   end
 
+  it "overrides existing marshaller" do
+    stub_const("Marshaller", Class.new(TTY::Config::Marshallers::Abstract) do
+      dependency "mydep"
+
+      extension ".ext"
+
+      def marshal(data); end
+
+      def unmarshal(file); end
+    end)
+
+    config = TTY::Config.new
+    config.register :yaml, Marshaller
+
+    expect(config.marshallers).to eq([
+      Marshaller,
+      TTY::Config::Marshallers::JSONMarshaller,
+      TTY::Config::Marshallers::TOMLMarshaller,
+      TTY::Config::Marshallers::INIMarshaller,
+      TTY::Config::Marshallers::HCLMarshaller
+    ])
+  end
 end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe TTY::Config, '#generate' do
+RSpec.describe TTY::Config::Generator, '#generate' do
   it "generate config content" do
     conf = {
       'int'   => 1,
@@ -20,7 +20,7 @@ RSpec.describe TTY::Config, '#generate' do
       'nil'   => nil,
     }
 
-    content = TTY::Config.generate(conf)
+    content = TTY::Config::Generator.generate(conf)
 
     expect(content).to eq <<-EOS
 array = 1,2,3
@@ -52,7 +52,7 @@ array = 1,2,3
       }
     }
 
-    content = TTY::Config.generate(conf, separator: ':')
+    content = TTY::Config::Generator.generate(conf, separator: ':')
 
     expect(content).to eq <<-EOS
 array : 1,2,3

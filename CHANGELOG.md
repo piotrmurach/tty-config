@@ -1,17 +1,18 @@
 # Change log
 
-## [v0.4.0] - 2020-01-xx
+## [v0.4.0] - 2020-01-25
 
 ### Added
 * Add DependencyLoader for a generic interface for loading marshalling dependencies
-* Add Marshallers#Abstract as a generic interface for building marshalling plugins
+* Add Marshaller as a generic interface for building marshalling plugins
 * Add MarshallerRegistry for storing all marshallers
-* Add Marshallers to allow configuration of marshallers via #register & #unregister
+* Add Marshallers to allow configuration of marshallers via #register_marshaller
+  & #unregister_marshaller
 
 ### Changed
 * Change #initialize to accept hash as settings
 * Change #marshal & #unmarshal to use marshalling plugins
-* Change gemspec to add gemspec and remove test artefacts
+* Change gemspec to add metadata and remove test artefacts
 
 ## [v0.3.2] - 2019-06-18
 

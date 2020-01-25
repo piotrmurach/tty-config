@@ -14,9 +14,8 @@ RSpec.describe TTY::Config do
     store = YAML::Store.new(store_file)
 
     expect {
-      config.read(config_file) if config.exist?
       config.set(:foo, value: "bar")
-      config.write
+      config.write(config_file, force: true)
     }.to perform_slower_than {
       store.transaction { store[:foo] = "bar" }
     }.at_most(1.5).times

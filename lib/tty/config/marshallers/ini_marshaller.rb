@@ -12,12 +12,12 @@ module TTY
 
         extension ".ini", ".cnf", ".conf", ".cfg", ".cf"
 
-        def marshal(data, options = {})
-          TTY::Config::Generator.generate(data)
+        def marshal(object)
+          TTY::Config::Generator.generate(object)
         end
 
-        def unmarshal(file, options = {})
-          ini = IniFile.load(file).to_h
+        def unmarshal(content)
+          ini = IniFile.new(content: content).to_h
           global = ini.delete('global')
           ini.merge!(global)
         end

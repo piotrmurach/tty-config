@@ -11,12 +11,12 @@ module TTY
 
         extension ".toml"
 
-        def marshal(data, options = {})
+        def marshal(data)
           TOML::Generator.new(data).body
         end
 
-        def unmarshal(file, options = {})
-          TOML.load(::File.read(file))
+        def unmarshal(content)
+          TOML::Parser.new(content).parsed
         end
       end # TOMLMarshaller
     end # Marshallers

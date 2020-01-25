@@ -348,7 +348,13 @@ module TTY
         raise ReadError, "Configuration file `#{file}` does not exist!"
       end
 
-      merge(unmarshal(file, format: format))
+      file_ext = ::File.extname(file)
+      ext = (format == :auto ? file_ext : ".#{format}")
+      self.extname  = file_ext
+      self.filename = ::File.basename(file, file_ext)
+
+      content = ::File.read(file)
+      merge(unmarshal(content, ext: ext))
     end
 
     # Write current configuration to a file.
@@ -372,7 +378,12 @@ module TTY
         file = ::File.join(dir, "#{filename}#{@extname}")
       end
 
-      content = marshal(file, @settings, format: format)
+      file_ext = ::File.extname(file)
+      ext = (format == :auto ? file_ext : ".#{format}")
+      self.extname  = file_ext
+      self.filename = ::File.basename(file, file_ext)
+
+      content = marshal(@settings, ext: ext)
       ::File.write(file, content)
     end
 
@@ -561,32 +572,24 @@ module TTY
     end
 
     # @api private
-    def unmarshal(file, format: :auto)
-      file_ext = ::File.extname(file)
-      ext = (format == :auto ? file_ext : ".#{format}")
-      self.extname  = file_ext
-      self.filename = ::File.basename(file, file_ext)
-
+    def unmarshal(content, ext: nil)
+      ext ||= extname
       if marshaller = create_marshaller(ext)
-        marshaller.unmarshal(file)
+        marshaller.unmarshal(content)
       else
         raise ReadError, "Config file format `#{ext}` is not supported."
       end
     end
 
-    # Marshal data hash into a configuration file content
+    # Marshal hash object into a configuration file content
     #
     # @return [String]
     #
     # @api private
-    def marshal(file, data, format: :auto)
-      file_ext = ::File.extname(file)
-      ext = (format == :auto ? file_ext : ".#{format}")
-      self.extname  = file_ext
-      self.filename = ::File.basename(file, file_ext)
-
+    def marshal(object, ext: nil)
+      ext ||= extname
       if marshaller = create_marshaller(ext)
-        marshaller.marshal(data)
+        marshaller.marshal(object)
       else
         raise WriteError, "Config file format `#{ext}` is not supported."
       end

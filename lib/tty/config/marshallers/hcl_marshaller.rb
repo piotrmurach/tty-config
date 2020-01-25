@@ -11,12 +11,12 @@ module TTY
 
         extension ".hcl"
 
-        def marshal(data, options = {})
-          Rhcl.dump(data)
+        def marshal(object)
+          Rhcl.dump(object)
         end
 
-        def unmarshal(file, options = {})
-          Rhcl.parse(::File.read(file))
+        def unmarshal(content)
+          Rhcl.parse(content)
         end
       end # HCLMarshaller
     end # Marshallers

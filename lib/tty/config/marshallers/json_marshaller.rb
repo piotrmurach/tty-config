@@ -11,12 +11,12 @@ module TTY
 
         extension ".json"
 
-        def marshal(data, options = {})
-          JSON.pretty_generate(data)
+        def marshal(object)
+          JSON.pretty_generate(object)
         end
 
-        def unmarshal(file, options = {})
-          JSON.parse(::File.read(file))
+        def unmarshal(content)
+          JSON.parse(content)
         end
       end # JSONMarshaller
     end # Marshallers

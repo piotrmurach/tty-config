@@ -79,11 +79,11 @@ module TTY
       @autoload_env = false
       @aliases = {}
 
-      register :yaml, Marshallers::YAMLMarshaller
-      register :json, Marshallers::JSONMarshaller
-      register :toml, Marshallers::TOMLMarshaller
-      register :ini, Marshallers::INIMarshaller
-      register :hcl, Marshallers::HCLMarshaller
+      register_marshaller :yaml, Marshallers::YAMLMarshaller
+      register_marshaller :json, Marshallers::JSONMarshaller
+      register_marshaller :toml, Marshallers::TOMLMarshaller
+      register_marshaller :ini, Marshallers::INIMarshaller
+      register_marshaller :hcl, Marshallers::HCLMarshaller
 
       yield(self) if block_given?
     end

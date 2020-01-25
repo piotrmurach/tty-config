@@ -19,15 +19,15 @@ module TTY
         marshaller_registry.exts << NO_EXT
       end
 
-      def registered?(name_or_object)
+      def registered_marshaller?(name_or_object)
         marshaller_registry.registered?(name_or_object)
       end
 
-      def register(name, object)
+      def register_marshaller(name, object)
         marshaller_registry.register(name, object)
       end
 
-      def unregister(*names)
+      def unregister_marshaller(*names)
         names.map { |name| marshaller_registry.unregister(name) }
       end
     end # Marshallers

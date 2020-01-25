@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe TTY::Config, "#register" do
+RSpec.describe TTY::Config, "#register_marshaller" do
   it "registers a custom marshaller" do
     stub_const("CustomMarshaller", Class.new do
       include TTY::Config::Marshaller
@@ -15,10 +15,10 @@ RSpec.describe TTY::Config, "#register" do
     end)
 
     config = TTY::Config.new
-    expect(config.registered?(:custom)).to eq(false)
+    expect(config.registered_marshaller?(:custom)).to eq(false)
 
-    config.register :custom, CustomMarshaller
-    expect(config.registered?(:custom)).to eq(true)
+    config.register_marshaller :custom, CustomMarshaller
+    expect(config.registered_marshaller?(:custom)).to eq(true)
     expect(config.marshallers).to eq([
       TTY::Config::Marshallers::YAMLMarshaller,
       TTY::Config::Marshallers::JSONMarshaller,
@@ -27,8 +27,8 @@ RSpec.describe TTY::Config, "#register" do
       TTY::Config::Marshallers::HCLMarshaller,
       CustomMarshaller])
 
-    config.unregister :json
-    config.unregister :yaml, :toml, :ini, :hcl
+    config.unregister_marshaller :json
+    config.unregister_marshaller :yaml, :toml, :ini, :hcl
 
     expect(config.marshallers).to eq([CustomMarshaller])
   end
@@ -47,7 +47,7 @@ RSpec.describe TTY::Config, "#register" do
     end)
 
     config = TTY::Config.new
-    config.register :yaml, CustomMarshaller
+    config.register_marshaller :yaml, CustomMarshaller
 
     expect(config.marshallers).to eq([
       CustomMarshaller,

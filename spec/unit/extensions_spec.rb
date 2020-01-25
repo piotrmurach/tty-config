@@ -28,7 +28,7 @@ RSpec.describe TTY::Config, "#extensions" do
 
     config = TTY::Config.new
 
-    config.register :custom, CustomMarshaller
+    config.register_marshaller :custom, CustomMarshaller
 
     expect(config.extensions).to eq([
       ".yaml", ".yml",

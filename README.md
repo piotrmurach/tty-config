@@ -25,12 +25,15 @@
 
 ## Features
 
-* Read & write configurations in YAML, JSON, TOML, INI, HCL formats
-* Ability to add custom marshaller or override built-in ones
-* Simple interface for adding and reading settings for deeply nested keys
-* Indifferent access for reading settings
-* Merging of configuration settings from other hash objects
-* Reading values from environment variables
+This is a one-stop shop for all your configuration needs:
+
+* Read and write config files in YAML, JSON, TOML, INI, HCL and Java Properties formats
+* Add custom marshallers or override the built-in ones
+* Set and read settings for deeply nested keys
+* Set defaults for undefined settings
+* Read settings with indifferent access
+* Merge configuration settings from other hash objects
+* Read values from environment variables
 
 ## Installation
 
@@ -533,6 +536,7 @@ Currently the supported file formats are:
 * `toml` for `.toml` extension
 * `ini`  for `.ini`, `.cnf`, `.conf`, `.cfg`, `.cf extensions`
 * `hcl`  for `.hcl` extensions
+* `jprops` for `.properties`, `.props`, `.prop` extensions
 
 Calling `read` without any arguments searches through provided locations to find configuration file and reads it. Therefore, you need to specify at least one search path that contains the configuration file together with actual filename. When filename is specified then all known extensions will be tried.
 

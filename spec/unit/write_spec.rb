@@ -175,6 +175,26 @@ coins = ["BTC", "TRX", "DASH"]
 EOS
   end
 
+  it "writes java properties format and assigns default filename and extension" do
+    config = TTY::Config.new
+    config.set(:base, value: 'USD')
+    config.set(:color, value: true)
+    config.set(:exchange, value: 'CCCAGG')
+    config.set(:coins, value: "BTC,TRX,DASH")
+    file = tmp_path('investments.props')
+
+    config.write(file)
+
+    expect(config.filename).to eq('investments')
+    expect(config.extname).to eq('.props')
+    expect(::File.read(file)).to eq <<-EOS.chomp
+base=USD
+color=true
+exchange=CCCAGG
+coins=BTC,TRX,DASH
+EOS
+  end
+
   it "writes custom format with custom file extension" do
     config = TTY::Config.new
     config.set(:settings, :base, value: 'USD')

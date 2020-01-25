@@ -1,0 +1,4 @@
+base: USD
+color: true
+exchange: CCCAGG
+coins=BTC,ETH,TRX,DASH

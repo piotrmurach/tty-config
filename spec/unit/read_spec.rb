@@ -90,6 +90,18 @@ RSpec.describe TTY::Config, '#read' do
     expect(config.fetch(:coins)).to eq(["BTC", "ETH", "TRX", "DASH"])
   end
 
+  it "reads a java properties format" do
+    file = fixtures_path('investments.props')
+    config = TTY::Config.new
+
+    config.read(file)
+
+    expect(config.filename).to eq('investments')
+    expect(config.extname).to eq('.props')
+    expect(config.fetch(:base)).to eq('USD')
+    expect(config.fetch(:coins).split(',')).to eq(["BTC", "ETH", "TRX", "DASH"])
+  end
+
   it "reads custom format" do
     file = fixtures_path('.env')
     config = TTY::Config.new

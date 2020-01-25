@@ -10,6 +10,7 @@ RSpec.describe TTY::Config, "#extensions" do
       ".toml",
       ".ini", ".cnf", ".conf", ".cfg", ".cf",
       ".hcl",
+      ".properties", ".props", ".prop",
       ""])
   end
 
@@ -36,6 +37,7 @@ RSpec.describe TTY::Config, "#extensions" do
       ".toml",
       ".ini", ".cnf", ".conf", ".cfg", ".cf",
       ".hcl",
+      ".properties", ".props", ".prop",
       ".ext",
       ""])
   end

@@ -3,7 +3,7 @@
 require "tty/config/dependency_loader"
 
 RSpec.describe TTY::Config::DependencyLoader do
-  it "loads a dependency" do
+  it "loads a dependency only when instatiated" do
     stub_const("CustomMarshaller", Class.new do
       extend TTY::Config::DependencyLoader
 

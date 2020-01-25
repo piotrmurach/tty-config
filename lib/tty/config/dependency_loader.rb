@@ -25,6 +25,8 @@ module TTY
       #
       # @api private
       def load
+        return if dep_name.nil?
+
         dep_name.empty? ? @block.() : dep_name.each { |dep| require(dep) }
       rescue LoadError, NameError => err
         raise DependencyLoadError, "#{raise_error_message} #{err.message}"

@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
-require_relative "abstract"
 require_relative "../generator"
+require_relative "../marshaller"
 
 module TTY
   class Config
     module Marshallers
-      class INIMarshaller < Abstract
+      class INIMarshaller
+        include TTY::Config::Marshaller
 
         dependency "inifile"
 

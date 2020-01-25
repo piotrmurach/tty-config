@@ -2,7 +2,9 @@
 
 RSpec.describe TTY::Config, "#register" do
   it "registers a custom marshaller" do
-    stub_const("CustomMarshaller", Class.new(TTY::Config::Marshallers::Abstract) do
+    stub_const("CustomMarshaller", Class.new do
+      include TTY::Config::Marshaller
+
       dependency "yaml"
 
       extension ".yml"
@@ -32,7 +34,9 @@ RSpec.describe TTY::Config, "#register" do
   end
 
   it "overrides existing marshaller" do
-    stub_const("CustomMarshaller", Class.new(TTY::Config::Marshallers::Abstract) do
+    stub_const("CustomMarshaller", Class.new do
+      include TTY::Config::Marshaller
+
       dependency "mydep"
 
       extension ".ext"

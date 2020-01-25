@@ -14,7 +14,9 @@ RSpec.describe TTY::Config, "#extensions" do
   end
 
   it "includes newly registered extensions" do
-    stub_const("Marshaller", Class.new(TTY::Config::Marshallers::Abstract) do
+    stub_const("CustomMarshaller", Class.new do
+      include TTY::Config::Marshaller
+
       dependency "mydep"
 
       extension ".ext"
@@ -26,7 +28,7 @@ RSpec.describe TTY::Config, "#extensions" do
 
     config = TTY::Config.new
 
-    config.register :custom, Marshaller
+    config.register :custom, CustomMarshaller
 
     expect(config.extensions).to eq([
       ".yaml", ".yml",

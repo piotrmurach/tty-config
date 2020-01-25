@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
-require_relative "abstract"
+require_relative "../marshaller"
 
 module TTY
   class Config
     module Marshallers
-      class TOMLMarshaller < Abstract
+      class TOMLMarshaller
+        include TTY::Config::Marshaller
 
         dependency "toml"
 

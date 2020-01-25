@@ -348,12 +348,11 @@ module TTY
         raise ReadError, "Configuration file `#{file}` does not exist!"
       end
 
-      file_ext = ::File.extname(file)
-      ext = (format == :auto ? file_ext : ".#{format}")
-      self.extname  = file_ext
-      self.filename = ::File.basename(file, file_ext)
+      set_file_metadata(file)
 
+      ext = (format == :auto ? extname : ".#{format}")
       content = ::File.read(file)
+
       merge(unmarshal(content, ext: ext))
     end
 
@@ -378,13 +377,22 @@ module TTY
         file = ::File.join(dir, "#{filename}#{@extname}")
       end
 
-      file_ext = ::File.extname(file)
-      ext = (format == :auto ? file_ext : ".#{format}")
-      self.extname  = file_ext
-      self.filename = ::File.basename(file, file_ext)
+      set_file_metadata(file)
 
+      ext = (format == :auto ? extname : ".#{format}")
       content = marshal(@settings, ext: ext)
+
       ::File.write(file, content)
+    end
+
+    # Set file name and extension
+    #
+    # @param [File] file
+    #
+    # @api public
+    def set_file_metadata(file)
+      self.extname  = ::File.extname(file)
+      self.filename = ::File.basename(file, extname)
     end
 
     # Current configuration

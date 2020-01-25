@@ -25,10 +25,11 @@
 
 ## Features
 
-* Read & write configurations in YAML, JSON, TOML, INI formats
+* Read & write configurations in YAML, JSON, TOML, INI, HCL formats
+* Ability to add custom marshaller or override built-in ones
 * Simple interface for adding and reading settings for deeply nested keys
 * Indifferent access for reading settings
-* Merging of configuration settings from other hashes
+* Merging of configuration settings from other hash objects
 * Reading values from environment variables
 
 ## Installation
@@ -72,6 +73,8 @@ Or install it yourself as:
   * [2.18 write](#218-write)
   * [2.19 exist?](#219-exist)
   * [2.20 autoload_env](#220-autoload_env)
+  * [2.21 register_marshaller](#221-register_marshaller)
+  * [2.22 unregister_marshaller](#222-register_marshaller)
 * [3. Examples](#3-examples)
   * [3.1 Working with env vars](#31-working-with-env-vars)
   * [3.2 Working with optparse](#32-working-with-optparse)
@@ -85,7 +88,7 @@ config = TTY::Config.new
 config.filename = 'investments'
 ```
 
-then configure values for different nested keys with `set` and `append`:
+Then configure values for different nested keys with `set` and `append`:
 
 ```ruby
 config.set(:settings, :base, value: 'USD')
@@ -95,7 +98,7 @@ config.set(:coins, value: ['BTC'])
 config.append('ETH', 'TRX', 'DASH', to: :coins)
 ```
 
-get any value by using `fetch`:
+You can get any value by using `fetch`:
 
 ```ruby
 config.fetch(:settings, :base)
@@ -105,7 +108,7 @@ config.fetch(:coins)
 # => ['BTC', 'ETH', 'TRX', 'DASH']
 ```
 
-and `write` configration out to `investments.yml`:
+And call `write` to persist the configuration to `investments.yml` file:
 
 ```ruby
 config.write
@@ -121,14 +124,14 @@ config.write
 #  - DASH
 ```
 
-and then to read an `investments.yml` file, you need to provide the locations to search in:
+To read an `investments.yml` file, you need to provide the locations to search in:
 
 ```ruby
 config.append_path Dir.pwd
 config.append_path Dir.home
 ```
 
-Finally, read in configuration back again:
+Finally, call `read` to convert configuration file back into an object again:
 
 ```ruby
 config.read
@@ -175,7 +178,7 @@ You can also specify deeply nested configuration settings by passing sequence of
 config.set :settings, :base, value: 'USD'
 ```
 
-is equivalent to:
+Which is equivalent to:
 
 ```ruby
 config.set 'settings.base', value: 'USD'
@@ -240,7 +243,7 @@ config.set_from_env('settings.base') { 'CURRENCY'}
 config.set_from_env('settings.base') { :currency}
 ```
 
-And asssuming `ENV['CURRENCY']=USD`:
+And assuming `ENV['CURRENCY']=USD`:
 
 ```ruby
 config.fetch(:settings, :base)
@@ -266,7 +269,7 @@ Similar to `set` operation, `fetch` allows you to retrieve deeply nested values:
 config.fetch(:settings, :base) # => USD
 ```
 
-is equivalent to:
+Which is equivalent to:
 
 ```ruby
 config.fetch('settings.base')
@@ -432,7 +435,7 @@ end
 
 You can assign multiple validations for a given key and each of them will be run in the order they were registered when checking a value.
 
-When setting value all the validaitons will be run:
+When setting value all the validations will be run:
 
 ```ruby
 config.set(:settings, :base, value: 'PL')
@@ -529,8 +532,9 @@ Currently the supported file formats are:
 * `json` for `.json` extension
 * `toml` for `.toml` extension
 * `ini`  for `.ini`, `.cnf`, `.conf`, `.cfg`, `.cf extensions`
+* `hcl`  for `.hcl` extensions
 
-Calling `read` without any arguments searches through provided locations to find configuration file and reads it. Therefore, you need to specify at least one search path that contains the configuration file together with actual filename. When filename is specifed then all known extensions will be tried.
+Calling `read` without any arguments searches through provided locations to find configuration file and reads it. Therefore, you need to specify at least one search path that contains the configuration file together with actual filename. When filename is specified then all known extensions will be tried.
 
 For example, to find file called investments in the current directory do:
 
@@ -599,9 +603,9 @@ config.exist? # => true
 
 ### 2.20 autoload_env
 
-The `autload_env` allows you to automatically read environment variables. In most cases you would combine it with [env_prefix=](#212-env_prefix) to only read a subset of variables. When using `autload_env`, anytime the `fetch` is called a corresponding enviornment variable will be checked.
+The `autload_env` allows you to automatically read environment variables. In most cases you would combine it with [env_prefix=](#212-env_prefix) to only read a subset of variables. When using `autload_env`, anytime the `fetch` is called a corresponding environment variable will be checked.
 
-For example, given an evironment variable `MYTOOL_HOST` set to `localhost`:
+For example, given an environment variable `MYTOOL_HOST` set to `localhost`:
 
 ```ruby
 ENV['MYTOOL_HOST']=localhost
@@ -619,6 +623,83 @@ You can retrieve value with:
 ```ruby
 config.fetch(:host)
 # => 'localhost'
+```
+
+### 2.21 register_marshaller
+
+There are number of built-in marshallers that handle the process of serializing internal configuration from and back into a desired format, for example, a `JSON` string.
+
+Currently supported formats out-of-the-box are: `YAML`, `JSON`, `TOML`, `INI` & `HCL`.
+
+To create your own marshaller use the `TTY::Config::Marshaller` interface. You need to provide the implementation for the following marshalling methods:
+
+* `marshal`
+* `unmarshal`
+
+In addition, you will need to specify the extension types this marshaller will handle using the `extension` method. The method accepts a list of names preceded by a dot:
+
+```ruby
+extension ".ext1", ".ext2", ".ext3"
+```
+
+Optionally, you can provide a dependency or dependencies that will be lazy loaded if the extension is used. For this use the `dependency` method.
+
+You can either specify dependencies as a list of names:
+
+```ruby
+dependency "toml"
+dependency "toml", "tomlrb"
+```
+
+Or provide dependencies in a block:
+
+```ruby
+dependency do
+  require "toml"
+  require "tomlrb"
+end
+```
+
+Putting it all together, you can create your own marshaller like so:
+
+```ruby
+class MyCustomMarshaller
+  include TTY::Config::Marshaller
+
+  dependency "my_dep"
+
+  extension ".ext1", ".ext2"
+
+  def marshal(object)
+    MyDep.dump(object)
+  end
+
+  def unmarshal(content)
+    MyDep.parse(content)
+  end
+end
+```
+
+And then let the configuration know about your marshaller by calling the `register_marshaller`:
+
+```ruby
+config.register_marshaller(:my_custom, MyCustomMarshaller)
+```
+
+Bear in mind that you can also override the built-in implementation of a marshaller. For example, if you find a better performing Ruby gem for TOML parsing, register your custom marshaller under the `:toml` name like so:
+
+```ruby
+config.register_marshaller(:toml, MyTOMLMarshaller)
+```
+
+### 2.22 unregister_marshaller
+
+By default, the **TTY::Config** is ready to recognize various extensions. See (2.17 read)[#217-read] section for more details. But, you're free to remove the default marshallers from the internal registry with `unregister_marshaller` method.
+
+For example, to remove all the built-in marshallers do:
+
+```ruby
+config.unregister_marshaller :yaml, :json, :toml, :ini, :hcl
 ```
 
 ## 3. Examples
@@ -640,7 +721,7 @@ config.set_from_env(:host)
 config.set_from_env(:port)
 ```
 
-or automatically load all prefixed environment variables with [autoload_env](#220-autoload-env):
+Or automatically load all prefixed environment variables with [autoload_env](#220-autoload-env):
 
 ```ruby
 config.env_prefix = 'mytool'

@@ -14,6 +14,12 @@ module TTY
             @ext ||= []
           end
 
+          # Set a list of extensions
+          #
+          # @example
+          #   extenion "ext1", "ext2", "ext3"
+          #
+          # @api public
           def extension(*extensions)
             if extensions[0].is_a?(Array)
               @ext = extensions[0]
@@ -23,14 +29,21 @@ module TTY
           end
         end
 
-        # Marshal data a given format
-        def marshal(_data, _options = {})
+        # Marshal object into a given format
+        #
+        # @param [Object] _object
+        #
+        # @api public
+        def marshal(_object, _options = {})
           raise NotImplementedError
         end
 
-        # Unmarshal from a file
+        # Unmarshal content into a hash object
+        #
+        # @param [String] _content
+        #
         # @api public
-        def unmarshal(_file, _options = {})
+        def unmarshal(_content, _options = {})
           raise NotImplementedError
         end
       end

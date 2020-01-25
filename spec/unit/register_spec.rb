@@ -2,7 +2,7 @@
 
 RSpec.describe TTY::Config, "#register" do
   it "registers a custom marshaller" do
-    stub_const("Marshaller", Class.new(TTY::Config::Marshallers::Abstract) do
+    stub_const("CustomMarshaller", Class.new(TTY::Config::Marshallers::Abstract) do
       dependency "yaml"
 
       extension ".yml"
@@ -15,7 +15,7 @@ RSpec.describe TTY::Config, "#register" do
     config = TTY::Config.new
     expect(config.registered?(:custom)).to eq(false)
 
-    config.register :custom, Marshaller
+    config.register :custom, CustomMarshaller
     expect(config.registered?(:custom)).to eq(true)
     expect(config.marshallers).to eq([
       TTY::Config::Marshallers::YAMLMarshaller,
@@ -23,16 +23,16 @@ RSpec.describe TTY::Config, "#register" do
       TTY::Config::Marshallers::TOMLMarshaller,
       TTY::Config::Marshallers::INIMarshaller,
       TTY::Config::Marshallers::HCLMarshaller,
-      Marshaller])
+      CustomMarshaller])
 
     config.unregister :json
     config.unregister :yaml, :toml, :ini, :hcl
 
-    expect(config.marshallers).to eq([Marshaller])
+    expect(config.marshallers).to eq([CustomMarshaller])
   end
 
   it "overrides existing marshaller" do
-    stub_const("Marshaller", Class.new(TTY::Config::Marshallers::Abstract) do
+    stub_const("CustomMarshaller", Class.new(TTY::Config::Marshallers::Abstract) do
       dependency "mydep"
 
       extension ".ext"
@@ -43,10 +43,10 @@ RSpec.describe TTY::Config, "#register" do
     end)
 
     config = TTY::Config.new
-    config.register :yaml, Marshaller
+    config.register :yaml, CustomMarshaller
 
     expect(config.marshallers).to eq([
-      Marshaller,
+      CustomMarshaller,
       TTY::Config::Marshallers::JSONMarshaller,
       TTY::Config::Marshallers::TOMLMarshaller,
       TTY::Config::Marshallers::INIMarshaller,

@@ -173,7 +173,7 @@ config.set(:base, value: 'USD')
 config.set(:base) { 'USD' }
 ```
 
-The block version of specifying a value will mean that the value is evaluated every time its being read.
+The block version of specifying a value will mean that the value is evaluated every time it's being read.
 
 You can also specify deeply nested configuration settings by passing sequence of keys:
 
@@ -445,7 +445,7 @@ config.set(:settings, :base, value: 'PL')
 # raises TTY::Config::ValidationError, 'Currency code needs to be 3 chars long.'
 ```
 
-If the value s provided as a proc or a block then the validation will be delayed until the value is actually read:
+If the value is provided as a proc or a block then the validation will be delayed until the value is actually read:
 
 ```ruby
 config.set(:settings, :base) { 'PL' }
@@ -492,7 +492,7 @@ By default, **TTY::Config** searches for `config` named configuration file. To c
 config.filename = 'investments'
 ```
 
-Then any supported extensions will be search for such as `.yml`, `.json` and `.toml`.
+Then any supported extensions will be searched for such as `.yml`, `.json` and `.toml`.
 
 ### 2.14 extname=
 
@@ -514,7 +514,7 @@ config.append_path(Dir.home)  # look in user's home directory
 config.append_path(Dir.pwd)   # look in current working directory
 ```
 
-None of these paths are required, but you should provide at least one path if you wish to read configuration file.
+None of these paths are required, but you should provide at least one path if you wish to read a configuration file.
 
 ### 2.16 prepend_path
 
@@ -607,7 +607,7 @@ config.exist? # => true
 
 ### 2.20 autoload_env
 
-The `autload_env` allows you to automatically read environment variables. In most cases you would combine it with [env_prefix=](#212-env_prefix) to only read a subset of variables. When using `autload_env`, anytime the `fetch` is called a corresponding environment variable will be checked.
+The `autoload_env` method allows you to automatically read environment variables. In most cases you would combine it with [env_prefix=](#212-env_prefix) to only read a subset of variables. When using `autoload_env`, anytime the `fetch` is called a corresponding environment variable will be checked.
 
 For example, given an environment variable `MYTOOL_HOST` set to `localhost`:
 
@@ -771,7 +771,7 @@ end
 option_parser.parse!
 ```
 
-Then, you craete a configuration instance:
+Then, you create a configuration instance:
 
 ```ruby
 config = TTY::Config.new
@@ -824,7 +824,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/tty-config. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/piotrmurach/tty-config. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 ## License
 
@@ -832,7 +832,7 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the Tty::Config project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/piotrmurach/tty-config/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the TTY::Config project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/piotrmurach/tty-config/blob/master/CODE_OF_CONDUCT.md).
 
 ## Copyright
 

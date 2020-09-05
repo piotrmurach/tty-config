@@ -1,10 +1,10 @@
-# encoding: utf-8
+# frozen_string_literal: true
 
-desc 'Load gem inside irb console'
+desc "Load gem inside irb console"
 task :console do
-  require 'irb'
-  require 'irb/completion'
-  require File.join(__FILE__, '../../lib/tty-config')
+  require "irb"
+  require "irb/completion"
+  require File.join(__FILE__, "../../lib/tty-config")
   ARGV.clear
   IRB.start
 end

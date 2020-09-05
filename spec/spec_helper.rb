@@ -1,15 +1,17 @@
-if ENV['COVERAGE'] || ENV['TRAVIS']
-  require 'simplecov'
-  require 'coveralls'
+# frozen_string_literal: true
 
-  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
+if ENV["COVERAGE"] || ENV["TRAVIS"]
+  require "simplecov"
+  require "coveralls"
+
+  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
     SimpleCov::Formatter::HTMLFormatter,
     Coveralls::SimpleCov::Formatter
-  ]
+  ])
 
   SimpleCov.start do
-    command_name 'spec'
-    add_filter 'spec'
+    command_name "spec"
+    add_filter "spec"
   end
 end
 
@@ -29,11 +31,11 @@ module TestHelpers
     end
 
     def tmp_path(*args)
-      File.join(dir_path('tmp'), *args)
+      File.join(dir_path("tmp"), *args)
     end
 
     def fixtures_path(*args)
-      File.join(dir_path('spec/fixtures'), *args)
+      File.join(dir_path("spec/fixtures"), *args)
     end
 
     def within_dir(target, &block)

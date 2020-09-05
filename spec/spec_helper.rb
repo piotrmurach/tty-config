@@ -17,39 +17,33 @@ end
 
 require "bundler/setup"
 require "tty/config"
+require "tmpdir"
 
 module TestHelpers
   module Paths
-    def gem_root
-      File.expand_path(File.join(File.dirname(__FILE__), ".."))
-    end
-
-    def dir_path(*args)
-      path = File.join(gem_root, *args)
-      FileUtils.mkdir_p(path) unless ::File.exist?(path)
-      File.realpath(path)
-    end
-
-    def tmp_path(*args)
-      File.join(dir_path("tmp"), *args)
-    end
-
     def fixtures_path(*args)
-      File.join(dir_path("spec/fixtures"), *args)
+      ::File.join(__dir__, "fixtures", *args)
     end
+  end
+end
 
-    def within_dir(target, &block)
-      ::Dir.chdir(target, &block)
+RSpec.shared_context "sandbox" do
+  around(:each) do |example|
+    ::Dir.mktmpdir do |dir|
+      ::Dir.chdir(dir) do
+        example.metadata[:tmpdir] = dir
+        example.call
+      end
     end
   end
 end
 
 RSpec.configure do |config|
   config.include(TestHelpers::Paths)
+  config.include_context "sandbox", type: :sandbox
+
   config.disable_monkey_patching!
-  config.after(:example, type: :cli) do
-    FileUtils.rm_rf(tmp_path)
-  end
+
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end

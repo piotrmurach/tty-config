@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe TTY::Config, '#alias_setting' do
+RSpec.describe TTY::Config, "#alias_setting" do
   it "aliases setting key" do
     config = TTY::Config.new
     config.set :foo, value: :baz
@@ -23,7 +23,7 @@ RSpec.describe TTY::Config, '#alias_setting' do
 
   it "aliases nested key as a string to flat key" do
     config = TTY::Config.new
-    config.set('foo.bar.baz') { 12 }
+    config.set("foo.bar.baz") { 12 }
 
     config.alias_setting(:foo, :bar, :baz, to: :flat_foo)
 

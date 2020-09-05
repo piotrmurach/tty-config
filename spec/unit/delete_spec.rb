@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe TTY::Config, '#delete' do
+RSpec.describe TTY::Config, "#delete" do
   it "deletes the value" do
     config = TTY::Config.new
     config.set(:foo, value: 2)

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe TTY::Config, '#append' do
+RSpec.describe TTY::Config, "#append" do
   it "returns appended values" do
     config = TTY::Config.new
     values = config.append(:foo, :bar, to: :values)

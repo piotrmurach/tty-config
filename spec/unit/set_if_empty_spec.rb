@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe TTY::Config, '#set_if_empty' do
+RSpec.describe TTY::Config, "#set_if_empty" do
   it "sets value for empty" do
     config = TTY::Config.new
     config.set_if_empty(:foo, value: :bar)
@@ -16,7 +16,7 @@ RSpec.describe TTY::Config, '#set_if_empty' do
   it "sets value for a nested key as string delimited by dot" do
     config = TTY::Config.new
     config.set_if_empty("foo.bar.baz", value: 1)
-    expect(config.fetch('foo', 'bar', 'baz')).to eq(1)
+    expect(config.fetch("foo", "bar", "baz")).to eq(1)
   end
 
   it "doesn't override existing value" do

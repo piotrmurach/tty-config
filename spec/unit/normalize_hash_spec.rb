@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe TTY::Config, '#normalize_hash' do
+RSpec.describe TTY::Config, "#normalize_hash" do
   it "normalizes keys via method to symbols" do
     hash = {
       "settings" => {

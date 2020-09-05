@@ -34,7 +34,7 @@ RSpec.describe TTY::Config do
 
   it "fetches value as string delimited by . for deeply nested key" do
     config = TTY::Config.new
-    config.set('foo', 'bar', 'baz') { 2 }
+    config.set("foo", "bar", "baz") { 2 }
     expect(config.fetch("foo.bar.baz")).to eq(2)
   end
 
@@ -42,6 +42,6 @@ RSpec.describe TTY::Config do
     config = TTY::Config.new
     config.set(:foo, :bar, :baz, value: 2)
 
-    expect(config.fetch('foo', :bar, 'baz')).to eq(2)
+    expect(config.fetch("foo", :bar, "baz")).to eq(2)
   end
 end

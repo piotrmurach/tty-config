@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe TTY::Config, '#remove' do
+RSpec.describe TTY::Config, "#remove" do
   it "removes a value from a key" do
     config = TTY::Config.new
     config.set(:values) { [:foo, :bar] }

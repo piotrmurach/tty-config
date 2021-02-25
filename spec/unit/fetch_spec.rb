@@ -13,7 +13,7 @@ RSpec.describe TTY::Config do
 
   it "fetches deeply nested proc value" do
     config = TTY::Config.new
-    expect(config.fetch(:foo, default: -> { -> { :bar }})).to eq(:bar)
+    expect(config.fetch(:foo, default: -> { -> { :bar } })).to eq(:bar)
   end
 
   it "fetches default as block" do

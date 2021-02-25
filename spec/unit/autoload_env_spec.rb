@@ -48,7 +48,7 @@ RSpec.describe TTY::Config, "#autoload_env" do
 
     config.autoload_env
 
-    expect(config.fetch(:port) {"3000" }).to eq("7727")
+    expect(config.fetch(:port) { "3000" }).to eq("7727")
   end
 
   it "prioritises present configuration over env vars" do

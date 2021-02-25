@@ -23,7 +23,7 @@ RSpec.describe TTY::Config, "#set" do
   it "sets value as block for deep ensted key" do
     config = TTY::Config.new
     value = config.set(:foo, :bar, :baz) { 2 }
-    expect(value.call).to eq(2)
+    expect(value.()).to eq(2)
     expect(config.fetch(:foo, :bar, :baz)).to eq(2)
   end
 
@@ -37,12 +37,12 @@ RSpec.describe TTY::Config, "#set" do
   it "sets value as block for deep nested string key delimited by ." do
     config = TTY::Config.new
     value = config.set("foo.bar.baz") { 2 }
-    expect(value.call).to eq(2)
+    expect(value.()).to eq(2)
     expect(config.fetch("foo", "bar", "baz")).to eq(2)
   end
 
   it "overrides existing value" do
-    config = TTY::Config.new({foo: {bar: 1}})
+    config = TTY::Config.new({ foo: { bar: 1 } })
     expect(config.fetch(:foo, :bar)).to eq(1)
     config.set(:foo, :bar) { 2 }
     expect(config.fetch(:foo, :bar)).to eq(2)

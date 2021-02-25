@@ -51,7 +51,7 @@ RSpec.describe TTY::Config, "#read" do
     expect(config.filename).to eq("investments")
     expect(config.extname).to eq(".json")
     expect(config.fetch(:settings, :base)).to eq("USD")
-    expect(config.fetch(:coins)).to eq(["BTC", "ETH", "TRX", "DASH"])
+    expect(config.fetch(:coins)).to eq(%w[BTC ETH TRX DASH])
   end
 
   it "reads a toml format" do
@@ -63,7 +63,7 @@ RSpec.describe TTY::Config, "#read" do
     expect(config.filename).to eq("investments")
     expect(config.extname).to eq(".toml")
     expect(config.fetch(:settings, :base)).to eq("USD")
-    expect(config.fetch(:coins)).to eq(["BTC", "ETH", "TRX", "DASH"])
+    expect(config.fetch(:coins)).to eq(%w[BTC ETH TRX DASH])
   end
 
   it "reads an ini format" do
@@ -75,7 +75,7 @@ RSpec.describe TTY::Config, "#read" do
     expect(config.filename).to eq("investments")
     expect(config.extname).to eq(".ini")
     expect(config.fetch(:settings, :base)).to eq("USD")
-    expect(config.fetch(:coins).split(",")).to eq(["BTC", "ETH", "TRX", "DASH"])
+    expect(config.fetch(:coins).split(",")).to eq(%w[BTC ETH TRX DASH])
   end
 
   it "reads an hcl format" do
@@ -87,7 +87,7 @@ RSpec.describe TTY::Config, "#read" do
     expect(config.filename).to eq("investments")
     expect(config.extname).to eq(".hcl")
     expect(config.fetch(:settings, :base)).to eq("USD")
-    expect(config.fetch(:coins)).to eq(["BTC", "ETH", "TRX", "DASH"])
+    expect(config.fetch(:coins)).to eq(%w[BTC ETH TRX DASH])
   end
 
   it "reads a java properties format" do
@@ -99,7 +99,7 @@ RSpec.describe TTY::Config, "#read" do
     expect(config.filename).to eq("investments")
     expect(config.extname).to eq(".props")
     expect(config.fetch(:base)).to eq("USD")
-    expect(config.fetch(:coins).split(",")).to eq(["BTC", "ETH", "TRX", "DASH"])
+    expect(config.fetch(:coins).split(",")).to eq(%w[BTC ETH TRX DASH])
   end
 
   it "reads custom format" do
@@ -111,7 +111,7 @@ RSpec.describe TTY::Config, "#read" do
     expect(config.filename).to eq(".env")
     expect(config.extname).to eq("")
     expect(config.fetch(:settings, :base)).to eq("USD")
-    expect(config.fetch(:coins).split(",")).to eq(["BTC", "ETH", "TRX", "DASH"])
+    expect(config.fetch(:coins).split(",")).to eq(%w[BTC ETH TRX DASH])
   end
 
   it "fails to find a file to read" do
@@ -119,7 +119,7 @@ RSpec.describe TTY::Config, "#read" do
     expect {
       config.read
     }.to raise_error(TTY::Config::ReadError,
-                    "No file found to read configuration from!")
+                     "No file found to read configuration from!")
   end
 
   it "fails to read a file" do
@@ -129,17 +129,19 @@ RSpec.describe TTY::Config, "#read" do
     expect {
       config.read(file)
     }.to raise_error(TTY::Config::ReadError,
-                    "Configuration file `#{file}` does not exist!")
+                     "Configuration file `#{file}` does not exist!")
   end
 
   it "fails to load dependency for reading file format" do
-    allow(TTY::Config::Marshallers::YAMLMarshaller).to receive(:require).with("yaml").and_raise(LoadError)
+    allow(TTY::Config::Marshallers::YAMLMarshaller)
+      .to receive(:require).with("yaml").and_raise(LoadError)
 
     config = TTY::Config.new
     file = fixtures_path("investments.yml")
 
     expect {
       config.read(file)
-    }.to raise_error(TTY::Config::DependencyLoadError, /The dependency `yaml` is missing/)
+    }.to raise_error(TTY::Config::DependencyLoadError,
+                     /The dependency `yaml` is missing/)
   end
 end

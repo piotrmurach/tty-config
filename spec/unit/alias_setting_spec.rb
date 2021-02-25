@@ -35,7 +35,7 @@ RSpec.describe TTY::Config, "#alias_setting" do
     config = TTY::Config.new
     config.set(:foo, :bar, :baz) { 12 }
 
-    config.alias_setting(:foo, :bar, :baz, to: [:bee, :bop])
+    config.alias_setting(:foo, :bar, :baz, to: %i[bee bop])
 
     expect(config.fetch(:foo, :bar, :baz)).to eq(12)
     expect(config.fetch(:bee, :bop)).to eq(12)
@@ -48,7 +48,8 @@ RSpec.describe TTY::Config, "#alias_setting" do
 
     expect {
       config.alias_setting(:foo, to: :bar)
-    }.to raise_error(ArgumentError, "Setting already exists with an alias ':bar'")
+    }.to raise_error(ArgumentError,
+                     "Setting already exists with an alias ':bar'")
   end
 
   it "fails to alias to already existing key" do
@@ -57,8 +58,9 @@ RSpec.describe TTY::Config, "#alias_setting" do
     config.set(:baz, :woo, value: 2)
 
     expect {
-      config.alias_setting(:foo, :bar, to: [:baz, :woo])
-    }.to raise_error(ArgumentError, "Setting already exists with an alias ':baz, :woo'")
+      config.alias_setting(:foo, :bar, to: %i[baz woo])
+    }.to raise_error(ArgumentError,
+                     "Setting already exists with an alias ':baz, :woo'")
   end
 
   it "fails to alias to matching key" do
@@ -66,7 +68,7 @@ RSpec.describe TTY::Config, "#alias_setting" do
     config.set(:foo, :bar, value: 1)
 
     expect {
-      config.alias_setting(:foo, :bar, to: [:foo, :bar])
+      config.alias_setting(:foo, :bar, to: %i[foo bar])
     }.to raise_error(ArgumentError, "Alias matches setting key")
   end
 end

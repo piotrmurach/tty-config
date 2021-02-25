@@ -3,21 +3,21 @@
 RSpec.describe TTY::Config::Generator, "#generate" do
   it "generate config content" do
     conf = {
-      "int"   => 1,
+      "int" => 1,
       "false" => false,
-      "str"   => "hello",
-      "array" => [1,2,3],
-      "deep_array" =>  [
-        {foo: 1},
-        {bar: 2}
+      "str" => "hello",
+      "array" => [1, 2, 3],
+      "deep_array" => [
+        { foo: 1 },
+        { bar: 2 }
       ],
       "section" => {
         "value" => 1,
         "empty" => nil,
-        "array" => [1,2,3]
+        "array" => [1, 2, 3]
       },
-      "empty" => { },
-      "nil"   => nil,
+      "empty" => {},
+      "nil" => nil
     }
 
     content = TTY::Config::Generator.generate(conf)
@@ -40,15 +40,15 @@ array = 1,2,3
 
   it "generate config content with custom separator" do
     conf = {
-      "str"   => "hello",
-      "array" => [1,2,3],
-      "deep_array" =>  [
-        {foo: 1},
-        {bar: 2}
+      "str" => "hello",
+      "array" => [1, 2, 3],
+      "deep_array" => [
+        { foo: 1 },
+        { bar: 2 }
       ],
       "section" => {
         "value" => 1,
-        "array" => [1,2,3]
+        "array" => [1, 2, 3]
       }
     }
 

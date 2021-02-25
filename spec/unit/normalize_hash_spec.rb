@@ -8,7 +8,7 @@ RSpec.describe TTY::Config, "#normalize_hash" do
         "color" => true,
         "exchange" => "CCCAGG"
       },
-      "coins" => ["BTC", "ETH", "TRX", "DASH"]
+      "coins" => %w[BTC ETH TRX DASH]
     }
 
     expect(TTY::Config.normalize_hash(hash)).to eq({
@@ -17,7 +17,7 @@ RSpec.describe TTY::Config, "#normalize_hash" do
         color: true,
         exchange: "CCCAGG"
       },
-      coins: ["BTC", "ETH", "TRX", "DASH"]
+      coins: %w[BTC ETH TRX DASH]
     })
   end
 end

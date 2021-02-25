@@ -1,8 +1,8 @@
 # frozen_string_literal: true
-#
+
 RSpec.describe TTY::Config, "#validate" do
   let(:validation) {
-    -> (key, value) do
+    ->(key, value) do
       unless value.is_a?(Integer)
         raise TTY::Config::ValidationError, "Failed validation for key=#{key}"
       end
@@ -36,7 +36,7 @@ RSpec.describe TTY::Config, "#validate" do
     expect {
       config.set(:foo, :bar, value: "2")
     }.to raise_error(TTY::Config::ValidationError,
-                    "Failed validation for key=foo.bar")
+                     "Failed validation for key=foo.bar")
   end
 
   it "raises an error when set value as a proc fails validation" do
@@ -63,16 +63,17 @@ RSpec.describe TTY::Config, "#validate" do
     config = TTY::Config.new
     config.validate(:foo, :bar) do |key, val|
       unless val.is_a?(Integer)
-        raise TTY::Config::ValidationError, "Not integer"
+        raise TTY::Config::ValidationError, "Not integer for #{key}"
       end
     end
     config.validate(:foo, :bar) do |key, val|
       unless val > 100
-        raise TTY::Config::ValidationError , "Value out of range"
+        raise TTY::Config::ValidationError, "Value out of range for #{key}"
       end
     end
     expect {
       config.set(:foo, :bar, value: 99)
-    }.to raise_error(TTY::Config::ValidationError, "Value out of range")
+    }.to raise_error(TTY::Config::ValidationError,
+                     "Value out of range for foo.bar")
   end
 end

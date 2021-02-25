@@ -11,7 +11,8 @@ RSpec.describe TTY::Config, "#extensions" do
       ".ini", ".cnf", ".conf", ".cfg", ".cf",
       ".hcl",
       ".properties", ".props", ".prop",
-      ""])
+      ""
+    ])
   end
 
   it "includes newly registered extensions" do
@@ -39,6 +40,7 @@ RSpec.describe TTY::Config, "#extensions" do
       ".hcl",
       ".properties", ".props", ".prop",
       ".ext",
-      ""])
+      ""
+    ])
   end
 end

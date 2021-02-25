@@ -5,7 +5,7 @@ RSpec.describe TTY::Config, "#write", type: :sandbox do
     config = TTY::Config.new
     config.set(:settings, :base, value: "USD")
     config.set(:settings, :exchange, value: "CCCAGG")
-    config.set(:coins, value: ["BTC", "TRX", "DASH"])
+    config.set(:coins, value: %w[BTC TRX DASH])
     file = "config.yml"
 
     config.write(file)
@@ -26,7 +26,7 @@ coins:
     config = TTY::Config.new
     config.set("settings", "base", value: "USD")
     config.set("settings", "exchange", value: "CCCAGG")
-    config.set("coins", value: ["BTC", "TRX", "DASH"])
+    config.set("coins", value: %w[BTC TRX DASH])
 
     config.write
 
@@ -52,7 +52,8 @@ coins:
     expect {
       config.write(file)
     }.to raise_error(TTY::Config::WriteError,
-      "File `#{file}` already exists. Use :force option to overwrite.")
+                     "File `#{file}` already exists. " \
+                     "Use :force option to overwrite.")
   end
 
   it "allows to overwrite already existing file" do
@@ -69,7 +70,7 @@ coins:
     config = TTY::Config.new
     config.set(:settings, :base, value: "USD")
     config.set(:settings, :exchange, value: "CCCAGG")
-    config.set(:coins, value: ["BTC", "TRX", "DASH"])
+    config.set(:coins, value: %w[BTC TRX DASH])
     file = "config.json"
 
     config.write(file)
@@ -94,7 +95,7 @@ EOS
     config = TTY::Config.new
     config.set(:settings, :base, value: "USD")
     config.set(:settings, :exchange, value: "CCCAGG")
-    config.set(:coins, value: ["BTC", "TRX", "DASH"])
+    config.set(:coins, value: %w[BTC TRX DASH])
     file = "investments.toml"
 
     config.write(file)
@@ -116,7 +117,7 @@ EOS
     config.extname = ".toml"
     config.set(:settings, :base, value: "USD")
     config.set(:settings, :exchange, value: "CCCAGG")
-    config.set(:coins, value: ["BTC", "TRX", "DASH"])
+    config.set(:coins, value: %w[BTC TRX DASH])
 
     config.write
 
@@ -195,7 +196,7 @@ EOS
     config = TTY::Config.new
     config.set(:settings, :base, value: "USD")
     config.set(:settings, :exchange, value: "CCCAGG")
-    config.set(:coins, value: ["BTC", "TRX", "DASH"])
+    config.set(:coins, value: %w[BTC TRX DASH])
     file = "investments.conf"
 
     config.write(file, format: :yaml)
@@ -221,18 +222,19 @@ EOS
     expect {
       config.write(file)
     }.to raise_error(TTY::Config::UnsupportedExtError,
-                    "Config file format `.txt` is not supported.")
+                     "Config file format `.txt` is not supported.")
   end
 
   it "fails to load dependency for writing file format" do
-    allow(TTY::Config::Marshallers::YAMLMarshaller).
-      to receive(:require).with("yaml").and_raise(LoadError)
+    allow(TTY::Config::Marshallers::YAMLMarshaller)
+      .to receive(:require).with("yaml").and_raise(LoadError)
 
     config = TTY::Config.new
     file = "investments.yml"
 
     expect {
       config.write(file)
-    }.to raise_error(TTY::Config::DependencyLoadError, /The dependency `yaml` is missing/)
+    }.to raise_error(TTY::Config::DependencyLoadError,
+                     /The dependency `yaml` is missing/)
   end
 end

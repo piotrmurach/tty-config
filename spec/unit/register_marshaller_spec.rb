@@ -26,7 +26,8 @@ RSpec.describe TTY::Config, "#register_marshaller" do
       TTY::Config::Marshallers::INIMarshaller,
       TTY::Config::Marshallers::HCLMarshaller,
       TTY::Config::Marshallers::JavaPropsMarshaller,
-      CustomMarshaller])
+      CustomMarshaller
+    ])
 
     config.unregister_marshaller :json
     config.unregister_marshaller :yaml, :toml, :ini, :hcl, :jprops

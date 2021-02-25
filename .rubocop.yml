@@ -1,0 +1,67 @@
+AllCops:
+  NewCops: enable
+
+Layout/FirstArrayElementIndentation:
+  Enabled: false
+
+Layout/FirstHashElementIndentation:
+  Enabled: false
+
+Layout/LineLength:
+  Max: 82
+
+Lint/AssignmentInCondition:
+  Enabled: false
+
+Metrics/AbcSize:
+  Max: 30
+
+Metrics/BlockLength:
+  CountComments: true
+  Max: 25
+  IgnoredMethods: []
+  Exclude:
+    - "spec/**/*"
+
+Metrics/ClassLength:
+  Max: 1500
+
+Metrics/CyclomaticComplexity:
+  Enabled: false
+
+Metrics/MethodLength:
+  Max: 20
+
+Naming/BinaryOperatorParameterName:
+  Enabled: false
+
+Naming/HeredocDelimiterNaming:
+  Enabled: false
+
+Style/AccessorGrouping:
+  Enabled: false
+
+Style/AsciiComments:
+  Enabled: false
+
+Style/Lambda:
+  Enabled: false
+
+Style/LambdaCall:
+  EnforcedStyle: braces
+
+Style/FormatStringToken:
+  Enabled: false
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/TrivialAccessors:
+  Enabled: false
+
+# { ... } for multi-line blocks is okay
+Style/BlockDelimiters:
+  Enabled: false
+
+Style/CommentedKeyword:
+  Enabled: false

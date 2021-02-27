@@ -5,6 +5,9 @@ require_relative "../marshaller"
 module TTY
   class Config
     module Marshallers
+      # Responsible for marshalling content from and into HCL format
+      #
+      # @api public
       class HCLMarshaller
         include TTY::Config::Marshaller
 

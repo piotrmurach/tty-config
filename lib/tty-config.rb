@@ -1,1 +1,1 @@
-require_relative 'tty/config'
+require_relative "tty/config"

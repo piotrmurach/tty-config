@@ -34,10 +34,9 @@ module TTY
     #
     # @api private
     def self.normalize_hash(hash, method = :to_sym)
-      hash.reduce({}) do |acc, (key, val)|
+      hash.each_with_object({}) do |(key, val), acc|
         value = val.is_a?(::Hash) ? normalize_hash(val, method) : val
         acc[key.public_send(method)] = value
-        acc
       end
     end
 
@@ -72,11 +71,11 @@ module TTY
       @settings = settings
       @location_paths = []
       @validators = {}
-      @filename = 'config'
-      @extname = '.yml'
-      @key_delim = '.'
+      @filename = "config"
+      @extname = ".yml"
+      @key_delim = "."
       @envs = {}
-      @env_prefix = ''
+      @env_prefix = ""
       @autoload_env = false
       @aliases = {}
 
@@ -99,6 +98,7 @@ module TTY
       unless extensions.include?(name)
         raise UnsupportedExtError, "Config file format `#{name}` is not supported."
       end
+
       @extname = name
     end
 
@@ -162,6 +162,7 @@ module TTY
     # @api public
     def set_if_empty(*keys, value: nil, &block)
       return unless deep_find(@settings, keys.last.to_s).nil?
+
       block ? set(*keys, &block) : set(*keys, value: value)
     end
 
@@ -190,7 +191,7 @@ module TTY
     # @api private
     def to_env_key(key)
       env_key = key.to_s.upcase
-      @env_prefix == '' ? env_key : "#{@env_prefix.to_s.upcase}_#{env_key}"
+      @env_prefix == "" ? env_key : "#{@env_prefix.to_s.upcase}_#{env_key}"
     end
 
     # Fetch value under a composite key
@@ -217,7 +218,7 @@ module TTY
       value = block || default if value.nil?
 
       while callable_without_params?(value)
-        value = value.call
+        value = value.()
       end
       value
     end
@@ -281,11 +282,11 @@ module TTY
       alias_key = flatten_keys(alias_keys)
 
       if alias_key == flat_setting
-        raise ArgumentError, 'Alias matches setting key'
+        raise ArgumentError, "Alias matches setting key"
       end
 
       if fetch(alias_key)
-        raise ArgumentError, 'Setting already exists with an alias ' \
+        raise ArgumentError, "Setting already exists with an alias " \
                              "'#{alias_keys.map(&:inspect).join(', ')}'"
       end
 
@@ -345,7 +346,7 @@ module TTY
     # @api public
     def read(file = find_file, format: :auto)
       if file.nil?
-        raise ReadError, 'No file found to read configuration from!'
+        raise ReadError, "No file found to read configuration from!"
       elsif !::File.exist?(file)
         raise ReadError, "Configuration file `#{file}` does not exist!"
       end
@@ -368,7 +369,7 @@ module TTY
       if file && ::File.exist?(file)
         if !force
           raise WriteError, "File `#{file}` already exists. " \
-                            'Use :force option to overwrite.'
+                            "Use :force option to overwrite."
         elsif !::File.writable?(file)
           raise WriteError, "Cannot write to #{file}."
         end
@@ -414,7 +415,7 @@ module TTY
     # @api private
     def assert_either_value_or_block(value, block)
       if value.nil? && block.nil?
-        raise ArgumentError, 'Need to set either value or block'
+        raise ArgumentError, "Need to set either value or block"
       elsif !(value.nil? || block.nil?)
         raise ArgumentError, "Can't set both value and block"
       end
@@ -453,13 +454,13 @@ module TTY
     # @api private
     def assert_valid(key, value)
       validators[key].each do |validator|
-        validator.call(key, value)
+        validator.(key, value)
       end
     end
 
     def assert_keys_with_block(keys, block)
       if keys.size > 1 && block.nil?
-        raise ArgumentError, 'Need to set env var in block'
+        raise ArgumentError, "Need to set env var in block"
       end
     end
 
@@ -477,6 +478,7 @@ module TTY
     # @api private
     def deep_set(settings, *keys)
       return settings if keys.empty?
+
       key, *rest = *keys
       value = settings[key]
 

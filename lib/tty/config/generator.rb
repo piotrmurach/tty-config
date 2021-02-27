@@ -11,7 +11,7 @@ module TTY
       #   the file content
       #
       # @api public
-      def self.generate(data, separator: '=')
+      def self.generate(data, separator: "=")
         content  = []
         values   = {}
         sections = {}
@@ -24,7 +24,7 @@ module TTY
                 (val.is_a?(Array) && val.first.is_a?(Hash))
             sections[key] = val
           elsif val.is_a?(Array)
-            values[key] = val.join(',')
+            values[key] = val.join(",")
           else
             values[key] = val
           end
@@ -34,7 +34,7 @@ module TTY
         values.each do |key, val|
           content << "#{key} #{separator} #{val}"
         end
-        content << '' unless values.empty?
+        content << "" unless values.empty?
 
         # sections
         sections.each do |section, object|
@@ -45,10 +45,10 @@ module TTY
             object = object.reduce({}, :merge!)
           end
           object.each do |key, val|
-            val = val.join(',') if val.is_a?(Array)
+            val = val.join(",") if val.is_a?(Array)
             content << "#{key} #{separator} #{val}" if val
           end
-          content << ''
+          content << ""
         end
         content.join("\n")
       end

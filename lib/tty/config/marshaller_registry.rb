@@ -3,7 +3,9 @@
 module TTY
   class Config
     class MarshallerRegistry
-
+      # All registered marshallers
+      #
+      # @api private
       attr_reader :marshallers
 
       # @api private
@@ -24,7 +26,7 @@ module TTY
       end
 
       def registered?(name_or_object)
-        marshallers.key?(name_or_object) || marshallers.has_value?(name_or_object)
+        marshallers.key?(name_or_object) || marshallers.value?(name_or_object)
       end
 
       def register(name, object)

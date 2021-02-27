@@ -45,7 +45,7 @@ module TTY
         elsif dep_name.size == 1
           "The dependency `#{dep_name.join}` is missing."
         else
-          "The dependencies `#{dep_name.join(", ")}` are missing."
+          "The dependencies `#{dep_name.join(', ')}` are missing."
         end
       end
 

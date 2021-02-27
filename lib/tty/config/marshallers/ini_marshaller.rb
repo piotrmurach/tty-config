@@ -6,6 +6,9 @@ require_relative "../marshaller"
 module TTY
   class Config
     module Marshallers
+      # Responsible for marshalling content from and into INI format
+      #
+      # @api public
       class INIMarshaller
         include TTY::Config::Marshaller
 
@@ -19,7 +22,7 @@ module TTY
 
         def unmarshal(content)
           ini = IniFile.new(content: content).to_h
-          global = ini.delete('global')
+          global = ini.delete("global")
           ini.merge!(global)
         end
       end # INIMarshaller

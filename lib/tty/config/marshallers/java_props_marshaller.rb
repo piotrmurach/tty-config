@@ -5,6 +5,9 @@ require_relative "../marshaller"
 module TTY
   class Config
     module Marshallers
+      # Responsible for marshalling content from and into Java properties format
+      #
+      # @api public
       class JavaPropsMarshaller
         include TTY::Config::Marshaller
 

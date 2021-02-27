@@ -1,5 +1,10 @@
 # Change log
 
+## [v0.5.0] - unreleased
+
+### Changed
+* Change writing a configuration file path to create any missing directories
+
 ## [v0.4.0] - 2020-01-25
 
 ### Added
@@ -55,6 +60,7 @@
 
 * Initial implementation and release
 
+[v0.5.0]: https://github.com/piotrmurach/tty-config/compare/v0.4.0...v0.5.0
 [v0.4.0]: https://github.com/piotrmurach/tty-config/compare/v0.3.2...v0.4.0
 [v0.3.2]: https://github.com/piotrmurach/tty-config/compare/v0.3.1...v0.3.2
 [v0.3.1]: https://github.com/piotrmurach/tty-config/compare/v0.3.0...v0.3.1

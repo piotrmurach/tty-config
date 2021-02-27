@@ -384,7 +384,9 @@ module TTY
       ext = (format == :auto ? extname : ".#{format}")
       content = marshal(@settings, ext: ext)
 
-      ::File.write(file, content)
+      path = Pathname.new(file)
+      path.dirname.mkpath unless path.dirname.exist?
+      path.write(content)
     end
 
     # Set file name and extension

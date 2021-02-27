@@ -42,6 +42,47 @@ coins:
     EOS
   end
 
+  it "writes to the first location when no existing config file can be found" do
+    config = TTY::Config.new
+    config.append_path("non/existent/path")
+    config.set("coins", value: %w[BTC TRX DASH])
+
+    config.write
+
+    expect(::File.read("non/existent/path/config.yml")).to eq <<-EOS
+---
+coins:
+- BTC
+- TRX
+- DASH
+    EOS
+  end
+
+  it "writes a custom file to the first location when no config is found" do
+    config = TTY::Config.new
+    config.append_path("non/existent/path")
+    config.filename = "coins"
+    config.extname = ".toml"
+    config.set("coins", value: %w[BTC TRX DASH])
+
+    config.write
+
+    expect(::File.read("non/existent/path/coins.toml")).to eq <<-EOS
+coins = ["BTC","TRX","DASH"]
+    EOS
+  end
+
+  it "writes to a specified file path and creates any missing directories" do
+    config = TTY::Config.new
+    config.set("coins", value: %w[BTC TRX DASH])
+
+    config.write("non/existent/path/config.toml")
+
+    expect(::File.read("non/existent/path/config.toml")).to eq <<-EOS
+coins = ["BTC","TRX","DASH"]
+    EOS
+  end
+
   it "doesn't override already existing file" do
     config = TTY::Config.new
     config.set("settings", "base", value: "USD")
@@ -88,7 +129,7 @@ coins:
     "DASH"
   ]
 }
-EOS
+    EOS
   end
 
   it "writes toml format and assigns default filename and extension" do
@@ -108,7 +149,7 @@ coins = ["BTC","TRX","DASH"]
 [settings]
 base = "USD"
 exchange = "CCCAGG"
-EOS
+    EOS
   end
 
   it "allows to change default file extension" do
@@ -127,7 +168,7 @@ coins = ["BTC","TRX","DASH"]
 [settings]
 base = "USD"
 exchange = "CCCAGG"
-EOS
+    EOS
   end
 
   it "writes ini format and assigns default filename and extension" do
@@ -147,7 +188,7 @@ coins = BTC,TRX,DASH
 [settings]
 base = USD
 exchange = CCCAGG
-EOS
+    EOS
   end
 
   it "writes hcl format and assigns default filename and extension" do
@@ -169,7 +210,7 @@ settings {
   exchange = "CCCAGG"
 }
 coins = ["BTC", "TRX", "DASH"]
-EOS
+    EOS
   end
 
   it "writes java properties format and assigns default filename and extension" do
@@ -189,7 +230,7 @@ base=USD
 color=true
 exchange=CCCAGG
 coins=BTC,TRX,DASH
-EOS
+    EOS
   end
 
   it "writes custom format with custom file extension" do
@@ -211,7 +252,7 @@ coins:
 - BTC
 - TRX
 - DASH
-EOS
+    EOS
   end
 
   it "cannot write unknown file format" do

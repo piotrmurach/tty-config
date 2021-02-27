@@ -3,19 +3,16 @@
 require "rspec-benchmark"
 require "yaml/store"
 
-RSpec.describe TTY::Config do
+RSpec.describe TTY::Config, type: :sandbox do
   include RSpec::Benchmark::Matchers
 
   it "reads and writes keys at most 1.5x slower than built-in yaml store" do
-    config_file = tmp_path("config.yml")
     config = TTY::Config.new
-
-    store_file = tmp_path("store.yml")
-    store = YAML::Store.new(store_file)
+    store = YAML::Store.new("store.yml")
 
     expect {
       config.set(:foo, value: "bar")
-      config.write(config_file, force: true)
+      config.write(force: true)
     }.to perform_slower_than {
       store.transaction { store[:foo] = "bar" }
     }.at_most(1.5).times

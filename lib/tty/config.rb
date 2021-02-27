@@ -386,7 +386,7 @@ module TTY
 
       path = Pathname.new(file)
       path.dirname.mkpath unless path.dirname.exist?
-      path.write(content)
+      ::File.write(path, content)
     end
 
     # Set file name and extension

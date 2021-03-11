@@ -7,6 +7,9 @@ Layout/FirstArrayElementIndentation:
 Layout/FirstHashElementIndentation:
   Enabled: false
 
+Layout/HeredocIndentation:
+  Enabled: false
+
 Layout/LineLength:
   Max: 82
 

@@ -2,8 +2,8 @@
 
 ## [v0.5.0] - unreleased
 
-### Changed
-* Change writing a configuration file path to create any missing directories
+### Added
+* Add :create option to the #write method to control creating any missing directories
 
 ## [v0.4.0] - 2020-01-25
 

@@ -363,9 +363,15 @@ module TTY
     #
     # @param [String] file
     #   the path to a file
+    # @param [Boolean] create
+    #   whether or not to create missing path directories, false by default
+    # @param [Boolean] force
+    #   whether or not to overwrite existing configuration file, false by default
+    # @param [String] format
+    #   the format name for the configuration file, :auto by defualt
     #
     # @api public
-    def write(file = find_file, force: false, format: :auto)
+    def write(file = find_file, create: false, force: false, format: :auto)
       if file && ::File.exist?(file)
         if !force
           raise WriteError, "File `#{file}` already exists. " \
@@ -384,9 +390,14 @@ module TTY
 
       ext = (format == :auto ? extname : ".#{format}")
       content = marshal(@settings, ext: ext)
-
       path = Pathname.new(file)
-      path.dirname.mkpath unless path.dirname.exist?
+
+      if !path.dirname.exist? && !create
+        raise WriteError, "Directory `#{path.dirname}` doesn't exist. " \
+                          "Use :create option to create missing directories."
+      else
+        path.dirname.mkpath
+      end
       ::File.write(path, content)
     end
 

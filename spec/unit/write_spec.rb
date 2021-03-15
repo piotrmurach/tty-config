@@ -47,7 +47,7 @@ coins:
     config.append_path("non/existent/path")
     config.set("coins", value: %w[BTC TRX DASH])
 
-    config.write
+    config.write(create: true)
 
     expect(::File.read("non/existent/path/config.yml")).to eq <<-EOS
 ---
@@ -65,7 +65,7 @@ coins:
     config.extname = ".toml"
     config.set("coins", value: %w[BTC TRX DASH])
 
-    config.write
+    config.write(create: true)
 
     expect(::File.read("non/existent/path/coins.toml")).to eq <<-EOS
 coins = ["BTC","TRX","DASH"]
@@ -76,11 +76,22 @@ coins = ["BTC","TRX","DASH"]
     config = TTY::Config.new
     config.set("coins", value: %w[BTC TRX DASH])
 
-    config.write("non/existent/path/config.toml")
+    config.write("non/existent/path/config.toml", create: true)
 
     expect(::File.read("non/existent/path/config.toml")).to eq <<-EOS
 coins = ["BTC","TRX","DASH"]
     EOS
+  end
+
+  it "raises when writing to a path with missing directories" do
+    config = TTY::Config.new
+    config.set("coins", value: %w[BTC TRX DASH])
+
+    expect {
+      config.write("/non/existent/path/config.toml")
+    }.to raise_error(TTY::Config::WriteError,
+                     "Directory `/non/existent/path` doesn't exist. " \
+                     "Use :create option to create missing directories.")
   end
 
   it "doesn't override already existing file" do

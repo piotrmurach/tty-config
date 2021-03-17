@@ -569,32 +569,53 @@ config.read('investments.config', format: :yaml)
 
 ### 2.18 write
 
-By default **TTY::Config**, persists configuration file in the current working directory with a `config.yml` name. However, you can change that by specifying the filename and extension type:
+By default **TTY::Config**, persists configuration file in the current working directory with a `config.yml` name. However, you can change the default file name by specifying the `filename` and `extension` type:
 
 ```ruby
-config.filename = 'investments'
-config.extname = '.toml'
+config.filename = "investments"
+config.extname = ".toml"
 ```
 
-To write current configuration to a file, you can either specified direct location path and filename:
+Now, by invoking `write` you will persist the current configuration to `investments.toml` file.
 
 ```ruby
-config.write('./investments.toml')
+config.write   # writes "investments.toml" to the current directory
 ```
 
-Or, specify location paths to be searched for already existing configuration to overwrite:
+To write the current configuration to a file in a custom location, you can specify a direct location path and filename as an argument:
 
 ```ruby
-config.append_path(Dir.pwd)  # search current working directory
-
-config.write
+config.write("/custom/path/to/investments.toml")
+# may raise an error if any of the path directories are missing
 ```
 
-To create configuration file regardless whether it exists or not, use `:force` flag:
+If the `/custom/path/to` doesn't exist an error will be raised. You can set the `:create` option to make any missing directories in the path:
 
 ```ruby
-config.write(force: true)                        # overwrite any found config file
-config.write('./investments.toml', force: true)  # overwrite specific config file
+config.write("/custom/path/to/investments.toml", create: true)
+```
+
+In case when the `investments.toml` file already exists the `TTY::Config::WriteError` error will be raised.
+
+To create a configuration file regardless of whether it exists or not, use `:force` flag:
+
+```ruby
+config.write(force: true)
+config.write("/custom/path/to/investments.toml", force: true)
+```
+
+You can specify location paths to be searched for already existing configuration to overwrite:
+
+```ruby
+config.append_path("/custom/path/to")  # search in "/custom/path/to" for config file
+```
+
+By setting the `:create` option to `true`, you can ensure that even when no path is found that has a configuration file, the first location will be used and all missing directories created.
+
+To ensure that a configuration file is written no matter what, use both `:create` and `:force`:
+
+```ruby
+config.write(create: true, force: true)
 ```
 
 ### 2.19 exist?

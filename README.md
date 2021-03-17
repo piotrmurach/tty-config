@@ -379,6 +379,14 @@ config.delete(:settings, :base)
 # "USD"
 ```
 
+You can provide an optional default value in a block that will be returned when a key is not set:
+
+```ruby
+config.delete(:settings, :unknown) { |key| "#{key} isn't set" }
+# =>
+# "unknown isn't set"
+```
+
 ### 2.10 alias_setting
 
 In order to alias a configuration setting to another name use `alias_setting`.

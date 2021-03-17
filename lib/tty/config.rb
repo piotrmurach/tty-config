@@ -258,13 +258,21 @@ module TTY
 
     # Delete a value from a nested key
     #
+    # @example
+    #   delete(:foo, :bar, :baz)
+    #
+    # @example
+    #   delete(:unknown) { |key| "#{key} isn't set" }
+    #
     # @param [Array[String|Symbol]] keys
     #   the keys for a value deletion
     #
+    # @yield [key] Invoke the block with a missing key
+    #
     # @api public
-    def delete(*keys)
+    def delete(*keys, &default)
       keys = convert_to_keys(keys)
-      deep_delete(*keys, @settings)
+      deep_delete(*keys, @settings, &default)
     end
 
     # Define an alias to a nested key
@@ -562,13 +570,15 @@ module TTY
     end
 
     # @api private
-    def deep_delete(*keys, settings)
+    def deep_delete(*keys, settings, &default)
       key, *rest = keys
       value = settings[key]
       if !value.nil? && value.is_a?(::Hash)
-        deep_delete(*rest, value)
+        deep_delete(*rest, value, &default)
       elsif !value.nil?
         settings.delete(key)
+      elsif default
+        default.(key)
       end
     end
 

@@ -4,6 +4,7 @@
 
 ### Added
 * Add :create option to the #write method to control creating any missing directories
+* Add ability to specify a default value for a missing key in the #delete method
 
 ## [v0.4.0] - 2020-01-25
 

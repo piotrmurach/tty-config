@@ -21,4 +21,22 @@ RSpec.describe TTY::Config, "#delete" do
     expect(config.delete(:foo, :bar)).to eq([1, 2, 3])
     expect(config.fetch(:foo, :bar)).to eq(nil)
   end
+
+  it "deletes an unknown key without a default value" do
+    config = TTY::Config.new
+    expect(config.delete(:unknown)).to eq(nil)
+  end
+
+  it "deletes an unknown key with a default value" do
+    config = TTY::Config.new
+    expect(config.delete(:unknown) { |key| "#{key} isn't set" })
+      .to eq("unknown isn't set")
+  end
+
+  it "deletes a deeply nested unknown key with a default value" do
+    config = TTY::Config.new
+    config.set(:foo, :bar, value: :baz)
+    expect(config.delete(:foo, :unknown) { |key| "#{key} isn't set" })
+      .to eq("unknown isn't set")
+  end
 end

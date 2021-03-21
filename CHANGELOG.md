@@ -6,6 +6,9 @@
 * Add :create option to the #write method to control creating any missing directories
 * Add ability to specify a default value for a missing key in the #delete method
 
+### Changed
+* Change #delete to allow removing any subkey of a deeply nested key
+
 ## [v0.4.0] - 2020-01-25
 
 ### Added

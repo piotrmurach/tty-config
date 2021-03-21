@@ -13,6 +13,7 @@ RSpec.describe TTY::Config, "#delete" do
     config.set(:foo, :bar, :baz) { 2 }
     expect(config.delete(:foo, :bar, :baz).()).to eq(2)
     expect(config.fetch(:foo, :bar, :baz)).to eq(nil)
+    expect(config.fetch(:foo, :bar)).to eq({})
   end
 
   it "deletes innermost key with array value" do
@@ -20,6 +21,21 @@ RSpec.describe TTY::Config, "#delete" do
     config.set(:foo, :bar, value: [1, 2, 3])
     expect(config.delete(:foo, :bar)).to eq([1, 2, 3])
     expect(config.fetch(:foo, :bar)).to eq(nil)
+  end
+
+  it "deletes the top-level key from a deeply nested key" do
+    config = TTY::Config.new
+    config.set(:foo, :bar, value: 1)
+    config.set(:foo, :baz, value: 2)
+    expect(config.delete(:foo)).to eq({ "bar" => 1,  "baz" => 2 })
+    expect(config.fetch(:foo)).to eq(nil)
+  end
+
+  it "deletes subkey from a deeply nested key" do
+    config = TTY::Config.new
+    config.set(:foo, :bar, :baz, value: 1)
+    expect(config.delete(:foo, :bar)).to eq({ "baz" => 1 })
+    expect(config.fetch(:foo)).to eq({})
   end
 
   it "deletes an unknown key without a default value" do

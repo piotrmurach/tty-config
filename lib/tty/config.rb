@@ -573,7 +573,7 @@ module TTY
     def deep_delete(*keys, settings, &default)
       key, *rest = keys
       value = settings[key]
-      if !value.nil? && value.is_a?(::Hash)
+      if !rest.empty? && value.is_a?(::Hash)
         deep_delete(*rest, value, &default)
       elsif !value.nil?
         settings.delete(key)

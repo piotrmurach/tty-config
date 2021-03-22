@@ -8,4 +8,4 @@ task :console do
   ARGV.clear
   IRB.start
 end
-task c: %w[ console ]
+task c: %w[console]

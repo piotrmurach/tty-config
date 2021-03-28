@@ -40,7 +40,7 @@ This is a one-stop shop for all your configuration needs:
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'tty-config'
+gem "tty-config"
 ```
 
 And then execute:
@@ -77,7 +77,7 @@ Or install it yourself as:
   * [2.19 exist?](#219-exist)
   * [2.20 autoload_env](#220-autoload_env)
   * [2.21 register_marshaller](#221-register_marshaller)
-  * [2.22 unregister_marshaller](#222-register_marshaller)
+  * [2.22 unregister_marshaller](#222-unregister_marshaller)
 * [3. Examples](#3-examples)
   * [3.1 Working with env vars](#31-working-with-env-vars)
   * [3.2 Working with optparse](#32-working-with-optparse)
@@ -88,27 +88,27 @@ Initialize the configuration and provide the name:
 
 ```ruby
 config = TTY::Config.new
-config.filename = 'investments'
+config.filename = "investments"
 ```
 
 Then configure values for different nested keys with `set` and `append`:
 
 ```ruby
-config.set(:settings, :base, value: 'USD')
+config.set(:settings, :base, value: "USD")
 config.set(:settings, :color, value: true)
-config.set(:coins, value: ['BTC'])
+config.set(:coins, value: ["BTC"])
 
-config.append('ETH', 'TRX', 'DASH', to: :coins)
+config.append("ETH", "TRX", "DASH", to: :coins)
 ```
 
 You can get any value by using `fetch`:
 
 ```ruby
 config.fetch(:settings, :base)
-# => 'USD'
+# => "USD"
 
 config.fetch(:coins)
-# => ['BTC', 'ETH', 'TRX', 'DASH']
+# => ["BTC", "ETH", "TRX", "DASH"]
 ```
 
 And call `write` to persist the configuration to `investments.yml` file:
@@ -150,8 +150,8 @@ class App
 
   def initialize
     @config = TTY::Config.new
-    @config.filename = 'investments'
-    @config.extname = '.toml'
+    @config.filename = "investments"
+    @config.extname = ".toml"
     @config.append_path Dir.pwd
     @config.append_path Dir.home
   end
@@ -169,8 +169,8 @@ end
 To set configuration setting use `set` method. It accepts any number of keys and value by either using `:value` keyword argument or passing a block:
 
 ```ruby
-config.set(:base, value: 'USD')
-config.set(:base) { 'USD' }
+config.set(:base, value: "USD")
+config.set(:base) { "USD" }
 ```
 
 The block version of specifying a value will mean that the value is evaluated every time it's being read.
@@ -178,13 +178,13 @@ The block version of specifying a value will mean that the value is evaluated ev
 You can also specify deeply nested configuration settings by passing sequence of keys:
 
 ```ruby
-config.set :settings, :base, value: 'USD'
+config.set(:settings, :base, value: "USD")
 ```
 
 Which is equivalent to:
 
 ```ruby
-config.set 'settings.base', value: 'USD'
+config.set("settings.base", value: "USD")
 ```
 
 Internally all configuration settings are stored as string keys for ease of working with configuration files and command line application's inputs.
@@ -194,13 +194,13 @@ Internally all configuration settings are stored as string keys for ease of work
 To set a configuration setting only if it hasn't been set before use `set_if_empty`:
 
 ```ruby
-config.set_if_empty :base, value: 'USD'
+config.set_if_empty(:base, value: "USD")
 ```
 
 Similar to `set` it allows you to specify arbitrary sequence of keys followed by a key value or block:
 
 ```ruby
-config.set_if_empty :settings, :base, value: 'USD'
+config.set_if_empty(:settings, :base, value: "USD")
 ```
 
 ### 2.3 set_from_env
@@ -210,8 +210,8 @@ To read configuration options from environment variables use `set_from_env`. At 
 Given the following environment variables:
 
 ```ruby
-ENV['HOST'] = '192.168.1.17'
-ENV['PORT'] = '7727'
+ENV["HOST"] = "192.168.1.17"
+ENV["PORT"] = "7727"
 ```
 
 You can make the config aware of the above env variables:
@@ -225,28 +225,28 @@ Then you can retrieve values like any other configuration option:
 
 ```ruby
 config.fetch(:host)
-# => '192.168.1.17'
+# => "192.168.1.17"
 config.fetch(:port)
-# => '7727'
+# => "7727"
 ```
 
 If you want the configuration key name to be different from `ENV` variable name use a block:
 
 ```ruby
-config.set_from_env(:host) { 'HOSTNAME' }
+config.set_from_env(:host) { "HOSTNAME" }
 config.set_from_env(:host) { :hostname }
 ```
 
 You can also configure settings for deeply nested keys:
 
 ```ruby
-config.set_from_env(:settings, :base) { 'CURRENCY' }
+config.set_from_env(:settings, :base) { "CURRENCY" }
 config.set_from_env(:settings, :base) { :currency }
-config.set_from_env('settings.base') { 'CURRENCY'}
-config.set_from_env('settings.base') { :currency}
+config.set_from_env("settings.base") { "CURRENCY" }
+config.set_from_env("settings.base") { :currency }
 ```
 
-And assuming `ENV['CURRENCY']=USD`:
+And assuming `ENV["CURRENCY"]=USD`:
 
 ```ruby
 config.fetch(:settings, :base)
@@ -262,8 +262,8 @@ It's important to recognise that `set_from_env` doesn't record the value for the
 To get a configuration setting use `fetch`, which can accept default value either with a `:default` keyword or a block that will be lazy evaluated:
 
 ```ruby
-config.fetch(:base, default: 'USD')
-config.fetch(:base) { 'USD' }
+config.fetch(:base, default: "USD")
+config.fetch(:base) { "USD" }
 ```
 
 Similar to `set` operation, `fetch` allows you to retrieve deeply nested values:
@@ -275,16 +275,16 @@ config.fetch(:settings, :base) # => USD
 Which is equivalent to:
 
 ```ruby
-config.fetch('settings.base')
+config.fetch("settings.base")
 ```
 
 `fetch` has indifferent access so you can mix string and symbol keys, all the following examples retrieve the value:
 
 ```ruby
 config.fetch(:settings, :base)
-config.fetch('settings', 'base')
-config.fetch(:settings', 'base')
-config.fetch('settings', :base)
+config.fetch("settings", "base")
+config.fetch(:settings, "base")
+config.fetch("settings", :base)
 ```
 
 ### 2.5 merge
@@ -295,7 +295,7 @@ To merge in other configuration settings as hash use `merge`:
 config.set(:a, :b, value: 1)
 config.set(:a, :c, value: 2)
 
-config.merge({'a' => {'c' => 3, 'd' => 4}})
+config.merge({"a" => {"c" => 3, "d" => 4}})
 
 config.fetch(:a, :c) # => 3
 config.fetch(:a, :d) # => 4
@@ -394,7 +394,7 @@ In order to alias a configuration setting to another name use `alias_setting`.
 For example, given an already existing setting:
 
 ```ruby
-config.set(:base, value: 'baz')
+config.set(:base, value: "baz")
 ```
 
 You can alias it to another name:
@@ -407,29 +407,29 @@ And then access like any other configuration setting:
 
 ```ruby
 config.fetch(:currency)
-# => 'USD'
+# => "USD"
 ```
 
 Deep nested configuration options are also supported:
 
 ```ruby
-config.set(:settings, :base, value: 'USD')
+config.set(:settings, :base, value: "USD")
 ```
 
 And then can be aliased like so:
 
 ```ruby
 config.alias_setting(:settings, :base, to: [:settings, :currency])
-config.alias_setting('settings.base', to [:settings, :currency])
+config.alias_setting("settings.base", to [:settings, :currency])
 ```
 
 You can then access the deep nested settings:
 
 ```ruby
 config.fetch(:settings, :currency)
-# => 'USD'
-config.fetch('settings.currency')
-# => 'USD'
+# => "USD"
+config.fetch("settings.currency")
+# => "USD"
 ```
 
 ### 2.11 validate
@@ -449,16 +449,16 @@ You can assign multiple validations for a given key and each of them will be run
 When setting value all the validations will be run:
 
 ```ruby
-config.set(:settings, :base, value: 'PL')
-# raises TTY::Config::ValidationError, 'Currency code needs to be 3 chars long.'
+config.set(:settings, :base, value: "PL")
+# raises TTY::Config::ValidationError, "Currency code needs to be 3 chars long."
 ```
 
 If the value is provided as a proc or a block then the validation will be delayed until the value is actually read:
 
 ```ruby
-config.set(:settings, :base) { 'PL' }
+config.set(:settings, :base) { "PL" }
 config.fetch(:settings, :base)
-# raises TTY::Config::ValidationError, 'Currency code needs to be 3 chars long.'
+# raises TTY::Config::ValidationError, "Currency code needs to be 3 chars long."
 ```
 
 ### 2.12 env_prefix=
@@ -466,14 +466,14 @@ config.fetch(:settings, :base)
 Given the following variables:
 
 ```ruby
-ENV['MYTOOL_HOST'] = '192.168.1.17'
-ENV['MYTOOL_PORT'] = ' 7727'
+ENV["MYTOOL_HOST"] = "192.168.1.17"
+ENV["MYTOOL_PORT"] = "7727"
 ```
 
 You can inform configuration about common prefix using `env_prefix`:
 
 ```ruby
-config.env_prefix = 'mytool'
+config.env_prefix = "mytool"
 ```
 
 Then set configuration key name to environment variable name:
@@ -487,9 +487,9 @@ And finally retrieve the value:
 
 ```ruby
 config.fetch(:host) 
-#=> '192.168.1.17'
+#=> "192.168.1.17"
 config.fetch(:port)
-# => '7727'
+# => "7727"
 ```
 
 ### 2.13 filename=
@@ -497,17 +497,17 @@ config.fetch(:port)
 By default, **TTY::Config** searches for `config` named configuration file. To change this use `filename=` method without the extension name:
 
 ```ruby
-config.filename = 'investments'
+config.filename = "investments"
 ```
 
 Then any supported extensions will be searched for such as `.yml`, `.json` and `.toml`.
 
 ### 2.14 extname=
 
-By default '.yml' extension is used to write configuration out to a file but you can change that with `extname=`:
+By default ".yml" extension is used to write configuration out to a file but you can change that with `extname=`:
 
 ```ruby
-config.extname = '.toml'
+config.extname = ".toml"
 ```
 
 ### 2.15 append_path
@@ -552,7 +552,7 @@ For example, to find file called investments in the current directory do:
 
 ```ruby
 config.append_path(Dir.pwd)       # look in current working directory
-config.filename = 'investments'   # file to search for
+config.filename = "investments"   # file to search for
 ```
 
 Find and read the configuration file:
@@ -564,7 +564,7 @@ config.read
 You can also specify directly the file to read without setting up any search paths or filenames. If you specify a configuration with a known file extension, an appropriate format will be guessed, in this instance `TOML`:
 
 ```ruby
-config.read('./investments.toml')
+config.read("./investments.toml")
 ```
 
 In cases where you wish to specify a custom file extension, you will need to also specify the file format to use.
@@ -572,7 +572,7 @@ In cases where you wish to specify a custom file extension, you will need to als
 For example, if you have a configuration file formatted using `YAML` notation with extension called `.config`, to read it do:
 
 ```ruby
-config.read('investments.config', format: :yaml)
+config.read("investments.config", format: :yaml)
 ```
 
 ### 2.18 write
@@ -641,13 +641,13 @@ The `autoload_env` method allows you to automatically read environment variables
 For example, given an environment variable `MYTOOL_HOST` set to `localhost`:
 
 ```ruby
-ENV['MYTOOL_HOST']=localhost
+ENV["MYTOOL_HOST"]=localhost
 ```
 
 And loading environment variables with a prefix of `MYTOOL`:
 
 ```ruby
-config.env_prefix = 'mytool'
+config.env_prefix = "mytool"
 config.autoload_env
 ```
 
@@ -655,7 +655,7 @@ You can retrieve value with:
 
 ```ruby
 config.fetch(:host)
-# => 'localhost'
+# => "localhost"
 ```
 
 ### 2.21 register_marshaller
@@ -727,7 +727,7 @@ config.register_marshaller(:toml, MyTOMLMarshaller)
 
 ### 2.22 unregister_marshaller
 
-By default, the **TTY::Config** is ready to recognize various extensions. See (2.17 read)[#217-read] section for more details. But, you're free to remove the default marshallers from the internal registry with `unregister_marshaller` method.
+By default, the **TTY::Config** is ready to recognize various extensions. See [2.17 read](#217-read) section for more details. But, you're free to remove the default marshallers from the internal registry with `unregister_marshaller` method.
 
 For example, to remove all the built-in marshallers do:
 
@@ -742,14 +742,14 @@ config.unregister_marshaller :yaml, :json, :toml, :ini, :hcl
 *TTY::Config* fully supports working with environment variables. For example, there are couple of environment variables that your configuration is interested in, which normally would be set in terminal but for the sake of this example we assign them:
 
 ```ruby
-ENV['MYTOOL_HOST'] = '192.168.1.17'
-ENV['MYTOOL_PORT'] = '7727'
+ENV["MYTOOL_HOST"] = "192.168.1.17"
+ENV["MYTOOL_PORT"] = "7727"
 ```
 
 Then in order to make your configuration aware of the above, you would use [env_prefix=](#212-env_prefix) and [set_from_env](#23-set_from_env):
 
 ```ruby
-config.env_prefix = 'mytool'
+config.env_prefix = "mytool"
 config.set_from_env(:host)
 config.set_from_env(:port)
 ```
@@ -757,7 +757,7 @@ config.set_from_env(:port)
 Or automatically load all prefixed environment variables with [autoload_env](#220-autoload-env):
 
 ```ruby
-config.env_prefix = 'mytool'
+config.env_prefix = "mytool"
 config.autoload_env
 ```
 
@@ -765,9 +765,9 @@ And then retrieve values with [fetch](#24-fetch):
 
 ```ruby
 config.fetch(:host)
-#=> '192.168.1.17'
+#=> "192.168.1.17"
 config.fetch(:port)
-# => '7727'
+# => "7727"
 ```
 
 ### 3.2 Working with optparse
@@ -779,7 +779,7 @@ Let's assume you want to create a command line tool that among many options acce
 First, you need to parse the flags and store results away in options hash:
 
 ```ruby
-require 'optparse'
+require "optparse"
 
 options = {}
 
@@ -809,7 +809,7 @@ config = TTY::Config.new
 And setup config filename:
 
 ```ruby
-config_filename = options[:config_file_path] || 'config.yml'
+config_filename = options[:config_file_path] || "config.yml"
 ```
 
 As well as add configuration file locations to search in:
@@ -823,7 +823,7 @@ Once config is initialized, you can read the configuration from a config file:
 
 ```ruby
 begin
-  config.read(config_filename)  # by default the 'config.yml' is read
+  config.read(config_filename)  # by default the "config.yml" is read
 rescue TTY::Config::ReadError => read_error
   STDERR.puts "\nNo configuration file found:"
   STDERR.puts read_error

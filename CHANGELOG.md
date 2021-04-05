@@ -9,6 +9,9 @@
 ### Changed
 * Change #delete to allow removing any subkey of a deeply nested key
 
+### Fixed
+* Fix Marshaller interface to copy extension names to a subclass
+
 ## [v0.4.0] - 2020-01-25
 
 ### Added

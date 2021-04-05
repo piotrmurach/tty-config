@@ -60,4 +60,27 @@ RSpec.describe TTY::Config, "#register_marshaller" do
       TTY::Config::Marshallers::JavaPropsMarshaller
     ])
   end
+
+  it "inherits from existing marshaller" do
+    stub_const("CustomYAMLMarshaller",
+               Class.new(TTY::Config::Marshallers::YAMLMarshaller) do
+                 def marshal(data)
+                   YAML.safe_load(data, aliases: true)
+                 end
+               end)
+
+    config = TTY::Config.new
+    config.register_marshaller :yaml, CustomYAMLMarshaller
+
+    expect(config.marshallers).to eq([
+      CustomYAMLMarshaller,
+      TTY::Config::Marshallers::JSONMarshaller,
+      TTY::Config::Marshallers::TOMLMarshaller,
+      TTY::Config::Marshallers::INIMarshaller,
+      TTY::Config::Marshallers::HCLMarshaller,
+      TTY::Config::Marshallers::JavaPropsMarshaller
+    ])
+    expect(CustomYAMLMarshaller.ext).to eq(%w[.yaml .yml])
+    expect(CustomYAMLMarshaller.dep_name).to eq(%w[yaml])
+  end
 end

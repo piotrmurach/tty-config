@@ -16,7 +16,7 @@ module TTY
 
       module ExtensionsStore
         def ext
-          @ext ||= []
+          @_ext ||= []
         end
 
         # Set a list of extensions
@@ -27,10 +27,20 @@ module TTY
         # @api public
         def extension(*extensions)
           if extensions[0].is_a?(Array)
-            @ext = extensions[0]
+            @_ext = extensions[0]
           else
-            @ext = extensions
+            @_ext = extensions
           end
+        end
+
+        # Copy extensions to a subclass
+        #
+        # @param [Object] subclass
+        #
+        # @api private
+        def inherited(subclass)
+          super
+          subclass.instance_variable_set(:@_ext, @_ext.dup)
         end
       end
 

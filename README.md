@@ -67,17 +67,18 @@ Or install it yourself as:
   * [2.9 delete](#29-delete)
   * [2.10 alias_setting](#210-alias_setting)
   * [2.11 validate](#211-validate)
-  * [2.12 env_prefix=](#212-env_prefix)
-  * [2.13 filename=](#213-filename)
-  * [2.14 extname=](#214-extname)
-  * [2.15 append_path](#215-append_path)
-  * [2.16 prepend_path](#216-prepend_path)
-  * [2.17 read](#217-read)
-  * [2.18 write](#218-write)
-  * [2.19 exist?](#219-exist)
-  * [2.20 autoload_env](#220-autoload_env)
-  * [2.21 register_marshaller](#221-register_marshaller)
-  * [2.22 unregister_marshaller](#222-unregister_marshaller)
+  * [2.12 filename=](#212-filename)
+  * [2.13 extname=](#213-extname)
+  * [2.14 append_path](#214-append_path)
+  * [2.15 prepend_path](#215-prepend_path)
+  * [2.16 read](#216-read)
+  * [2.17 write](#217-write)
+  * [2.18 exist?](#218-exist)
+  * [2.19 env_prefix=](#219-env_prefix)
+  * [2.20 env_separator=](#220-env_separator)
+  * [2.21 autoload_env](#221-autoload_env)
+  * [2.22 register_marshaller](#222-register_marshaller)
+  * [2.23 unregister_marshaller](#223-unregister_marshaller)
 * [3. Examples](#3-examples)
   * [3.1 Working with env vars](#31-working-with-env-vars)
   * [3.2 Working with optparse](#32-working-with-optparse)
@@ -253,7 +254,7 @@ config.fetch(:settings, :base)
 # => USD
 ```
 
-You can also prefix your environment variables. See [env_prefix=](#212-env_prefix)
+You can also prefix your environment variables. See [env_prefix=](#219-env_prefix)
 
 It's important to recognise that `set_from_env` doesn't record the value for the environment variables. They are read each time from the `ENV` when `fetch` is called.
 
@@ -461,38 +462,7 @@ config.fetch(:settings, :base)
 # raises TTY::Config::ValidationError, "Currency code needs to be 3 chars long."
 ```
 
-### 2.12 env_prefix=
-
-Given the following variables:
-
-```ruby
-ENV["MYTOOL_HOST"] = "192.168.1.17"
-ENV["MYTOOL_PORT"] = "7727"
-```
-
-You can inform configuration about common prefix using `env_prefix`:
-
-```ruby
-config.env_prefix = "mytool"
-```
-
-Then set configuration key name to environment variable name:
-
-```ruby
-config.set_from_env(:host)
-config.set_from_env(:port)
-```
-
-And finally retrieve the value:
-
-```ruby
-config.fetch(:host) 
-#=> "192.168.1.17"
-config.fetch(:port)
-# => "7727"
-```
-
-### 2.13 filename=
+### 2.12 filename=
 
 By default, **TTY::Config** searches for `config` named configuration file. To change this use `filename=` method without the extension name:
 
@@ -502,7 +472,7 @@ config.filename = "investments"
 
 Then any supported extensions will be searched for such as `.yml`, `.json` and `.toml`.
 
-### 2.14 extname=
+### 2.13 extname=
 
 By default ".yml" extension is used to write configuration out to a file but you can change that with `extname=`:
 
@@ -510,7 +480,7 @@ By default ".yml" extension is used to write configuration out to a file but you
 config.extname = ".toml"
 ```
 
-### 2.15 append_path
+### 2.14 append_path
 
 You need to tell the **TTY::Config** where to search for configuration files. To search multiple paths for a configuration file use `append_path` or `prepend_path` methods.
 
@@ -524,7 +494,7 @@ config.append_path(Dir.pwd)   # look in current working directory
 
 None of these paths are required, but you should provide at least one path if you wish to read a configuration file.
 
-### 2.16 prepend_path
+### 2.15 prepend_path
 
 The `prepend_path` allows you to add configuration search paths that should be searched first.
 
@@ -533,7 +503,7 @@ config.append_path(Dir.pwd)   # look in current working directory second
 config.prepend_path(Dir.home) # look in user's home directory first
 ```
 
-### 2.17 read
+### 2.16 read
 
 There are two ways for reading configuration files and both use the `read` method. One attempts to guess extension and format of your data, the other allows you to request specific extension and format.
 
@@ -575,7 +545,7 @@ For example, if you have a configuration file formatted using `YAML` notation wi
 config.read("investments.config", format: :yaml)
 ```
 
-### 2.18 write
+### 2.17 write
 
 By default **TTY::Config**, persists configuration file in the current working directory with a `config.yml` name. However, you can change the default file name by specifying the `filename` and `extension` type:
 
@@ -626,7 +596,7 @@ To ensure that a configuration file is written no matter what, use both `:create
 config.write(create: true, force: true)
 ```
 
-### 2.19 exist?
+### 2.18 exist?
 
 To check if a configuration file exists within the configured search paths use `exist?` method:
 
@@ -634,9 +604,68 @@ To check if a configuration file exists within the configured search paths use `
 config.exist? # => true
 ```
 
-### 2.20 autoload_env
+### 2.19 env_prefix=
 
-The `autoload_env` method allows you to automatically read environment variables. In most cases you would combine it with [env_prefix=](#212-env_prefix) to only read a subset of variables. When using `autoload_env`, anytime the `fetch` is called a corresponding environment variable will be checked.
+Given the following variables:
+
+```ruby
+ENV["MYTOOL_HOST"] = "127.0.0.1"
+ENV["MYTOOL_PORT"] = "7727"
+```
+
+You can inform configuration about common prefix using `env_prefix`:
+
+```ruby
+config.env_prefix = "mytool"
+```
+
+Then set configuration key name to environment variable name:
+
+```ruby
+config.set_from_env(:host)
+config.set_from_env(:port)
+```
+
+And retrieve the value:
+
+```ruby
+config.fetch(:host)
+# => "127.0.0.1"
+config.fetch(:port)
+# => "7727"
+```
+
+### 2.20 env_separator=
+
+By default, the `_` character is used to separate parts in the environment variable name and it can be changed using the `env_separator=` like so:
+
+```ruby
+config.env_separator = "___"
+```
+
+Given the following environment variable:
+
+```ruby
+ENV["SERVER__PORT"] = "123"
+```
+
+Then we can make configuration aware of the above variable name in one of these ways:
+
+```ruby
+config.set_from_env(:server, :port)
+config.set_from_env("server.port")
+````
+
+And retrieve the value:
+
+```ruby
+config.fetch(:server, :port)
+# => "123"
+```
+
+### 2.21 autoload_env
+
+The `autoload_env` method allows you to automatically read environment variables. In most cases you would combine it with [env_prefix=](#219-env_prefix) to only read a subset of variables. When using `autoload_env`, anytime the `fetch` is called a corresponding environment variable will be checked.
 
 For example, given an environment variable `MYTOOL_HOST` set to `localhost`:
 
@@ -658,7 +687,7 @@ config.fetch(:host)
 # => "localhost"
 ```
 
-### 2.21 register_marshaller
+### 2.22 register_marshaller
 
 There are number of built-in marshallers that handle the process of serializing internal configuration from and back into a desired format, for example, a `JSON` string.
 
@@ -725,7 +754,7 @@ Bear in mind that you can also override the built-in implementation of a marshal
 config.register_marshaller(:toml, MyTOMLMarshaller)
 ```
 
-### 2.22 unregister_marshaller
+### 2.23 unregister_marshaller
 
 By default, the **TTY::Config** is ready to recognize various extensions. See [2.17 read](#217-read) section for more details. But, you're free to remove the default marshallers from the internal registry with `unregister_marshaller` method.
 
@@ -746,7 +775,7 @@ ENV["MYTOOL_HOST"] = "192.168.1.17"
 ENV["MYTOOL_PORT"] = "7727"
 ```
 
-Then in order to make your configuration aware of the above, you would use [env_prefix=](#212-env_prefix) and [set_from_env](#23-set_from_env):
+Then in order to make your configuration aware of the above, you would use [env_prefix=](#219-env_prefix) and [set_from_env](#23-set_from_env):
 
 ```ruby
 config.env_prefix = "mytool"

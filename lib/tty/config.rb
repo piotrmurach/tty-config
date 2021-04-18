@@ -64,6 +64,10 @@ module TTY
     # @api public
     attr_accessor :env_prefix
 
+    # The string used to separate parts in ENV variable name
+    # @api public
+    attr_accessor :env_separator
+
     # Create a configuration instance
     #
     # @api public
@@ -76,6 +80,7 @@ module TTY
       @key_delim = "."
       @envs = {}
       @env_prefix = ""
+      @env_separator = "_"
       @autoload_env = false
       @aliases = {}
 
@@ -177,7 +182,6 @@ module TTY
     #
     # @api public
     def set_from_env(*keys, &block)
-      assert_keys_with_block(convert_to_keys(keys), block)
       key = flatten_keys(keys)
       env_key = block.nil? ? key : block.()
       env_key = to_env_key(env_key)
@@ -188,10 +192,16 @@ module TTY
     #
     # @param [String] key
     #
+    # @return [String]
+    #
     # @api private
     def to_env_key(key)
-      env_key = key.to_s.upcase
-      @env_prefix == "" ? env_key : "#{@env_prefix.to_s.upcase}_#{env_key}"
+      env_key = key.to_s.gsub(key_delim, env_separator).upcase
+      if @env_prefix == ""
+        env_key
+      else
+        "#{@env_prefix.to_s.upcase}#{env_separator}#{env_key}"
+      end
     end
 
     # Fetch value under a composite key
@@ -474,12 +484,6 @@ module TTY
     def assert_valid(key, value)
       validators[key].each do |validator|
         validator.(key, value)
-      end
-    end
-
-    def assert_keys_with_block(keys, block)
-      if keys.size > 1 && block.nil?
-        raise ArgumentError, "Need to set env var in block"
       end
     end
 

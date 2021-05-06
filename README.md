@@ -9,15 +9,15 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/2383i0dn3hlw9cnn?svg=true)][appveyor]
 [![Maintainability](https://api.codeclimate.com/v1/badges/dfac05073e1549e9dbb6/maintainability)][codeclimate]
 [![Coverage Status](https://coveralls.io/repos/github/piotrmurach/tty-config/badge.svg)][coverage]
-[![Inline docs](http://inch-ci.org/github/piotrmurach/tty-config.svg?branch=master)][inchpages]
+[![Inline docs](https://inch-ci.org/github/piotrmurach/tty-config.svg?branch=master)][inchpages]
 
 [gitter]: https://gitter.im/piotrmurach/tty
-[gem]: http://badge.fury.io/rb/tty-config
+[gem]: https://badge.fury.io/rb/tty-config
 [gh_actions_ci]: https://github.com/piotrmurach/tty-config/actions?query=workflow%3ACI
 [appveyor]: https://ci.appveyor.com/project/piotrmurach/tty-config
 [codeclimate]: https://codeclimate.com/github/piotrmurach/tty-config/maintainability
 [coverage]: https://coveralls.io/github/piotrmurach/tty-config
-[inchpages]: http://inch-ci.org/github/piotrmurach/tty-config
+[inchpages]: https://inch-ci.org/github/piotrmurach/tty-config
 
 > Define, read and write any Ruby app configurations with a penchant for terminal clients.
 

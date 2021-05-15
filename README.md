@@ -254,7 +254,7 @@ config.fetch(:settings, :base)
 # => USD
 ```
 
-You can also prefix your environment variables. See [env_prefix=](#219-env_prefix)
+You can also prefix your environment variables with [env_prefix=](#219-env_prefix) or use a different separator with [env_separator](#220-env_separator).
 
 It's important to recognise that `set_from_env` doesn't record the value for the environment variables. They are read each time from the `ENV` when `fetch` is called.
 
@@ -765,7 +765,7 @@ config.register_marshaller(:toml, MyTOMLMarshaller)
 
 ### 2.23 unregister_marshaller
 
-By default, the **TTY::Config** is ready to recognize various extensions. See [2.17 read](#217-read) section for more details. But, you're free to remove the default marshallers from the internal registry with `unregister_marshaller` method.
+By default, the **TTY::Config** is ready to recognize various extensions. See [2.16 read](#216-read) section for more details. But, you're free to remove the default marshallers from the internal registry with `unregister_marshaller` method.
 
 For example, to remove all the built-in marshallers do:
 
@@ -792,7 +792,7 @@ config.set_from_env(:host)
 config.set_from_env(:port)
 ```
 
-Or automatically load all prefixed environment variables with [autoload_env](#220-autoload-env):
+Or automatically load all prefixed environment variables with [autoload_env](#221-autoload_env):
 
 ```ruby
 config.env_prefix = "mytool"

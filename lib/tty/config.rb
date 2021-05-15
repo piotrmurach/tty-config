@@ -390,37 +390,20 @@ module TTY
     # @param [String] path
     #   the custom path to use to write a file to
     #
+    # @raise [TTY::Config::WriteError]
+    #
     # @api public
     def write(file = find_file, create: false, force: false, format: :auto,
               path: nil)
-      if file.nil?
-        dir = path || @location_paths.first || Dir.pwd
-        file = ::File.join(dir, "#{filename}#{@extname}")
-      elsif file && path
-        file = ::File.join(path, ::File.basename(file))
-      end
-
-      if file && ::File.exist?(file)
-        if !force
-          raise WriteError, "File `#{file}` already exists. " \
-                            "Use :force option to overwrite."
-        elsif !::File.writable?(file)
-          raise WriteError, "Cannot write to #{file}."
-        end
-      end
+      file = fullpath(file, path)
+      check_can_write(file, force)
 
       set_file_metadata(file)
-
       ext = (format == :auto ? extname : ".#{format}")
       content = marshal(@settings, ext: ext)
       filepath = Pathname.new(file)
 
-      if !filepath.dirname.exist? && !create
-        raise WriteError, "Directory `#{filepath.dirname}` doesn't exist. " \
-                          "Use :create option to create missing directories."
-      else
-        filepath.dirname.mkpath
-      end
+      create_missing_dirs(filepath, create)
       ::File.write(filepath, content)
     end
 
@@ -600,6 +583,68 @@ module TTY
         end
       end
       nil
+    end
+
+    # Create a full path to a configuration file
+    #
+    # @param [String] file
+    #   the configuration file
+    # @param [String] path
+    #   the path to configuration file
+    #
+    # @return [String]
+    #   the full path to a file
+    #
+    # @api private
+    def fullpath(file, path)
+      if file.nil?
+        dir = path || @location_paths.first || Dir.pwd
+        ::File.join(dir, "#{filename}#{@extname}")
+      elsif file && path
+        ::File.join(path, ::File.basename(file))
+      else
+        file
+      end
+    end
+
+    # Check if a file can be written to
+    #
+    # @param [String] file
+    #   the configuration file
+    # @param [Boolean] force
+    #   whether or not to force writing
+    #
+    # @raise [TTY::Config::WriteError]
+    #
+    # @api private
+    def check_can_write(file, force)
+      return unless file && ::File.exist?(file)
+
+      if !force
+        raise WriteError, "File `#{file}` already exists. " \
+                          "Use :force option to overwrite."
+      elsif !::File.writable?(file)
+        raise WriteError, "Cannot write to #{file}."
+      end
+    end
+
+    # Create any missing directories
+    #
+    # @param [Pathname] filepath
+    #   the file path
+    # @param [Boolean] create
+    #   whether or not to create missing directories
+    #
+    # @raise [TTY::Config::WriteError]
+    #
+    # @api private
+    def create_missing_dirs(filepath, create)
+      if !filepath.dirname.exist? && !create
+        raise WriteError, "Directory `#{filepath.dirname}` doesn't exist. " \
+                          "Use :create option to create missing directories."
+      else
+        filepath.dirname.mkpath
+      end
     end
 
     # Crate a marshaller instance based on the extension name

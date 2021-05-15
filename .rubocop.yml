@@ -47,24 +47,23 @@ Style/AccessorGrouping:
 Style/AsciiComments:
   Enabled: false
 
+Style/BlockDelimiters:
+  Enabled: false
+
+Style/CommentedKeyword:
+  Enabled: false
+
+Style/FormatStringToken:
+  Enabled: false
+
 Style/Lambda:
   Enabled: false
 
 Style/LambdaCall:
   EnforcedStyle: braces
 
-Style/FormatStringToken:
-  Enabled: false
-
 Style/StringLiterals:
   EnforcedStyle: double_quotes
 
 Style/TrivialAccessors:
-  Enabled: false
-
-# { ... } for multi-line blocks is okay
-Style/BlockDelimiters:
-  Enabled: false
-
-Style/CommentedKeyword:
   Enabled: false

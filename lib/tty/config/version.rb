@@ -2,6 +2,6 @@
 
 module TTY
   class Config
-    VERSION = "0.4.0"
-  end
-end
+    VERSION = "0.5.0"
+  end # Config
+end # TTY

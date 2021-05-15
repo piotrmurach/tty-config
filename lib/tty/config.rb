@@ -380,16 +380,26 @@ module TTY
     # Write current configuration to a file.
     #
     # @param [String] file
-    #   the path to a file
+    #   the file to write to
     # @param [Boolean] create
     #   whether or not to create missing path directories, false by default
     # @param [Boolean] force
     #   whether or not to overwrite existing configuration file, false by default
     # @param [String] format
     #   the format name for the configuration file, :auto by defualt
+    # @param [String] path
+    #   the custom path to use to write a file to
     #
     # @api public
-    def write(file = find_file, create: false, force: false, format: :auto)
+    def write(file = find_file, create: false, force: false, format: :auto,
+              path: nil)
+      if file.nil?
+        dir = path || @location_paths.first || Dir.pwd
+        file = ::File.join(dir, "#{filename}#{@extname}")
+      elsif file && path
+        file = ::File.join(path, ::File.basename(file))
+      end
+
       if file && ::File.exist?(file)
         if !force
           raise WriteError, "File `#{file}` already exists. " \
@@ -399,24 +409,19 @@ module TTY
         end
       end
 
-      if file.nil?
-        dir = @location_paths.empty? ? Dir.pwd : @location_paths.first
-        file = ::File.join(dir, "#{filename}#{@extname}")
-      end
-
       set_file_metadata(file)
 
       ext = (format == :auto ? extname : ".#{format}")
       content = marshal(@settings, ext: ext)
-      path = Pathname.new(file)
+      filepath = Pathname.new(file)
 
-      if !path.dirname.exist? && !create
-        raise WriteError, "Directory `#{path.dirname}` doesn't exist. " \
+      if !filepath.dirname.exist? && !create
+        raise WriteError, "Directory `#{filepath.dirname}` doesn't exist. " \
                           "Use :create option to create missing directories."
       else
-        path.dirname.mkpath
+        filepath.dirname.mkpath
       end
-      ::File.write(path, content)
+      ::File.write(filepath, content)
     end
 
     # Set file name and extension

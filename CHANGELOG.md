@@ -4,6 +4,7 @@
 
 ### Added
 * Add :create option to the #write method to control creating any missing directories
+* Add :path option to the #write method to specify a custom file path to write to
 * Add ability to specify a default value for a missing key in the #delete method
 * Add #env_separator for setting a string to separate parts in environment variable name
 

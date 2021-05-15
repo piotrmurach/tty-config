@@ -83,6 +83,58 @@ coins = ["BTC","TRX","DASH"]
     EOS
   end
 
+  it "writes to a specified path and creates any missing directories" do
+    config = TTY::Config.new
+    config.filename = "coins"
+    config.extname = ".toml"
+    config.set("coins", value: %w[BTC TRX DASH])
+
+    config.write(path: "non/existent/path", create: true)
+
+    expect(::File.read("non/existent/path/coins.toml")).to eq <<-EOS
+coins = ["BTC","TRX","DASH"]
+    EOS
+  end
+
+  it "writes to a specified file and replaces directories with a path" do
+    config = TTY::Config.new
+    config.set("coins", value: %w[BTC TRX DASH])
+
+    config.write("other/path/coins.toml", path: "non/existent/path", create: true)
+
+    expect(::File.read("non/existent/path/coins.toml")).to eq <<-EOS
+coins = ["BTC","TRX","DASH"]
+    EOS
+  end
+
+  it "raises when writing to an existing configured file with a custom path" do
+    ::FileUtils.mkdir_p("existing/path")
+    ::File.write("existing/path/coins.toml", "coins = [\"BTC\"]")
+    config = TTY::Config.new
+    config.filename = "coins"
+    config.extname = ".toml"
+    config.set("coins", value: %w[BTC TRX DASH])
+
+    expect {
+      config.write(path: "existing/path")
+    }.to raise_error(TTY::Config::WriteError,
+                     "File `existing/path/coins.toml` already exists. " \
+                     "Use :force option to overwrite.")
+  end
+
+  it "raises when writing to a file with an existing custom path" do
+    ::FileUtils.mkdir_p("existing/path")
+    ::File.write("existing/path/coins.toml", "coins = [\"BTC\"]")
+    config = TTY::Config.new
+    config.set("coins", value: %w[BTC TRX DASH])
+
+    expect {
+      config.write("coins.toml", path: "existing/path")
+    }.to raise_error(TTY::Config::WriteError,
+                     "File `existing/path/coins.toml` already exists. " \
+                     "Use :force option to overwrite.")
+  end
+
   it "raises when writing to a path with missing directories" do
     config = TTY::Config.new
     config.set("coins", value: %w[BTC TRX DASH])
@@ -94,7 +146,7 @@ coins = ["BTC","TRX","DASH"]
                      "Use :create option to create missing directories.")
   end
 
-  it "doesn't override already existing file" do
+  it "raises when a configured file already existing file" do
     config = TTY::Config.new
     config.set("settings", "base", value: "USD")
     file = "config.yml"

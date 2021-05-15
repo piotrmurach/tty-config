@@ -557,7 +557,7 @@ config.extname = ".toml"
 Now, by invoking `write` you will persist the current configuration to `investments.toml` file.
 
 ```ruby
-config.write   # writes "investments.toml" to the current directory
+config.write   # writes "investments.toml" in the current directory
 ```
 
 To write the current configuration to a file in a custom location, you can specify a direct location path and filename as an argument:
@@ -567,22 +567,31 @@ config.write("/custom/path/to/investments.toml")
 # may raise an error if any of the path directories are missing
 ```
 
+Alternatively, if the filename doesn't need to change you can specify only a custom path using the `:path` keyword:
+
+```ruby
+config.write(path: "/custom/path/to")
+# may raise an error if any of the path directories are missing
+```
+
 If the `/custom/path/to` doesn't exist an error will be raised. You can set the `:create` option to make any missing directories in the path:
 
 ```ruby
 config.write("/custom/path/to/investments.toml", create: true)
+config.write(path: "/custom/path/to", create: true)
 ```
 
-In case when the `investments.toml` file already exists the `TTY::Config::WriteError` error will be raised.
+When the `investments.toml` file already exists the `TTY::Config::WriteError` error will be raised.
 
 To create a configuration file regardless of whether it exists or not, use `:force` flag:
 
 ```ruby
 config.write(force: true)
 config.write("/custom/path/to/investments.toml", force: true)
+config.write(path: "/custom/path/to", force: true)
 ```
 
-You can specify location paths to be searched for already existing configuration to overwrite:
+By default, only the current directory is searched. You can specify additional location paths to be searched for already existing configuration to overwrite:
 
 ```ruby
 config.append_path("/custom/path/to")  # search in "/custom/path/to" for config file

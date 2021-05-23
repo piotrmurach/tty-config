@@ -19,21 +19,21 @@
 [coverage]: https://coveralls.io/github/piotrmurach/tty-config
 [inchpages]: https://inch-ci.org/github/piotrmurach/tty-config
 
-> Define, read and write any Ruby app configurations with a penchant for terminal clients.
+> A highly customisable application configuration interface for building terminal tools.
 
-**TTY::Config** provides app configuration component for [TTY](https://github.com/piotrmurach/tty) toolkit.
+**TTY::Config** provides application configuration component for [TTY](https://github.com/piotrmurach/tty) toolkit.
 
 ## Features
 
 This is a one-stop shop for all your configuration needs:
 
-* Read and write config files in YAML, JSON, TOML, INI, HCL and Java Properties formats
-* Add custom marshallers or override the built-in ones
-* Set and read settings for deeply nested keys
-* Set defaults for undefined settings
-* Read settings with indifferent access
-* Merge configuration settings from other hash objects
-* Read values from environment variables
+* [Read](#216-read) and [write](#217-write) config files in YAML, JSON, TOML, INI, HCL and Java Properties formats
+* Add [custom marshallers](#222-register_marshaller) or override the built-in ones
+* [Set](#21-set) and [read](#24-fetch) settings for deeply nested keys
+* [Set](#21-set) defaults for undefined settings
+* [Read](#24-fetch) settings with indifferent access
+* [Merge](#25-merge) configuration settings from other hash objects
+* Read values from [environment variables](#23-set_from_env)
 
 ## Installation
 

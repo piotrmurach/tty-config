@@ -6,7 +6,7 @@ require "yaml/store"
 RSpec.describe TTY::Config, type: :sandbox do
   include RSpec::Benchmark::Matchers
 
-  it "reads and writes keys at most 1.5x slower than built-in yaml store" do
+  it "reads and writes keys at most 2x slower than built-in yaml store" do
     config = TTY::Config.new
     store = YAML::Store.new("store.yml")
 
@@ -15,6 +15,6 @@ RSpec.describe TTY::Config, type: :sandbox do
       config.write(force: true)
     }.to perform_slower_than {
       store.transaction { store[:foo] = "bar" }
-    }.at_most(1.5).times
+    }.at_most(2).times
   end
 end

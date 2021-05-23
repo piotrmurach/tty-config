@@ -10,6 +10,7 @@
 
 ### Changed
 * Change #delete to allow removing any subkey of a deeply nested key
+* Change #remove to require from keyword
 
 ### Fixed
 * Fix Marshaller interface to copy extension names to a subclass

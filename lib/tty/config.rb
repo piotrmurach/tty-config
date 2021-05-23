@@ -257,12 +257,22 @@ module TTY
 
     # Remove a set of values from a nested key
     #
-    # @param [Array[String|Symbol]] keys
-    #   the keys for a value removal
+    # @example
+    #   remove(1, 2, from: :foo)
+    #
+    # @example
+    #   remove(1, 2, from: %i[foo bar])
+    #
+    # @param [Array<Object>] values
+    #   the values to remove from a nested key
+    # @param [Array<String, Symbol>, String] from
+    #   the nested key to remove values from
     #
     # @api public
     def remove(*values, from: nil)
       keys = Array(from)
+      raise ArgumentError, "Need to set key to remove from" if keys.empty?
+
       set(*keys, value: Array(fetch(*keys)) - values)
     end
 

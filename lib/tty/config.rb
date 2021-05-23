@@ -12,6 +12,9 @@ require_relative "config/marshallers/hcl_marshaller"
 require_relative "config/marshallers/java_props_marshaller"
 
 module TTY
+  # Responsible for managing application configuration
+  #
+  # @api public
   class Config
     include Marshallers
 
@@ -26,11 +29,24 @@ module TTY
     # Error raised when validation assertion fails
     ValidationError = Class.new(StandardError)
 
+    # Coerce a hash object into Config instance
+    #
+    # @return [TTY::Config]
+    #
+    # @api private
     def self.coerce(hash, &block)
       new(normalize_hash(hash), &block)
     end
 
     # Convert string keys via method
+    #
+    # @param [Hash] hash
+    #   the hash to normalize keys for
+    # @param [Symbol] method
+    #   the method to use for converting keys
+    #
+    # @return [Hash{Symbol => Object}]
+    #   the converted hash
     #
     # @api private
     def self.normalize_hash(hash, method = :to_sym)
@@ -109,6 +125,14 @@ module TTY
 
     # Add path to locations to search in
     #
+    # @example
+    #   append_path(Dir.pwd)
+    #
+    # @param [String] path
+    #   the path to append
+    #
+    # @return [Array<String>]
+    #
     # @api public
     def append_path(path)
       @location_paths << path
@@ -116,12 +140,22 @@ module TTY
 
     # Insert location path at the begining
     #
+    # @example
+    #   prepend_path(Dir.pwd)
+    #
+    # @param [String] path
+    #   the path to prepend
+    #
+    # @return [Array<String>]
+    #
     # @api public
     def prepend_path(path)
       @location_paths.unshift(path)
     end
 
     # Check if env variables are auto loaded
+    #
+    # @return [Boolean]
     #
     # @api public
     def autoload_env?
@@ -135,8 +169,25 @@ module TTY
       @autoload_env = true
     end
 
-    # Set a value for a composite key and overrides any existing keys.
+    # Set a value for a composite key and overrides any existing keys
     # Keys are case-insensitive
+    #
+    # @example
+    #   set(:foo, :bar, :baz, value: 2)
+    #
+    # @example
+    #   set(:foo, :bar, :baz) { 2 }
+    #
+    # @example
+    #   set("foo.bar.baz", value: 2)
+    #
+    # @param [Array<String, Symbol>, String] keys
+    #   the nested key to set value for
+    # @param [Object] value
+    #   the value to set
+    #
+    # @return [Object]
+    #   the set value
     #
     # @api public
     def set(*keys, value: nil, &block)
@@ -186,7 +237,7 @@ module TTY
     #   set_from_env(:host)
     #   set_from_env(:foo, :bar) { 'HOST' }
     #
-    # @param [Array[String]] keys
+    # @param [Array<String>] keys
     #   the keys to bind to ENV variables
     #
     # @api public
@@ -215,9 +266,18 @@ module TTY
 
     # Fetch value under a composite key
     #
-    # @param [Array[String|Symbol]] keys
+    # @example
+    #   fetch(:foo, :bar, :baz)
+    #
+    # @example
+    #   fetch("foo.bar.baz")
+    #
+    # @param [Array<String, Symbol>, String] keys
     #   the keys to get value at
     # @param [Object] default
+    #   the default value
+    #
+    # @return [Object]
     #
     # @api public
     def fetch(*keys, default: nil, &block)
@@ -244,7 +304,10 @@ module TTY
 
     # Merge in other configuration settings
     #
-    # @param [Hash[Object]] other_settings
+    # @param [Hash{Symbol => Object]] other_settings
+    #
+    # @return [Hash, nil]
+    #   the combined settings or nil
     #
     # @api public
     def merge(other_settings)
@@ -255,8 +318,16 @@ module TTY
 
     # Append values to an already existing nested key
     #
-    # @param [Array[String|Symbol]] values
+    # @example
+    #   append(1, 2, to: %i[foo bar])
+    #
+    # @param [Array<Object>] values
     #   the values to append
+    # @param [Array<String, Symbol] to
+    #   the nested key to append to
+    #
+    # @return [Array<Object>]
+    #   the values for a nested key
     #
     # @api public
     def append(*values, to: nil)
@@ -293,10 +364,13 @@ module TTY
     # @example
     #   delete(:unknown) { |key| "#{key} isn't set" }
     #
-    # @param [Array[String|Symbol]] keys
+    # @param [Array<String, Symbol>] keys
     #   the keys for a value deletion
     #
     # @yield [key] Invoke the block with a missing key
+    #
+    # @return [Object]
+    #   the deleted value(s)
     #
     # @api public
     def delete(*keys, &default)
@@ -309,7 +383,7 @@ module TTY
     # @example
     #   alias_setting(:foo, to: :bar)
     #
-    # @param [Array[String]] keys
+    # @param [Array<String>] keys
     #   the alias key
     #
     # @api public
@@ -332,7 +406,7 @@ module TTY
 
     # Register a validation rule for a nested key
     #
-    # @param [Array[String]] keys
+    # @param [Array<String>] keys
     #   a deep nested keys
     # @param [Proc] validator
     #   the logic to use to validate given nested key
@@ -398,6 +472,9 @@ module TTY
 
     # Write current configuration to a file.
     #
+    # @example
+    #   write(force: true, create: true)
+    #
     # @param [String] file
     #   the file to write to
     # @param [Boolean] create
@@ -428,7 +505,11 @@ module TTY
 
     # Set file name and extension
     #
+    # @example
+    #   set_file_metadata("config.yml")
+    #
     # @param [File] file
+    #   the file to set metadata for
     #
     # @api public
     def set_file_metadata(file)
@@ -471,7 +552,11 @@ module TTY
     # that will be performed at point when a new proc is invoked.
     #
     # @param [String] key
+    #   the key to set validation for
     # @param [Proc] callback
+    #   the callback to wrap
+    #
+    # @return [Proc]
     #
     # @api private
     def delay_validation(key, callback)
@@ -485,7 +570,9 @@ module TTY
     # Check if key passes all registered validations for a key
     #
     # @param [String] key
+    #   the key to validate a value for
     # @param [Object] value
+    #   the value to check
     #
     # @api private
     def assert_valid(key, value)
@@ -502,8 +589,11 @@ module TTY
     #
     # @param [Hash] settings
     #
-    # @param [Array[Object]]
+    # @param [Array<Object>] keys
     #   the keys to nest
+    #
+    # @return [Hash]
+    #   the nested setting
     #
     # @api private
     def deep_set(settings, *keys)
@@ -523,6 +613,13 @@ module TTY
       end
     end
 
+    # Convert key to an array of key elements
+    #
+    # @param [String, Array<String, Symbol>] keys
+    #
+    # @return [Array<String>]
+    #
+    # @api private
     def convert_to_keys(keys)
       first_key = keys[0]
       if first_key.to_s.include?(key_delim)
@@ -532,6 +629,18 @@ module TTY
       end
     end
 
+    # Convert nested key from an array to a string
+    #
+    # @example
+    #   flatten_keys(%i[foo bar baz]) # => "foo.bar.baz"
+    #
+    # @param [Array<String, Symbol>] keys
+    #   the nested key to convert
+    #
+    # @return [String]
+    #   the delimited nested key
+    #
+    # @api private
     def flatten_keys(keys)
       first_key = keys[0]
       if first_key.to_s.include?(key_delim)
@@ -544,8 +653,12 @@ module TTY
     # Fetch value under deeply nested keys with indiffernt key access
     #
     # @param [Hash] settings
+    #   the settings to search
+    # @param [Array<Object>] keys
+    #   the nested key to look up
     #
-    # @param [Array[Object]] keys
+    # @return [Object, nil]
+    #   the value or nil
     #
     # @api private
     def deep_fetch(settings, *keys)
@@ -558,6 +671,14 @@ module TTY
       end
     end
 
+    # Merge two deeply nested hash objects
+    #
+    # @param [Hash] this_hash
+    # @param [Hash] other_hash
+    #
+    # @return [Hash]
+    #   the merged hash object
+    #
     # @api private
     def deep_merge(this_hash, other_hash,  &block)
       this_hash.merge(other_hash) do |key, this_val, other_val|
@@ -571,6 +692,16 @@ module TTY
       end
     end
 
+    # Delete a deeply nested key
+    #
+    # @param [Array<String>] keys
+    #   the nested key to delete
+    # @param [Hash{String => Object}]
+    #   the settings to delete key from
+    #
+    # @return [Object]
+    #   the deleted object(s)
+    #
     # @api private
     def deep_delete(*keys, settings, &default)
       key, *rest = keys
@@ -584,6 +715,14 @@ module TTY
       end
     end
 
+    # Search for a configuration file in a path
+    #
+    # @param [String] path
+    #   the path to search
+    #
+    # @return [String, nil]
+    #   the configuration file path or nil
+    #
     # @api private
     def search_in_path(path)
       path = Pathname.new(path)
@@ -626,6 +765,8 @@ module TTY
     #
     # @raise [TTY::Config::WriteError]
     #
+    # @return [nil]
+    #
     # @api private
     def check_can_write(file, force)
       return unless file && ::File.exist?(file)
@@ -647,6 +788,8 @@ module TTY
     #
     # @raise [TTY::Config::WriteError]
     #
+    # @return [nil]
+    #
     # @api private
     def create_missing_dirs(filepath, create)
       if !filepath.dirname.exist? && !create
@@ -659,6 +802,9 @@ module TTY
 
     # Crate a marshaller instance based on the extension name
     #
+    # @param [String] ext
+    #   the extension name
+    #
     # @return [nil, Marshaller]
     #
     # @api private
@@ -670,6 +816,13 @@ module TTY
       marshaller.new
     end
 
+    # Unmarshal content into a hash object
+    #
+    # @param [String] content
+    #   the content to convert into a hash object
+    #
+    # @return [Hash{String => Object}]
+    #
     # @api private
     def unmarshal(content, ext: nil)
       ext ||= extname
@@ -681,6 +834,9 @@ module TTY
     end
 
     # Marshal hash object into a configuration file content
+    #
+    # @param [Hash{String => Object}] object
+    #   the object to convert to string
     #
     # @return [String]
     #

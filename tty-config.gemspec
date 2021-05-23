@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "lib/tty/config/version"
 
 Gem::Specification.new do |spec|
@@ -5,8 +7,8 @@ Gem::Specification.new do |spec|
   spec.version       = TTY::Config::VERSION
   spec.authors       = ["Piotr Murach"]
   spec.email         = ["piotr@piotrmurach.com"]
-  spec.summary       = %q{Define, read and write any Ruby app configurations with a penchant for terminal clients.}
-  spec.description   = %q{Define, read and write any Ruby app configurations with a penchant for terminal clients.}
+  spec.summary       = %q{A highly customisable application configuration interface for building terminal tools.}
+  spec.description   = %q{A highly customisable application configuration interface for building terminal tools. It supports many file formats such as YAML, JSON, TOML, INI, HCL and Java Properties.}
   spec.homepage      = "https://ttytoolkit.org"
   spec.license       = "MIT"
   spec.metadata = {

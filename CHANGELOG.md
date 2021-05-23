@@ -1,6 +1,6 @@
 # Change log
 
-## [v0.5.0] - unreleased
+## [v0.5.0] - 2021-05-23
 
 ### Added
 * Add :create option to the #write method to control creating any missing directories

@@ -161,12 +161,21 @@ module TTY
 
     # Set a value for a composite key if not present already
     #
-    # @param [Array[String|Symbol]] keys
+    # @example
+    #   set_if_empty(:foo, :bar, :baz, value: 2)
+    #
+    # @param [Array<String, Symbol>] keys
     #   the keys to set value for
+    # @param [Object] value
+    #   the value to set
+    #
+    # @return [Object, nil]
+    #   the set value or nil
     #
     # @api public
     def set_if_empty(*keys, value: nil, &block)
-      return unless deep_find(@settings, keys.last.to_s).nil?
+      keys = convert_to_keys(keys)
+      return unless deep_fetch(@settings, *keys).nil?
 
       block ? set(*keys, &block) : set(*keys, value: value)
     end
@@ -511,15 +520,6 @@ module TTY
       else # nested hash value present
         settings[key] = value
         deep_set(settings[key], *rest)
-      end
-    end
-
-    def deep_find(settings, key, found = nil)
-      if settings.respond_to?(:key?) && settings.key?(key)
-        settings[key]
-      elsif settings.is_a?(Enumerable)
-        settings.each { |obj| found = deep_find(obj, key) }
-        found
       end
     end
 

@@ -11,6 +11,7 @@
 ### Changed
 * Change #delete to allow removing any subkey of a deeply nested key
 * Change #remove to require from keyword
+* Change #set_if_empty to use nested key fetching to check for value presence
 
 ### Fixed
 * Fix Marshaller interface to copy extension names to a subclass

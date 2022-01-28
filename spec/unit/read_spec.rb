@@ -54,6 +54,17 @@ RSpec.describe TTY::Config, "#read" do
     expect(config.fetch(:coins)).to eq(%w[BTC ETH TRX DASH])
   end
 
+  it "reads json file without any settings" do
+    file = fixtures_path("empty.json")
+    config = TTY::Config.new
+
+    config.read(file)
+
+    expect(config.filename).to eq("empty")
+    expect(config.extname).to eq(".json")
+    expect(config.to_hash).to eq({})
+  end
+
   it "reads a toml format" do
     file = fixtures_path("investments.toml")
     config = TTY::Config.new
@@ -64,6 +75,17 @@ RSpec.describe TTY::Config, "#read" do
     expect(config.extname).to eq(".toml")
     expect(config.fetch(:settings, :base)).to eq("USD")
     expect(config.fetch(:coins)).to eq(%w[BTC ETH TRX DASH])
+  end
+
+  it "reads empty file with toml extension" do
+    file = fixtures_path("empty.toml")
+    config = TTY::Config.new
+
+    config.read(file)
+
+    expect(config.filename).to eq("empty")
+    expect(config.extname).to eq(".toml")
+    expect(config.to_hash).to eq({})
   end
 
   it "reads an ini format" do
@@ -111,6 +133,17 @@ RSpec.describe TTY::Config, "#read" do
     expect(config.extname).to eq(".props")
     expect(config.fetch(:base)).to eq("USD")
     expect(config.fetch(:coins).split(",")).to eq(%w[BTC ETH TRX DASH])
+  end
+
+  it "reads empty file with java properties extension" do
+    file = fixtures_path("empty.props")
+    config = TTY::Config.new
+
+    config.read(file)
+
+    expect(config.filename).to eq("empty")
+    expect(config.extname).to eq(".props")
+    expect(config.to_hash).to eq({})
   end
 
   it "reads custom format" do

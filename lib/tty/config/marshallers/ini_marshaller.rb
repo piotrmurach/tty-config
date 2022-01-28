@@ -22,8 +22,8 @@ module TTY
 
         def unmarshal(content)
           ini = IniFile.new(content: content).to_h
-          global = ini.delete("global")
-          ini.merge!(global)
+          global = ini.delete("global") { {} }
+          ini.merge(global)
         end
       end # INIMarshaller
     end # Marshallers

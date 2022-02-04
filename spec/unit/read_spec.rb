@@ -123,6 +123,17 @@ RSpec.describe TTY::Config, "#read" do
     expect(config.fetch(:coins)).to eq(%w[BTC ETH TRX DASH])
   end
 
+  it "reads empty file with hcl extension" do
+    file = fixtures_path("empty.hcl")
+    config = TTY::Config.new
+
+    config.read(file)
+
+    expect(config.filename).to eq("empty")
+    expect(config.extname).to eq(".hcl")
+    expect(config.to_hash).to eq({})
+  end
+
   it "reads a java properties format" do
     file = fixtures_path("investments.props")
     config = TTY::Config.new

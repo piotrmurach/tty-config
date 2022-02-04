@@ -20,6 +20,8 @@ module TTY
         end
 
         def unmarshal(content)
+          return {} if content == ""
+
           Rhcl.parse(content)
         end
       end # HCLMarshaller

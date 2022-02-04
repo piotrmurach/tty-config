@@ -1,5 +1,11 @@
 # Change log
 
+## [v0.5.1] - 2022-02-04
+
+### Fixed
+* Fix reading configuration from an INI file without global properties
+* Fix reading an empty config file with hcl extension to return an empty hash
+
 ## [v0.5.0] - 2021-05-23
 
 ### Added
@@ -71,6 +77,7 @@
 
 * Initial implementation and release
 
+[v0.5.1]: https://github.com/piotrmurach/tty-config/compare/v0.5.0...v0.5.1
 [v0.5.0]: https://github.com/piotrmurach/tty-config/compare/v0.4.0...v0.5.0
 [v0.4.0]: https://github.com/piotrmurach/tty-config/compare/v0.3.2...v0.4.0
 [v0.3.2]: https://github.com/piotrmurach/tty-config/compare/v0.3.1...v0.3.2

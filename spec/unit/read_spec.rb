@@ -157,6 +157,30 @@ RSpec.describe TTY::Config, "#read" do
     expect(config.to_hash).to eq({})
   end
 
+  it "reads a file in an xml format" do
+    file = fixtures_path("investments.xml")
+    config = TTY::Config.new
+
+    config.read(file)
+
+    expect(config.filename).to eq("investments")
+    expect(config.extname).to eq(".xml")
+    expect(config.fetch(:settings, :base)).to eq("USD")
+    expect(config.fetch(:settings, :exchange)).to eq("CCCAGG")
+    expect(config.fetch(:coins)).to eq(%w[BTC ETH TRX DASH])
+  end
+
+  it "reads an empty file with an xml extension" do
+    file = fixtures_path("empty.xml")
+    config = TTY::Config.new
+
+    config.read(file)
+
+    expect(config.filename).to eq("empty")
+    expect(config.extname).to eq(".xml")
+    expect(config.to_hash).to eq({})
+  end
+
   it "reads custom format" do
     file = fixtures_path(".env")
     config = TTY::Config.new

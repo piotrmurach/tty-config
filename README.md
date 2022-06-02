@@ -27,7 +27,7 @@
 
 This is a one-stop shop for all your configuration needs:
 
-* [Read](#216-read) and [write](#217-write) config files in YAML, JSON, TOML, INI, HCL and Java Properties formats
+* [Read](#216-read) and [write](#217-write) config files in YAML, JSON, TOML, INI, XML, HCL and Java Properties formats
 * Add [custom marshallers](#222-register_marshaller) or override the built-in ones
 * [Set](#21-set) and [read](#24-fetch) settings for deeply nested keys
 * [Set](#21-set) defaults for undefined settings
@@ -514,6 +514,7 @@ Currently the supported file formats are:
 * `toml` for `.toml` extension
 * `ini`  for `.ini`, `.cnf`, `.conf`, `.cfg`, `.cf extensions`
 * `hcl`  for `.hcl` extensions
+* `xml`  for `.xml` extension
 * `jprops` for `.properties`, `.props`, `.prop` extensions
 
 Calling `read` without any arguments searches through provided locations to find configuration file and reads it. Therefore, you need to specify at least one search path that contains the configuration file together with actual filename. When filename is specified then all known extensions will be tried.
@@ -700,7 +701,7 @@ config.fetch(:host)
 
 There are number of built-in marshallers that handle the process of serializing internal configuration from and back into a desired format, for example, a `JSON` string.
 
-Currently supported formats out-of-the-box are: `YAML`, `JSON`, `TOML`, `INI` & `HCL`.
+Currently supported formats out-of-the-box are: `YAML`, `JSON`, `TOML`, `INI`, `XML`, `HCL` & `Java Properties`.
 
 To create your own marshaller use the `TTY::Config::Marshaller` interface. You need to provide the implementation for the following marshalling methods:
 
@@ -770,7 +771,7 @@ By default, the **TTY::Config** is ready to recognize various extensions. See [2
 For example, to remove all the built-in marshallers do:
 
 ```ruby
-config.unregister_marshaller :yaml, :json, :toml, :ini, :hcl
+config.unregister_marshaller :yaml, :json, :toml, :ini, :xml, :hcl, :jprops
 ```
 
 ## 3. Examples

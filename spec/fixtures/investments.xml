@@ -1,0 +1,9 @@
+<config>
+  <settings base="USD" color="true">
+    <exchange>CCCAGG</exchange>
+  </settings>
+  <coins>BTC</coins>
+  <coins>ETH</coins>
+  <coins>TRX</coins>
+  <coins>DASH</coins>
+</config>

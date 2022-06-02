@@ -1,5 +1,10 @@
 # Change log
 
+## [v0.6.0] - unreleased
+
+### Added
+* Add the ability to persist configuration settings in an XML format
+
 ## [v0.5.1] - 2022-02-04
 
 ### Fixed
@@ -77,6 +82,7 @@
 
 * Initial implementation and release
 
+[v0.6.0]: https://github.com/piotrmurach/tty-config/compare/v0.5.1...v0.6.0
 [v0.5.1]: https://github.com/piotrmurach/tty-config/compare/v0.5.0...v0.5.1
 [v0.5.0]: https://github.com/piotrmurach/tty-config/compare/v0.4.0...v0.5.0
 [v0.4.0]: https://github.com/piotrmurach/tty-config/compare/v0.3.2...v0.4.0

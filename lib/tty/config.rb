@@ -10,6 +10,7 @@ require_relative "config/marshallers/yaml_marshaller"
 require_relative "config/marshallers/toml_marshaller"
 require_relative "config/marshallers/hcl_marshaller"
 require_relative "config/marshallers/java_props_marshaller"
+require_relative "config/marshallers/xml_marshaller"
 
 module TTY
   # Responsible for managing application configuration
@@ -104,6 +105,7 @@ module TTY
       register_marshaller :json, Marshallers::JSONMarshaller
       register_marshaller :toml, Marshallers::TOMLMarshaller
       register_marshaller :ini, Marshallers::INIMarshaller
+      register_marshaller :xml, Marshallers::XMLMarshaller
       register_marshaller :hcl, Marshallers::HCLMarshaller
       register_marshaller :jprops, Marshallers::JavaPropsMarshaller
 

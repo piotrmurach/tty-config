@@ -24,13 +24,14 @@ RSpec.describe TTY::Config, "#register_marshaller" do
       TTY::Config::Marshallers::JSONMarshaller,
       TTY::Config::Marshallers::TOMLMarshaller,
       TTY::Config::Marshallers::INIMarshaller,
+      TTY::Config::Marshallers::XMLMarshaller,
       TTY::Config::Marshallers::HCLMarshaller,
       TTY::Config::Marshallers::JavaPropsMarshaller,
       CustomMarshaller
     ])
 
     config.unregister_marshaller :json
-    config.unregister_marshaller :yaml, :toml, :ini, :hcl, :jprops
+    config.unregister_marshaller :yaml, :toml, :ini, :xml, :hcl, :jprops
 
     expect(config.marshallers).to eq([CustomMarshaller])
   end
@@ -56,6 +57,7 @@ RSpec.describe TTY::Config, "#register_marshaller" do
       TTY::Config::Marshallers::JSONMarshaller,
       TTY::Config::Marshallers::TOMLMarshaller,
       TTY::Config::Marshallers::INIMarshaller,
+      TTY::Config::Marshallers::XMLMarshaller,
       TTY::Config::Marshallers::HCLMarshaller,
       TTY::Config::Marshallers::JavaPropsMarshaller
     ])
@@ -77,6 +79,7 @@ RSpec.describe TTY::Config, "#register_marshaller" do
       TTY::Config::Marshallers::JSONMarshaller,
       TTY::Config::Marshallers::TOMLMarshaller,
       TTY::Config::Marshallers::INIMarshaller,
+      TTY::Config::Marshallers::XMLMarshaller,
       TTY::Config::Marshallers::HCLMarshaller,
       TTY::Config::Marshallers::JavaPropsMarshaller
     ])

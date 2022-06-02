@@ -296,6 +296,28 @@ coins=BTC,TRX,DASH
     EOS
   end
 
+  it "writes in an xml format and assigns default filename and extension" do
+    config = TTY::Config.new
+    config.set(:settings, :base, value: "USD")
+    config.set(:settings, :color, value: true)
+    config.set(:settings, :exchange, value: "CCCAGG")
+    config.set(:coins, value: %w[BTC TRX DASH])
+    file = "investments.xml"
+
+    config.write(file)
+
+    expect(config.filename).to eq("investments")
+    expect(config.extname).to eq(".xml")
+    expect(::File.read(file)).to eq <<-EOS.chomp
+<config>
+  <settings base="USD" color="true" exchange="CCCAGG" />
+  <coins>BTC</coins>
+  <coins>TRX</coins>
+  <coins>DASH</coins>
+</config>\n
+    EOS
+  end
+
   it "writes custom format with custom file extension" do
     config = TTY::Config.new
     config.set(:settings, :base, value: "USD")

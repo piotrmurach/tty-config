@@ -7,7 +7,10 @@ gemspec
 if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("2.1.0")
   gem "rspec-benchmark", "~> 0.6"
 end
-gem "json", "2.4.1" if RUBY_VERSION == "2.0.0"
+if RUBY_VERSION == "2.0.0"
+  gem "json", "2.4.1"
+  gem "rexml", "3.2.4"
+end
 
 group :test do
   if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("2.5.0")

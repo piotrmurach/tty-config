@@ -39,7 +39,7 @@ RSpec.describe TTY::Config::MarshallerRegistry do
     registry = TTY::Config::MarshallerRegistry.new(mappings)
 
     expect(registry.registered?(:json)).to eq(true)
-    expect(registry.registered?(TTY::Config::Marshallers::YAMLMarshaller)).to eq(true)
+    expect(registry.registered?(mappings[:yaml])).to eq(true)
     expect(registry.registered?(:toml)).to eq(false)
   end
 
@@ -53,7 +53,7 @@ RSpec.describe TTY::Config::MarshallerRegistry do
     registry.unregister :json
 
     expect(registry.names).to eq(%i[yaml])
-    expect(registry.objects).to eq([TTY::Config::Marshallers::YAMLMarshaller])
+    expect(registry.objects).to eq([mappings[:yaml]])
     expect(registry.exts).to eq(%w[.yaml .yml])
   end
 end

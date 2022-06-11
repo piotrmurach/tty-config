@@ -32,7 +32,7 @@ RSpec.shared_context "sandbox" do
     ::Dir.mktmpdir do |dir|
       ::Dir.chdir(dir) do
         example.metadata[:tmpdir] = dir
-        example.call
+        example.()
       end
     end
   end

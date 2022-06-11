@@ -8,8 +8,8 @@ RSpec.describe TTY::Config::Generator, "#generate" do
       "str" => "hello",
       "array" => [1, 2, 3],
       "deep_array" => [
-        { foo: 1 },
-        { bar: 2 }
+        {foo: 1},
+        {bar: 2}
       ],
       "section" => {
         "value" => 1,
@@ -43,8 +43,8 @@ array = 1,2,3
       "str" => "hello",
       "array" => [1, 2, 3],
       "deep_array" => [
-        { foo: 1 },
-        { bar: 2 }
+        {foo: 1},
+        {bar: 2}
       ],
       "section" => {
         "value" => 1,

@@ -42,7 +42,7 @@ RSpec.describe TTY::Config, "#set" do
   end
 
   it "overrides existing value" do
-    config = TTY::Config.new({ foo: { bar: 1 } })
+    config = TTY::Config.new({foo: {bar: 1}})
     expect(config.fetch(:foo, :bar)).to eq(1)
     config.set(:foo, :bar) { 2 }
     expect(config.fetch(:foo, :bar)).to eq(2)

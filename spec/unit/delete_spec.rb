@@ -27,14 +27,14 @@ RSpec.describe TTY::Config, "#delete" do
     config = TTY::Config.new
     config.set(:foo, :bar, value: 1)
     config.set(:foo, :baz, value: 2)
-    expect(config.delete(:foo)).to eq({ "bar" => 1,  "baz" => 2 })
+    expect(config.delete(:foo)).to eq({"bar" => 1, "baz" => 2})
     expect(config.fetch(:foo)).to eq(nil)
   end
 
   it "deletes subkey from a deeply nested key" do
     config = TTY::Config.new
     config.set(:foo, :bar, :baz, value: 1)
-    expect(config.delete(:foo, :bar)).to eq({ "baz" => 1 })
+    expect(config.delete(:foo, :bar)).to eq({"baz" => 1})
     expect(config.fetch(:foo)).to eq({})
   end
 

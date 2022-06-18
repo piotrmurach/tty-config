@@ -1,6 +1,6 @@
 # Change log
 
-## [v0.6.0] - unreleased
+## [v0.6.0] - 2022-06-18
 
 ### Added
 * Add the ability to persist configuration settings in an XML format

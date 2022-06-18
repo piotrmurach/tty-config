@@ -14,6 +14,7 @@ RSpec.describe TTY::Config::Generator, "#generate" do
       "section" => {
         "value" => 1,
         "empty" => nil,
+        "false" => false,
         "array" => [1, 2, 3]
       },
       "empty" => {},
@@ -34,6 +35,7 @@ bar = 2
 
 [section]
 value = 1
+false = false
 array = 1,2,3
     EOS
   end

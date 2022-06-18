@@ -5,6 +5,9 @@
 ### Added
 * Add the ability to persist configuration settings in an XML format
 
+### Changed
+* Change the INI file format generator to improve maintainability
+
 ## [v0.5.1] - 2022-02-04
 
 ### Fixed

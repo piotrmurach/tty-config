@@ -30,6 +30,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake"
   spec.add_development_dependency "rhcl", "~> 0.1"
   spec.add_development_dependency "rspec", ">= 3.0"
-  spec.add_development_dependency "toml", "~> 0.2"
+  spec.add_development_dependency "toml", "~> 0.3"
   spec.add_development_dependency "xml-simple", "~> 1.1"
 end

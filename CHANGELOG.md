@@ -7,6 +7,7 @@
 
 ### Changed
 * Change the INI file format generator to improve maintainability
+* Change gemspec to update toml version constraint
 
 ## [v0.5.1] - 2022-02-04
 

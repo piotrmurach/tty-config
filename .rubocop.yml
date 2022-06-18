@@ -13,6 +13,9 @@ Layout/HeredocIndentation:
 Layout/LineLength:
   Max: 82
 
+Layout/SpaceInsideHashLiteralBraces:
+  EnforcedStyle: no_space
+
 Lint/AssignmentInCondition:
   Enabled: false
 
@@ -38,8 +41,15 @@ Metrics/MethodLength:
 Naming/BinaryOperatorParameterName:
   Enabled: false
 
+Naming/FileName:
+  Exclude:
+    - "lib/tty-config.rb"
+
 Naming/HeredocDelimiterNaming:
   Enabled: false
+
+Naming/RescuedExceptionsVariableName:
+  PreferredName: err
 
 Style/AccessorGrouping:
   Enabled: false
@@ -61,6 +71,9 @@ Style/Lambda:
 
 Style/LambdaCall:
   EnforcedStyle: braces
+
+Style/RedundantFetchBlock:
+  Enabled: false
 
 Style/StringLiterals:
   EnforcedStyle: double_quotes

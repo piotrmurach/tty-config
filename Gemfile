@@ -11,6 +11,9 @@ if RUBY_VERSION == "2.0.0"
   gem "json", "2.4.1"
   gem "rexml", "3.2.4"
 end
+if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.3.0")
+  gem "racc", "~> 1.7"
+end
 
 group :test do
   if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("2.5.0")

@@ -469,6 +469,8 @@ module TTY
       ext = (format == :auto ? extname : ".#{format}")
       content = ::File.read(file)
 
+      yield content if block_given?
+
       merge(unmarshal(content, ext: ext))
     end
 

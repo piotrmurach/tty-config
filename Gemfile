@@ -2,8 +2,6 @@
 
 source "https://rubygems.org"
 
-git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
-
 gemspec
 
 if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("2.1.0")

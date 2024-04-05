@@ -12,7 +12,7 @@ if RUBY_VERSION == "2.0.0"
 end
 
 if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("2.1.0")
-  gem "rspec-benchmark", "~> 0.6"
+  gem "rspec-benchmark", "~> 0.6.0"
 end
 
 group :test do

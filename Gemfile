@@ -4,9 +4,7 @@ source "https://rubygems.org"
 
 gemspec
 
-group :metrics do
-  gem "yardstick", "~> 0.9.9"
-end
+gem "yardstick", "~> 0.9.9"
 
 if RUBY_VERSION == "2.0.0"
   gem "json", "2.4.1"

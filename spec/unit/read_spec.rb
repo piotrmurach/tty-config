@@ -10,6 +10,20 @@ RSpec.describe TTY::Config, "#read" do
     expect(config.to_hash).to eq({})
   end
 
+  it "can modify content before parsing" do
+    file = fixtures_path("empty.yml")
+    config = TTY::Config.new
+
+    config.read(file) do |contents|
+      contents.concat <<~EOF
+      ---
+      appended: true
+      EOF
+    end
+
+    expect(config.to_hash).to eq({ "appended" => true })
+  end
+
   it "reads from a specified file" do
     file = fixtures_path("investments.yml")
     config = TTY::Config.new

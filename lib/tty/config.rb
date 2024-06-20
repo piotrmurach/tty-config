@@ -29,6 +29,8 @@ module TTY
     UnsupportedExtError = Class.new(StandardError)
     # Error raised when validation assertion fails
     ValidationError = Class.new(StandardError)
+    # Error raised when told to prefer an unrecognized source
+    UnsupportedSource = Class.new(StandardError)
 
     # Coerce a hash object into Config instance
     #
@@ -54,6 +56,17 @@ module TTY
       hash.each_with_object({}) do |(key, val), acc|
         value = val.is_a?(::Hash) ? normalize_hash(val, method) : val
         acc[key.public_send(method)] = value
+      end
+    end
+
+    def self.normalize_preferred(source)
+      case source.to_sym
+      when :settings, :configuration, :config, :file, :files
+        :settings
+      when :environment, :env, :ENV
+        :environment
+      else
+        raise UnsupportedSource, "Preferred Source `#{source}` is not supported."
       end
     end
 
@@ -85,6 +98,18 @@ module TTY
     # @api public
     attr_accessor :env_separator
 
+    # The preferred source for settings
+    # @api public
+    attr_reader :preferred
+
+    # Set the preferred source for settings
+    # @api public
+    def preferred=(source)
+      @preferred = self.class.normalize_preferred(source)
+    end
+
+    alias_method :prefer, :preferred=
+
     # Create a configuration instance
     #
     # @api public
@@ -100,6 +125,7 @@ module TTY
       @env_separator = "_"
       @autoload_env = false
       @aliases = {}
+      self.preferred = :settings
 
       register_marshaller :yaml, Marshallers::YAMLMarshaller
       register_marshaller :json, Marshallers::JSONMarshaller
@@ -282,21 +308,34 @@ module TTY
     # @return [Object]
     #
     # @api public
-    def fetch(*keys, default: nil, &block)
+    def fetch(*keys, default: nil, prefer: self.preferred, &block)
       # check alias
       real_key = @aliases[flatten_keys(keys)]
       keys = real_key.split(key_delim) if real_key
 
       keys = convert_to_keys(keys)
       env_key = autoload_env? ? to_env_key(keys[0]) : @envs[flatten_keys(keys)]
-      # first try settings
-      value = deep_fetch(@settings, *keys)
-      # then try ENV var
-      if value.nil? && env_key
-        value = ENV[env_key]
+
+      case self.class.normalize_preferred(prefer)
+      when :settings
+        # first try settings
+        value = deep_fetch(@settings, *keys)
+        # then try ENV var
+        if value.nil? && env_key
+          value = ENV[env_key]
+        end
+        # then try default
+        value = block || default if value.nil?
+      when :environment
+        # first try ENV var
+        value = ENV[env_key] if env_key
+        # then try settings
+        if value.nil?
+          value = deep_fetch(@settings, *keys)
+        end
+      else
+        raise UnsupportedSource, "Preferred Source `#{prefer}` is not supported."
       end
-      # then try default
-      value = block || default if value.nil?
 
       while callable_without_params?(value)
         value = value.()

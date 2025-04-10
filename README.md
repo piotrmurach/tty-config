@@ -155,7 +155,7 @@ class App
   end
 
   def self.config
-    @config ||= self.class.new.config
+    @config ||= self.new.config
   end
 end
 ```

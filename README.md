@@ -24,13 +24,13 @@
 
 This is a one-stop shop for all your configuration needs:
 
-* [Read](#216-read) and [write](#217-write) config files in YAML, JSON, TOML, INI, XML, HCL and Java Properties formats
-* Add [custom marshallers](#222-register_marshaller) or override the built-in ones
-* [Set](#21-set) and [read](#24-fetch) settings for deeply nested keys
-* [Set](#21-set) defaults for undefined settings
-* [Read](#24-fetch) settings with indifferent access
-* [Merge](#25-merge) configuration settings from other hash objects
-* Read values from [environment variables](#23-set_from_env)
+- [Read](#216-read) and [write](#217-write) config files in YAML, JSON, TOML, INI, XML, HCL and Java Properties formats
+- Add [custom marshallers](#222-register_marshaller) or override the built-in ones
+- [Set](#21-set) and [read](#24-fetch) settings for deeply nested keys
+- [Set](#21-set) defaults for undefined settings
+- [Read](#24-fetch) settings with indifferent access
+- [Merge](#25-merge) configuration settings from other hash objects
+- Read values from [environment variables](#23-set_from_env)
 
 ## Installation
 
@@ -50,35 +50,35 @@ Or install it yourself as:
 
 ## Contents
 
-* [1. Usage](#1-usage)
-  * [1.1 app](#11-app)
-* [2. Interface](#2-interface)
-  * [2.1 set](#21-set)
-  * [2.2 set_if_empty](#22-set_if_empty)
-  * [2.3 set_from_env](#23-set_from_env)
-  * [2.4 fetch](#24-fetch)
-  * [2.5 merge](#25-merge)
-  * [2.6 coerce](#26-coerce)
-  * [2.7 append](#27-append)
-  * [2.8 remove](#28-remove)
-  * [2.9 delete](#29-delete)
-  * [2.10 alias_setting](#210-alias_setting)
-  * [2.11 validate](#211-validate)
-  * [2.12 filename=](#212-filename)
-  * [2.13 extname=](#213-extname)
-  * [2.14 append_path](#214-append_path)
-  * [2.15 prepend_path](#215-prepend_path)
-  * [2.16 read](#216-read)
-  * [2.17 write](#217-write)
-  * [2.18 exist?](#218-exist)
-  * [2.19 env_prefix=](#219-env_prefix)
-  * [2.20 env_separator=](#220-env_separator)
-  * [2.21 autoload_env](#221-autoload_env)
-  * [2.22 register_marshaller](#222-register_marshaller)
-  * [2.23 unregister_marshaller](#223-unregister_marshaller)
-* [3. Examples](#3-examples)
-  * [3.1 Working with env vars](#31-working-with-env-vars)
-  * [3.2 Working with optparse](#32-working-with-optparse)
+- [1. Usage](#1-usage)
+  - [1.1 app](#11-app)
+- [2. Interface](#2-interface)
+  - [2.1 set](#21-set)
+  - [2.2 set_if_empty](#22-set_if_empty)
+  - [2.3 set_from_env](#23-set_from_env)
+  - [2.4 fetch](#24-fetch)
+  - [2.5 merge](#25-merge)
+  - [2.6 coerce](#26-coerce)
+  - [2.7 append](#27-append)
+  - [2.8 remove](#28-remove)
+  - [2.9 delete](#29-delete)
+  - [2.10 alias_setting](#210-alias_setting)
+  - [2.11 validate](#211-validate)
+  - [2.12 filename=](#212-filename)
+  - [2.13 extname=](#213-extname)
+  - [2.14 append_path](#214-append_path)
+  - [2.15 prepend_path](#215-prepend_path)
+  - [2.16 read](#216-read)
+  - [2.17 write](#217-write)
+  - [2.18 exist?](#218-exist)
+  - [2.19 env_prefix=](#219-env_prefix)
+  - [2.20 env_separator=](#220-env_separator)
+  - [2.21 autoload_env](#221-autoload_env)
+  - [2.22 register_marshaller](#222-register_marshaller)
+  - [2.23 unregister_marshaller](#223-unregister_marshaller)
+- [3. Examples](#3-examples)
+  - [3.1 Working with env vars](#31-working-with-env-vars)
+  - [3.2 Working with optparse](#32-working-with-optparse)
 
 ## 1. Usage
 
@@ -283,6 +283,22 @@ config.fetch(:settings, :base)
 config.fetch("settings", "base")
 config.fetch(:settings, "base")
 config.fetch("settings", :base)
+```
+
+By default, `fetch` prefers values found in settings over those found in environment. If you prefer it the other way around, you can pass `prefer: :environment` as an option to `fetch`.
+
+For example, with `BASE=CAD` in environment, and `base: USD` in a YAML config file...
+
+```ruby
+config.fetch(:base) # => "USD"
+config.fetch(:base, prefer: :settings)      # => "USD" (default, equivalent to above)
+config.fetch(:base, prefer: :configuration) # => "USD" (alias for settings)
+config.fetch(:base, prefer: :config)        # => "USD" (alias for settings)
+config.fetch(:base, prefer: :file)          # => "USD" (alias for settings)
+config.fetch(:base, prefer: :files)         # => "USD" (alias for settings)
+config.fetch(:base, prefer: :environment)   # => "CAD"
+config.fetch(:base, prefer: :env)           # => "CAD" (alias for environment)
+config.fetch(:base, prefer: :ENV)           # => "CAD" (alias for environment)
 ```
 
 ### 2.5 merge
@@ -506,13 +522,13 @@ There are two ways for reading configuration files and both use the `read` metho
 
 Currently the supported file formats are:
 
-* `yaml` for `.yaml`, `.yml` extensions
-* `json` for `.json` extension
-* `toml` for `.toml` extension
-* `ini`  for `.ini`, `.cnf`, `.conf`, `.cfg`, `.cf extensions`
-* `hcl`  for `.hcl` extensions
-* `xml`  for `.xml` extension
-* `jprops` for `.properties`, `.props`, `.prop` extensions
+- `yaml` for `.yaml`, `.yml` extensions
+- `json` for `.json` extension
+- `toml` for `.toml` extension
+- `ini` for `.ini`, `.cnf`, `.conf`, `.cfg`, `.cf extensions`
+- `hcl` for `.hcl` extensions
+- `xml` for `.xml` extension
+- `jprops` for `.properties`, `.props`, `.prop` extensions
 
 Calling `read` without any arguments searches through provided locations to find configuration file and reads it. Therefore, you need to specify at least one search path that contains the configuration file together with actual filename. When filename is specified then all known extensions will be tried.
 
@@ -661,7 +677,7 @@ Then we can make configuration aware of the above variable name in one of these 
 ```ruby
 config.set_from_env(:server, :port)
 config.set_from_env("server.port")
-````
+```
 
 And retrieve the value:
 
@@ -702,8 +718,8 @@ Currently supported formats out-of-the-box are: `YAML`, `JSON`, `TOML`, `INI`, `
 
 To create your own marshaller use the `TTY::Config::Marshaller` interface. You need to provide the implementation for the following marshalling methods:
 
-* `marshal`
-* `unmarshal`
+- `marshal`
+- `unmarshal`
 
 In addition, you will need to specify the extension types this marshaller will handle using the `extension` method. The method accepts a list of names preceded by a dot:
 
@@ -775,7 +791,7 @@ config.unregister_marshaller :yaml, :json, :toml, :ini, :xml, :hcl, :jprops
 
 ### 3.1 Working with env vars
 
-*TTY::Config* fully supports working with environment variables. For example, there are couple of environment variables that your configuration is interested in, which normally would be set in terminal but for the sake of this example we assign them:
+_TTY::Config_ fully supports working with environment variables. For example, there are couple of environment variables that your configuration is interested in, which normally would be set in terminal but for the sake of this example we assign them:
 
 ```ruby
 ENV["MYTOOL_HOST"] = "192.168.1.17"

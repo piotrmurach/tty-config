@@ -44,4 +44,43 @@ RSpec.describe TTY::Config do
 
     expect(config.fetch("foo", :bar, "baz")).to eq(2)
   end
+
+  context "when environment and settings conflict" do
+    before :each do
+      ENV.update({ "SETTINGS_BASE" => "CAD" })
+      @config = TTY::Config.new do |config|
+        config.read fixtures_path("investments.yml")
+        config.set_from_env(:settings, :base)
+      end
+      @default = @config.preferred
+  end
+
+    context "and settings are preferred (default)" do
+      before :each do
+        @config.prefer @default
+      end
+
+      it "uses the value from settings" do
+        expect(@config.fetch(:settings, :base)).to eq("USD")
+      end
+
+      it "uses the value from environment on demand" do
+        expect(@config.fetch(:settings, :base, prefer: :environment)).to eq("CAD")
+      end
+    end
+
+    context "and environment is preferred" do
+      before :each do
+        @config.prefer :environment
+      end
+
+      it "uses the value from environment" do
+        expect(@config.fetch(:settings, :base)).to eq("CAD")
+      end
+
+      it "uses the value from settings on demand" do
+        expect(@config.fetch(:settings, :base, prefer: :settings)).to eq("USD")
+      end
+    end
+  end
 end
